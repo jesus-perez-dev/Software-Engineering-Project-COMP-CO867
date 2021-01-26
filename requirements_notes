@@ -1,6 +1,6 @@
 Requirements Notes
 
-##Must Have
+## Must Have
 
 Connect to the API/Simulator while PLCSim is running
 Don’t have to create the PLC, just hook into it
@@ -14,7 +14,7 @@ Start the simulator if it is currently stopped
 Getting input and outputs from PLC, asking for those from the API, and sending back input values
 Proof of concept that retrieves ~16 outputs and ~16 inputs (can be lights/buttons on HMI)
 
-##Functional##
+## Functional
 Any specific features from the API are must-haves? Anything features we can exclude?
 Answer: 
 Use IO addresses rather than tags
@@ -38,7 +38,7 @@ Proof of concept that retrieves ~16 outputs and ~16 inputs (can be lights/button
 Should the library API support simulating multiple controllers at once?
     Answer: If we have time, support multiple controllers, but only aim for 1
 
-###Game Questions
+### Game Questions
 -> What are the inputs, how do students interact with it? (switches? something else?)
     Answer: Physical items that can be hooked into sensors that the PLC can read from, eg an on/off switch
     -> What kind of graphical/game design are you thinking?
@@ -47,22 +47,22 @@ Prof suggests finding a game and re-using it to take inputs/output from the simu
     -> What is the game supposed to teach the players?
     Answer: Students should program the PLC from the portal, and game should read/write IO in response to the program that is currently loaded/running on the portal/simulator
 
-###Reliability
+### Reliability
 Any logging you want?
     Retrieve errors if possible - Keep an action log to help with debugging errors/crashes
 
-###Performance 
+### Performance 
 Requirement: Having it be able to respond real-time 
     Should not take a “long time”
 What kind of system would this be running on?
 
-###Supportability
+### Supportability
 Will other people in the future be using this library to create new apps/games? 
     Answer: would be using ladder logic programs already in TIA or prof would supply a ladder logic program for us
 Do you think this library will be extended/modified by others in the future
     Answer: Yes, may be modified per-assignment
 
-##Housekeeping
+## Housekeeping
 When/how can we get TIA Portal activation codes?
     Would get us codes soon
     Use version 16 trial, only need DVD-1
@@ -73,7 +73,7 @@ Should we create accounts on Siemens website now?
 Can you provide resources for learning PLC programming concepts?
     Would get us stuff soon
 
-##Conceptual Questions: Confirm or deny?
+## Conceptual Questions: Confirm or deny?
 The simulator simulates the PLC microcontroller?
     Yes, uses ladder logic
 Our game code defines a PLC program, loads it to the simulator, and tells the simulator to execute, using the API?
@@ -85,7 +85,7 @@ Our game code provides inputs, the simulator provides outputs?
 Inputs/Outputs are On/Off states, or analog states?
     Should support analog
 
-##Known Requirements
+## Known Requirements
 Creating a simplified library/interface to Siemens TIA Portal / PLC Simulator
 Prof wants it easier to initialize IO/interact with PLC
 Can use either C# or C++
