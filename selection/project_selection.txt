@@ -1,0 +1,22 @@
+# Engineering Project Selections
+
+Name: 
+
+Group Members: Jasper Hanlon, Stephen Kim, Jesus Perez
+
+Submission Type: GROUP
+
+### Project #1 - 36. PLC Simulator for students training
+
+We found this a desirable project because several group members have an interest in embedded development and similar topics. We think this project would be a good opportunity to learn about lower-level topics in computing, since our software courses mainly focus on higher level programming languages and frameworks. Additionally we think it would be interesting to have real-world experience working in C or C++ which are heavily used in industry, especially since we have not had academic experience with these technologies courses at Mohawk College. Finally, several members in our group have an interest in GUI and game-development related programming which is related to this project.
+
+### Project #2 - 10. The Simple CRM Web App - Innovation Factory
+
+This project is a great learning experience for both front and back end developers that solves a real-world problem. The project pitch stated that we would be using React and Node, which are very popular and commonly used languages that we have not used much yet. This project also has a lead that is an experienced UX designer with years of experience. They have promised guidance and details such as wireframes to get us started. Their guidance and emphasis on simple design and user-friendly interfaces would also help us grow in UI/UX designing. We would also be learning new development experience by deploying this project to a chrome extension. Lastly, LinkedIn integration and having this project out there for others to use would also be an excellent project to put on our resumes. 
+ 
+### Project #3 - 3. Approved Vendor Intranet Application - Riipen
+
+This project is interesting to our group because we appreciate how closely the problem models real world business entities. We like the idea of writing software that tracks important business objects including vendors, suppliers, and quotes, all of which serve a real and material function to the business process. We think this project looks “serious” and significant enough that our efforts would go towards creating a genuinely useful application. We also appreciate the flexibility in how we can select our own technology stack and use the best tool for the job. Our team has diverse skills in areas extending material taught in class, so we believe we would be well equipped to make the right decisions regarding technology selection.  
+
+ 
+
