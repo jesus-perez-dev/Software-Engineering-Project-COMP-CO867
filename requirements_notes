@@ -92,4 +92,13 @@ Can use either C# or C++
 Prof would like game as a proof-of-concept of the library
 Windows only for development (simulator is not cross platform)
 
+## Confirm this understanding:
+Our API passes values into and out of the simulator to get the state of various devices (switches, relays, sensors, etc)
+Our game generates and passes inputs to the simulator, which then uses the loaded program to determine states of each device
+Our game generates the input values which is passed to virtual sensors in the simulator 
+The simulator does NOT produce its own input values, correct?
+Our game should represent the state of each device by some changes on the screen, sound effects, game objects changing in response, etc
+The simulator is a “black box” - We feed it state into some devices, and read the state of other devices based on the rules of the loaded PLC program
+Our game code has to define a PLC program (ladder-logic equivalent) using the API directly. From the portal, this same process would be accomplished with the ladder logic designer, but we use our library instead to “setup” the expected PLC program (execution flow). 
+
 
