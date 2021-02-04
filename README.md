@@ -28,9 +28,9 @@ https://docs.google.com/document/d/1_UGLLxkiK16Bwm4oe0oHCjkcQmZxKvyCdjcCkB5Bqmk/
 https://docs.google.com/document/d/17TG6tnnxOLfiuEqwxqBwQa5lR1vO-pDm0mMW_oSIJ-o/edit
 
 #### Weekly Status Reports
-Week 3 - https://docs.google.com/document/d/1OCyRD-NdDvURXSr_VXAFH2YM2sPzhqzwKNEmBjytRxc/edit
-Week 4 - https://docs.google.com/document/d/1d2l93lQQcObzpVpxl0iuCtza9twGOWQA1pqBqYEeVr8/edit
-Week 5 - https://docs.google.com/document/d/1s3A7vs2OxB2ki8MsTWbvB6ozeJ3-b-dGQ9aWXbjnK-E/edit
+Week 3 - https://docs.google.com/document/d/1OCyRD-NdDvURXSr_VXAFH2YM2sPzhqzwKNEmBjytRxc/edit \
+Week 4 - https://docs.google.com/document/d/1d2l93lQQcObzpVpxl0iuCtza9twGOWQA1pqBqYEeVr8/edit \
+Week 5 - https://docs.google.com/document/d/1s3A7vs2OxB2ki8MsTWbvB6ozeJ3-b-dGQ9aWXbjnK-E/edit \
 
 #### Final Presentation
 
