@@ -17,16 +17,15 @@
 ## Technical Resources
 
 - [S7 C# API Documentation (HTML)](https://www.mesmer.me/~jnlon/eng/siemens-simulation-api-docs/#File:Siemens.Simatic.Simulation.Runtime.Api.x64.cs)
-    - [S7 C# API Class Reference](doc/s7-api/src/Siemens.Simatic.Simulation.Runtime.Api.x64.cs)
+- [S7 C# API Annotated Class Outline](doc/s7-api/src/Siemens.Simatic.Simulation.Runtime.Api.x64.cs)
 - [S7 Getting Started](https://cache.industry.siemens.com/dl/files/047/109759047/att_962042/v3/109759047_PLCSIMAdv_SimTable_DOC_V10_en.pdf)
 - [S7 Simulator Functional Manual (API Reference)](https://support.industry.siemens.com/cs/attachments/109760835/s7-plcsim_advanced_function_manual_en-US_en-US.pdf?download=true)
 - [S7 Programming Guidelines](https://support.industry.siemens.com/cs/attachments/90885040/81318674_programming_guideline_doc_v16_en.pdf?download=true)
 
 ## Contacts
 
-[Jesus Perez](mailto:jesus.perez-santiago@mohawkcollege.ca) - 000772575
-[Jasper Hanlon](mailto:jasper.hanlon@mohawkcollege.ca) - 000799827
-[Stephen Kim](mailto:stephen.kim1@mohawkcollege.ca) - 000801165
-
-[John Van Loon](mailto:john.van-loon@mohawkcollege.ca)
-[Peter Riis](mailto:peter.riis@mohawkcollege.ca)
+- [Jesus Perez](mailto:jesus.perez-santiago@mohawkcollege.ca) - 000772575
+- [Jasper Hanlon](mailto:jasper.hanlon@mohawkcollege.ca) - 000799827
+- [Stephen Kim](mailto:stephen.kim1@mohawkcollege.ca) - 000801165
+- [John Van Loon](mailto:john.van-loon@mohawkcollege.ca)
+- [Peter Riis](mailto:peter.riis@mohawkcollege.ca)
