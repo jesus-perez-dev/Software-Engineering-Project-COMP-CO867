@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <RootNamespace>S7PLCSIM_Tool</RootNamespace>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\S7PLCSIM-Library\S7PLCSIM-Library\S7PLCSIM-Library.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Reference Include="Siemens.Simatic.Simulation.Runtime.Api.x64, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+        <HintPath>..\..\S7PLCSIM-Library\S7PLCSIM-Library\Siemens.Simatic.Simulation.Runtime.Api.x64.dll</HintPath>
+      </Reference>
+    </ItemGroup>
+
+</Project>

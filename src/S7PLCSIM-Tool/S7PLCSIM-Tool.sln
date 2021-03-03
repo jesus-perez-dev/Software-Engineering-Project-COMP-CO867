@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "S7PLCSIM-Tool", "S7PLCSIM-Tool\S7PLCSIM-Tool.csproj", "{97F23A73-B8AD-4906-BCFA-F405A51E82DD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "S7PLCSIM-Library", "..\S7PLCSIM-Library\S7PLCSIM-Library\S7PLCSIM-Library.csproj", "{197A3F85-3E29-400A-83E8-3BA3FC379A85}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{97F23A73-B8AD-4906-BCFA-F405A51E82DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{97F23A73-B8AD-4906-BCFA-F405A51E82DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{97F23A73-B8AD-4906-BCFA-F405A51E82DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{97F23A73-B8AD-4906-BCFA-F405A51E82DD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{197A3F85-3E29-400A-83E8-3BA3FC379A85}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{197A3F85-3E29-400A-83E8-3BA3FC379A85}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{197A3F85-3E29-400A-83E8-3BA3FC379A85}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{197A3F85-3E29-400A-83E8-3BA3FC379A85}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
