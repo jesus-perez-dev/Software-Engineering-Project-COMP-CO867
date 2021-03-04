@@ -175,10 +175,10 @@ namespace MarbleSorterGame
                 text3.CharacterSize = 10;
                 text4.CharacterSize = 10;
 
-                text1.Color = SFML.Graphics.Color.White;
-                text2.Color = SFML.Graphics.Color.White;
-                text3.Color = SFML.Graphics.Color.White;
-                text4.Color = SFML.Graphics.Color.White;
+                text1.FillColor = SFML.Graphics.Color.White;
+                text2.FillColor = SFML.Graphics.Color.White;
+                text3.FillColor = SFML.Graphics.Color.White;
+                text4.FillColor = SFML.Graphics.Color.White;
 
                 text1.Position = new Vector2f(0, 0);
                 text2.Position = new Vector2f(0, 30);

@@ -5,7 +5,7 @@ using SFML.Window;
 
 namespace MarbleSorterGame
 {
-    public class Marble
+    public class Marble : GameEntity
     {
         private Texture _texture;
         public float Radius;

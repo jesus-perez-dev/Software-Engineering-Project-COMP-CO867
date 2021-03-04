@@ -4,7 +4,7 @@ using SFML.Graphics;
 
 namespace MarbleSorterGame
 {
-    public class Bucket
+    public class Bucket : GameEntity
     {
         private Texture _texture;
         private Sound _failSound;
