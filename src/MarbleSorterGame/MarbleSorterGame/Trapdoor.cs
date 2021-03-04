@@ -3,7 +3,7 @@ using SFML.Graphics;
 
 namespace MarbleSorterGame
 {
-    public class Trapdoor
+    public class Trapdoor : GameEntity
     {
         private Texture _texture;
         public bool Open;

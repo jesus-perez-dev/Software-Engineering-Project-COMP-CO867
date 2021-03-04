@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace MarbleSorterGame
+﻿namespace MarbleSorterGame
 {
     public enum Color
     {
