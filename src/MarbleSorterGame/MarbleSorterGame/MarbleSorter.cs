@@ -27,7 +27,7 @@ namespace MarbleSorterGame
         private static Font _font;
 
         //add parameter SimulationClient client when library implemented
-        MarbleSorter(IAssetBundle assetBundle)
+        public MarbleSorter(IAssetBundle assetBundle)
         {
             //this._client = client;
             _assets = assetBundle;
@@ -41,26 +41,28 @@ namespace MarbleSorterGame
             _videoMode = new VideoMode(800, 600);
             _windowTitle = "PLC Training Simulator - Marble Sorter Game";
             _windowStyles = Styles.Default;
+            _window = new RenderWindow(_videoMode, _windowTitle, _windowStyles);
             //set framerate to monitor refresh rate (if graphics driver allows) or hardcode to 60
             //_window.SetVerticalSyncEnabled(true);
             _window.SetFramerateLimit(60);
 
-            _window = new RenderWindow(_videoMode, _windowTitle, _windowStyles);
 
-            //hardcoding sample requirements (CHANGE once PLC solution known)
+            //hardcoding sample requirements (CHANGE once PLC solution known/ config file created)
             //make seperate class/interface for requirements?
             int[] bucketsCapacity = new int[3] { 5, 5, 5 };
             Weight[] bucketsReqWeight = new Weight[3] { Weight.Large, Weight.Medium, Weight.Small };
             Color[] bucketsReqColor = new Color[3] { Color.Red, Color.Green, Color.Blue };
 
             //========= Game Menu Entities ===========
+            _entities = new List<GameEntity>();
+
             Sensor colorSensor = new ColorSensor();
             Sensor pressureSensor = new PressureSensor();
             Sensor motionSensor = new MotionSensor();
 
             Bucket bucket1 = new Bucket(bucketsReqColor[0], bucketsReqWeight[0], bucketsCapacity[0]);
-            Bucket bucket2 = new Bucket(bucketsReqColor[2], bucketsReqWeight[2], bucketsCapacity[2]);
-            Bucket bucket3 = new Bucket(bucketsReqColor[3], bucketsReqWeight[3], bucketsCapacity[3]);
+            Bucket bucket2 = new Bucket(bucketsReqColor[1], bucketsReqWeight[1], bucketsCapacity[1]);
+            Bucket bucket3 = new Bucket(bucketsReqColor[2], bucketsReqWeight[2], bucketsCapacity[2]);
 
             Trapdoor trapdoor1 = new Trapdoor();
             Trapdoor trapdoor2 = new Trapdoor();
@@ -83,8 +85,6 @@ namespace MarbleSorterGame
 
             _entities.Add(marbleRedCorrect);
             _entities.Add(marbleRedIncorrect);
-
-            this.Run();
         }
 
         public void Run()
@@ -92,53 +92,45 @@ namespace MarbleSorterGame
             MainMenu();
         }
 
-        /// <summary>
-        /// Function called when a key is pressed
-        /// </summary>
-        private void Window_KeyPressed(object sender, SFML.Window.KeyEventArgs e)
-        {
-
-            var window = (SFML.Window.Window)sender;
-
-            if (e.Code == SFML.Window.Keyboard.Key.Escape)
-            {
-                window.Close();
-            }
-        }
-
         private void MainMenu()
         {
             //============ Main Menu buttons/text ============
-            Text title = new Text("Marble Sorter Game", _font, 100);
-            Text copyrightNotice = new Text("Copyright 2021 - Mohawk College", _font, 25);
-            RectangleShape buttonStart = new RectangleShape();
-            RectangleShape buttonSettings = new RectangleShape();
-            RectangleShape buttonExit = new RectangleShape();
+            //default menu button size
+            Vector2f buttonSize = new Vector2f(_window.Size.X / 7, _window.Size.Y / 11);
+            var buttonColor = SFML.Graphics.Color.Black;
+            var labelSize = 20;
 
-            title.Position = new Vector2f(_window.Size.X/2, _window.Size.Y/5);
-            title.FillColor = SFML.Graphics.Color.White;
-            copyrightNotice.Position = new Vector2f(_window.Size.X - 50, _window.Size.Y - 25);
+            //button/text positions
+            var buttonStartPosition = new Vector2f(_window.Size.X / 3, _window.Size.Y - 200);
+            var buttonSettingsPosition = new Vector2f(_window.Size.X / 2, _window.Size.Y - 200);
+            var buttonExitPosition = new Vector2f(_window.Size.X / 3f * 2, _window.Size.Y - 200);
+            var menuTitlePosition = new Vector2f(_window.Size.X / 3 - 100, _window.Size.Y / 5);
+
+            Text menuTitle = new Text("Marble Sorter Game", _font, 50);
+            Text copyrightNotice = new Text("Copyright 2021 - Mohawk College", _font, 10);
+
+            Button buttonStart = new Button(buttonStartPosition, buttonSize, "Start", labelSize, _font, buttonColor);
+            Button buttonSettings = new Button(buttonSettingsPosition, buttonSize, "Settings", labelSize, _font, buttonColor);
+            Button buttonExit = new Button(buttonExitPosition, buttonSize, "Exit", labelSize, _font, buttonColor);
+
+            menuTitle.Position = new Vector2f(_window.Size.X/3 - 100, _window.Size.Y/5);
+            menuTitle.FillColor = SFML.Graphics.Color.White;
+            copyrightNotice.Position = new Vector2f(_window.Size.X - 175, _window.Size.Y - 25);
             copyrightNotice.FillColor = SFML.Graphics.Color.White;
 
-            //default menu button size
-            Vector2f buttonSize = new Vector2f(_window.Size.X / 15, _window.Size.Y / 20);
 
-            buttonStart.Size = buttonSize;
-            buttonSettings.Size = buttonSize;
-            buttonExit.Size = buttonSize;
+            _window.Draw(menuTitle);
+            _window.Draw(copyrightNotice);
 
-            buttonStart.Position = new Vector2f(30, 30);
-            buttonSettings.Position = new Vector2f(100, 30);
-            buttonExit.Position = new Vector2f(150, 30);
-
-            _window.Draw(buttonStart);
-            _window.Draw(buttonSettings);
-            _window.Draw(buttonExit);
+            buttonStart.Draw(_window);
+            buttonSettings.Draw(_window);
+            buttonExit.Draw(_window);
 
             //============ Menu buttons event listeners ============
 
             //============ Menu loop ============
             _window.KeyPressed += Window_KeyPressed;
+            _window.MouseButtonPressed += Window_MousePressed;
 
             while (_window.IsOpen)
             {
@@ -236,10 +228,30 @@ namespace MarbleSorterGame
                     SettingsMenu();
                     break;
                 case Menu.Game:
-                    SettingsMenu();
+                    GameMenu();
                     break;
             }
         }
 
+        /// <summary>
+        /// Function called when a key is pressed
+        /// </summary>
+        private void Window_KeyPressed(object sender, SFML.Window.KeyEventArgs e)
+        {
+            var window = (SFML.Window.Window)sender;
+
+            if (e.Code == SFML.Window.Keyboard.Key.Escape)
+            {
+                window.Close();
+            }
+        }
+
+        /// <summary>
+        /// Function called when mouse key is pressed
+        /// </summary>
+        private void Window_MousePressed(object sender, SFML.Window.MouseButtonEventArgs mouse)
+        {
+            Console.Write(mouse.X + " " + mouse.Y);
+        }
     }
 }

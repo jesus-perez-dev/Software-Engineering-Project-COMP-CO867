@@ -14,24 +14,29 @@ namespace MarbleSorterGame
 
         public AssetBundleLoader(String assetDirectoryPath)
         {
+            this.assetDirectoryPath = assetDirectoryPath;
+
             try
             {
 
                 //SFML.Audio.Music music = new Music(assetDirectoryPath + "/BackgroundMusic");
 
-                Sound BucketDropSuccess = new Sound(new SoundBuffer(this.assetDirectoryPath + "/BucketDropSuccess.ogg"));
-                Sound BucketDropFail = new Sound(new SoundBuffer(this.assetDirectoryPath + "/BucketDropFail.ogg"));
-                Sound SensorActivate = new Sound(new SoundBuffer(this.assetDirectoryPath + "/SensorActivate.ogg"));
+                //Sound BucketDropSuccess = new Sound(new SoundBuffer(this.assetDirectoryPath + "/BucketDropSuccess.ogg"));
+                //Sound BucketDropFail = new Sound(new SoundBuffer(this.assetDirectoryPath + "/BucketDropFail.ogg"));
+                //Sound SensorActivate = new Sound(new SoundBuffer(this.assetDirectoryPath + "/SensorActivate.ogg"));
 
-                Texture SensorTexture = new Texture(this.assetDirectoryPath + "/Sensor.png");
-                Texture BucketTexture = new Texture(this.assetDirectoryPath + "/Bucket.png");
-                Texture MarbleRedTexture = new Texture(this.assetDirectoryPath + "/MarbleRed.png");
-                Texture MarbleGreenTexture = new Texture(this.assetDirectoryPath + "/MarbleGreen.png");
-                Texture MarbleBlueTexture = new Texture(this.assetDirectoryPath + "/MarbleBlue.png");
+                Texture SensorTexture = new Texture(this.assetDirectoryPath + "sensor.jpg");
+                Texture BucketTexture = new Texture(this.assetDirectoryPath + "bucket.png");
+                /**
+                 * marble textures do not load, do not know why
+                Texture MarbleRedTexture = new Texture(this.assetDirectoryPath + "marble_red_texture.jpg");
+                Texture MarbleGreenTexture = new Texture(this.assetDirectoryPath + "marble_green_texture.jpg");
+                Texture MarbleBlueTexture = new Texture(this.assetDirectoryPath + "marble_blue_texture.jpg");
+                */
 
-                this.BucketDropSuccess = BucketDropSuccess;
-                this.BucketDropFail = BucketDropFail;
-                this.SensorActivate = SensorActivate;
+                //this.BucketDropSuccess = BucketDropSuccess;
+                //this.BucketDropFail = BucketDropFail;
+                //this.SensorActivate = SensorActivate;
 
                 this.SensorTexture = SensorTexture;
                 this.BucketTexture = BucketTexture;
@@ -39,9 +44,9 @@ namespace MarbleSorterGame
                 this.MarbleGreenTexture = MarbleGreenTexture;
                 this.MarbleBlueTexture = MarbleBlueTexture;
             }
-            catch (FileNotFoundException e)
+            catch (SFML.System.LoadingFailedException e)
             {
-                //add exception
+                Console.Write(e.Message);
             }
         }
 

@@ -14,8 +14,16 @@ namespace MarbleSorterGame
 
             Console.WriteLine("==========DEMO============");
             Console.WriteLine("Press ESC key to close window");
+            //========= TRAPDOOR/SENSOR DEMO =============/
+            /**
             var window = new SimpleWindow();
             window.Run();
+            */
+            //========= MARBLE SORTER GAME DEMO ============/
+            AssetBundleLoader assetBundle = new AssetBundleLoader("assets/");
+            MarbleSorter marbleSorterGame = new MarbleSorter(assetBundle);
+
+            marbleSorterGame.Run();
 
             Console.WriteLine("All done");
         }
