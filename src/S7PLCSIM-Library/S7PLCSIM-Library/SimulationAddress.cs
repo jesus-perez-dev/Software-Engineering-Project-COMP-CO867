@@ -22,6 +22,12 @@ namespace S7PLCSIM_Library
 
         /// Number of bits taken up by primitive type 'type'
         public uint Size { get; }
+        
+        /// Bit offset where this address object begins in memory
+        public uint StartBit { get; }
+        
+        /// Bit offset where this address object ends in memory
+        public uint EndBit { get; }
 
         /// Human friendly name to reference to IO address
         public string Name { get; }
@@ -146,6 +152,9 @@ namespace S7PLCSIM_Library
                         $"Invalid primitive data type for simulation address: {DataTypeName} = {DataType}");
             }
 
+            StartBit = byteOffset * 8 + bitOffset;
+            EndBit = StartBit + Size;
+            
             // TODO: Throw an exception bitOffset > 0 when dataType != EPrimitiveDataType.Bool
             if (dataType != EPrimitiveDataType.Bool && bitOffset > 0)
             {
