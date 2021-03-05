@@ -7,7 +7,10 @@ namespace MarbleSorterGame
 {
     public class Marble : GameEntity
     {
+        private Sprite _marble;
+        private CircleShape _marbleShape;
         private Texture _texture;
+
         public float Radius;
         public Color Color;
         public Weight Weight;
@@ -19,16 +22,36 @@ namespace MarbleSorterGame
             //add enum.isDefined for more strict type check? color/weight must be < 3
             this.Color = color;
             this.Weight = weight;
+
+            _marbleShape = new CircleShape(Radius);
         }
 
-        public void Render(Window RenderWindow)
+        public void Render(RenderWindow window)
         {
-            RenderWindow.Display();
+            window.Draw(_marble);
         }
 
-        public void Load()
+        public void Load(IAssetBundle bundle)
         {
+            switch (this.Color)
+            {
+                case Color.Red:
+                    _texture = bundle.MarbleRedTexture;
+                    break;
 
+                case Color.Blue:
+                    _texture = bundle.MarbleBlueTexture;
+                    break;
+
+                case Color.Green:
+                    _texture = bundle.MarbleGreenTexture;
+                    break;
+            }
+
+            //update marble textures so they look circular
+            _marble.TextureRect = new IntRect(0, 0, 100, 100);
+            //_texture.Update();
+            _marble.Texture = _texture;
         }
     }
 }
