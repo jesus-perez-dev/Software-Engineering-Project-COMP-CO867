@@ -9,6 +9,7 @@
 - [Week 5](https://docs.google.com/document/d/1s3A7vs2OxB2ki8MsTWbvB6ozeJ3-b-dGQ9aWXbjnK-E/edit)
 - [Week 6](https://docs.google.com/document/d/1iVwBf7KjlZZGkVE0UFWhsMh8WuOHuuaHW-1C1nDhwWU/edit)
 - [Week 7](https://docs.google.com/document/d/1q0o22EhVuszdzWEYvtETTQM7dJ_gScA-ooHX_th0Zgc/edit)
+- [Week 8](https://docs.google.com/document/d/15qvdh_JKfM2kN3GdJ8TzIJSJgygollJU0yXbYG1P5yo/edit)
 
 **Project Documents**
 
