@@ -41,6 +41,8 @@ namespace MarbleSorterGame
             _windowTitle = "PLC Training Simulator - Marble Sorter Game";
             _windowStyles = Styles.Default;
             _window = new RenderWindow(_videoMode, _windowTitle, _windowStyles);
+            _window.Clear(SFML.Graphics.Color.White);
+
             //set framerate to monitor refresh rate (if graphics driver allows) or hardcode to 60
             //_window.SetVerticalSyncEnabled(true);
             _window.SetFramerateLimit(60);
@@ -117,33 +119,32 @@ namespace MarbleSorterGame
             //default menu button size
             Vector2f buttonSize = new Vector2f(menu.Size.X / 7, menu.Size.Y / 11);
             var buttonColor = SFML.Graphics.Color.Black;
-            var labelSize = 20;
+            int menuTitleSize = 30;
+            int menuButtonSize = 15;
 
             //button/text positions
             var buttonStartPosition = new Vector2f(menu.Size.X / 3, menu.Size.Y - 200);
             var buttonSettingsPosition = new Vector2f(menu.Size.X / 2, menu.Size.Y - 200);
             var buttonExitPosition = new Vector2f(menu.Size.X / 3f * 2, menu.Size.Y - 200);
-            var menuTitlePosition = new Vector2f(menu.Size.X / 3 - 100, menu.Size.Y / 5);
+            var menuTitlePosition = new Vector2f(menu.Size.X / 2, menu.Size.Y / 5);
+            var copyrightPosition = new Vector2f(menu.Size.X - 100, menu.Size.Y - 20);
 
-            Text menuTitle = new Text("Marble Sorter Game", _font, 50);
-            Text copyrightNotice = new Text("Copyright 2021 - Mohawk College", _font, 10);
+            var menuTitle = new Label("Marble Sorter Game", menuTitlePosition, menuTitleSize, SFML.Graphics.Color.Red, _font);
+            var copyright= new Label("Copyright 2021 - Mohawk College", copyrightPosition, 10, SFML.Graphics.Color.White, _font);
 
-            Button buttonStart = new Button(buttonStartPosition, buttonSize, "Start", labelSize, _font, buttonColor);
-            Button buttonSettings = new Button(buttonSettingsPosition, buttonSize, "Settings", labelSize, _font, buttonColor);
-            Button buttonExit = new Button(buttonExitPosition, buttonSize, "Exit", labelSize, _font, buttonColor);
+            var buttonStartLabel = new Label("Start", null, menuButtonSize, SFML.Graphics.Color.Black, _font);
+            var buttonSettingsLabel = new Label("Settings", null, menuButtonSize, SFML.Graphics.Color.Black, _font);
+            var buttonExitLabel = new Label("Exit", null, menuButtonSize, SFML.Graphics.Color.Black, _font);
 
-            menuTitle.Position = new Vector2f(menu.Size.X/3 - 100, menu.Size.Y/5);
-            menuTitle.FillColor = SFML.Graphics.Color.White;
-            copyrightNotice.Position = new Vector2f(menu.Size.X - 175, menu.Size.Y - 25);
-            copyrightNotice.FillColor = SFML.Graphics.Color.White;
-
-
-            menu.Draw(menuTitle);
-            menu.Draw(copyrightNotice);
+            Button buttonStart = new Button(buttonStartPosition, buttonSize, buttonStartLabel);
+            Button buttonSettings = new Button(buttonSettingsPosition, buttonSize, buttonSettingsLabel);
+            Button buttonExit = new Button(buttonExitPosition, buttonSize, buttonExitLabel);
 
             buttonStart.Draw(menu);
             buttonSettings.Draw(menu);
             buttonExit.Draw(menu);
+            menuTitle.Draw(menu);
+            copyright.Draw(menu);
 
             //============ Menu buttons event handlers ============
             EventHandler<SFML.Window.MouseButtonEventArgs> Game_MousePressed = (Object sender, SFML.Window.MouseButtonEventArgs mouse) =>
@@ -182,15 +183,17 @@ namespace MarbleSorterGame
             var buttonBackPosition = new Vector2f(170, 50);
 
             //============ Settings Menu buttons/text ============
-            Button buttonSoundIncrease = new Button(buttonSoundIncreasePosition, buttonSize, "Volume +", labelSize, _font, labelColor);
-            Button buttonSoundDecrease = new Button(buttonSoundIncreasePosition, buttonSize, "Volume -", labelSize, _font, labelColor);
-            Button buttonResolution = new Button(buttonResolutionPosition, buttonSize, "Fullscreen", labelSize, _font, labelColor);
-            Button buttonBack = new Button(buttonBackPosition, buttonSize, "Back", labelSize, _font, labelColor);
+            /**
+            var buttonSoundIncrease = new Button(buttonSoundIncreasePosition, buttonSize, "Volume +");
+            var buttonSoundDecrease = new Button(buttonSoundIncreasePosition, buttonSize, "Volume -");
+            var buttonResolution = new Button(buttonResolutionPosition, buttonSize, "Fullscreen");
+            var buttonBack = new Button(buttonBackPosition, buttonSize, "Back");
 
             buttonSoundIncrease.Draw(menu);
             buttonSoundDecrease.Draw(menu);
             buttonResolution.Draw(menu);
             buttonBack.Draw(menu);
+            */
 
         }
 
@@ -212,9 +215,13 @@ namespace MarbleSorterGame
             var marbleActivePosition = new Vector2f(0, menu.Size.Y / 2 );
 
             //============ Game Menu buttons/text ============
-            var buttonStartSimulation = new Button(buttonStartSimulationPosition, buttonSize, "Start", labelSize, _font, labelColor);
-            var buttonBack = new Button(buttonBackPosition, buttonSize, "Back", labelSize, _font, labelColor);
-            var buttonReset= new Button(buttonResetPosition, buttonSize, "Reset", labelSize, _font, labelColor);
+            var buttonStartSimulationLabel = new Label("Start", null, 10, SFML.Graphics.Color.Black, _font);
+            var buttonBackLabel = new Label("Back", null, 10, SFML.Graphics.Color.Black, _font);
+            var buttonResetLabel = new Label("Reset", null, 10, SFML.Graphics.Color.Black, _font);
+
+            var buttonStartSimulation = new Button(buttonStartSimulationPosition, buttonSize, buttonStartSimulationLabel);
+            var buttonBack = new Button(buttonBackPosition, buttonSize, buttonBackLabel);
+            var buttonReset= new Button(buttonResetPosition, buttonSize, buttonResetLabel);
 
             Text instructions = new Text("sample instructions", _font, 25);
             Text labelBucketReq1 = new Text("Bucket 1 Requirements", _font);
@@ -232,7 +239,7 @@ namespace MarbleSorterGame
         private void switchMenu()
         {
             //HACK, will close window and make new one, eventhandlers need to be refreshed in a smoother way
-            _window.Clear();
+            _window.Clear(SFML.Graphics.Color.White);
             _window.Close();
             _window = new RenderWindow(_videoMode, _windowTitle, _windowStyles);
 
