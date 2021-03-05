@@ -11,6 +11,16 @@ namespace MarbleSorterGame
     public class AssetBundleLoader : IAssetBundle
     {
         private String assetDirectoryPath;
+        
+        public Sound BucketDropSuccess { get; set; }
+        public Sound BucketDropFail { get; set; }
+        public Texture BucketTexture { get; set; }
+        public Texture MarbleRedTexture { get; set; }
+        public Texture MarbleBlueTexture { get; set; }
+        public Texture MarbleGreenTexture { get; set; }
+        public Texture SensorTexture { get; set; }
+        public Sound SensorActivate { get; set; }
+        public MarbleGameConfiguration GameConfiguration { get; set; }
 
         public AssetBundleLoader(String assetDirectoryPath)
         {
@@ -25,8 +35,10 @@ namespace MarbleSorterGame
                 //Sound BucketDropFail = new Sound(new SoundBuffer(this.assetDirectoryPath + "/BucketDropFail.ogg"));
                 //Sound SensorActivate = new Sound(new SoundBuffer(this.assetDirectoryPath + "/SensorActivate.ogg"));
 
-                Texture SensorTexture = new Texture(this.assetDirectoryPath + "sensor.jpg");
-                Texture BucketTexture = new Texture(this.assetDirectoryPath + "bucket.png");
+                SensorTexture = new Texture(this.assetDirectoryPath + "sensor.jpg");
+                BucketTexture = new Texture(this.assetDirectoryPath + "bucket.png");
+                GameConfiguration = ConfigurationLoader.Load(this.assetDirectoryPath + "presets.json");
+                
                 /**
                  * marble textures do not load, do not know why
                 Texture MarbleRedTexture = new Texture(this.assetDirectoryPath + "marble_red_texture.jpg");
@@ -49,15 +61,5 @@ namespace MarbleSorterGame
                 Console.Write(e.Message);
             }
         }
-
-        public Sound BucketDropSuccess { get; set; }
-        public Sound BucketDropFail { get; set; }
-        public Texture BucketTexture { get; set; }
-        public Texture MarbleRedTexture { get; set; }
-        public Texture MarbleBlueTexture { get; set; }
-        public Texture MarbleGreenTexture { get; set; }
-        public Texture SensorTexture { get; set; }
-        public Sound SensorActivate { get; set; }
-
     }
 }
