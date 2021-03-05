@@ -5,7 +5,7 @@ namespace MarbleSorterGame
 {
     public class Trapdoor : GameEntity
     {
-        private Texture _texture;
+        //private Texture _texture;
         public bool Open;
 
         public Trapdoor()
@@ -34,7 +34,6 @@ namespace MarbleSorterGame
         public void Load(IAssetBundle bundle)
         {
             //trapdoor should be just line
-
         }
     }
 }

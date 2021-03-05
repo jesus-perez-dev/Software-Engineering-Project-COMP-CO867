@@ -89,13 +89,18 @@ public class Button
 	/// <returns></returns>
 	public bool IsPressed(int X, int Y)
     {
-		FloatRect buttonBounds = _button.GetLocalBounds();
+		FloatRect buttonBounds = _button.GetGlobalBounds();
 		if (
 			X > buttonBounds.Left && X < buttonBounds.Left + buttonBounds.Width &&
-			Y > buttonBounds.Top && X < buttonBounds.Top + buttonBounds.Height)
+			Y > buttonBounds.Top && Y < buttonBounds.Top + buttonBounds.Height)
         {
 			return true;
         }
+
+		Console.WriteLine("LEFT: " + buttonBounds.Left);
+		Console.WriteLine("RIGHT: " + (buttonBounds.Left + buttonBounds.Width));
+		Console.WriteLine("TOP: " + buttonBounds.Top);
+		Console.WriteLine("BOTTOM: " + (buttonBounds.Top + buttonBounds.Height));
 		return false;
     }
 
