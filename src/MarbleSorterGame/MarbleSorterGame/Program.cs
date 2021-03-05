@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Timers;
 using System.Threading;
 using SFML.Graphics;
@@ -22,9 +23,13 @@ namespace MarbleSorterGame
             //========= MARBLE SORTER GAME DEMO ============/
             AssetBundleLoader assetBundle = new AssetBundleLoader("assets/");
             MarbleSorter marbleSorterGame = new MarbleSorter(assetBundle);
-
+            
+            // Print game configuration loaded from JSON files
+            // foreach (var preset in assetBundle.GameConfiguration.Presets)
+            //    Console.WriteLine(preset.ToString());
+            
             marbleSorterGame.Run();
-
+            
             Console.WriteLine("All done");
         }
 
