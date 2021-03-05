@@ -34,11 +34,33 @@ namespace S7PLCSIM_Library
             _addresses.Add(name, address);
         }
 
+        private bool Overlaps(T address, out T? overlapper)
+        {
+            overlapper = null;
+            
+            foreach (var existing in _addresses.Values)
+            {
+                if (address.StartBit >= existing.StartBit &&
+                    address.StartBit <= existing.EndBit)
+                {
+                    overlapper = existing;
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         public void Add(string name, uint byteOffset, byte bitOffset, EPrimitiveDataType dataType)
         {
             var address = (T?)Activator.CreateInstance(typeof(T), name, byteOffset, bitOffset, dataType, _instance);
+            
             if (address == null)
                 throw new S7PlcSimLibraryException($"Unable to initialize address of type: {typeof(T).FullName}");
+            
+            if (Overlaps(address, out T? overlapper))
+                throw new S7PlcSimLibraryException($"New address \"{name}\" overlaps previously registered address in simulation memory: \"{overlapper?.Name}\"");
+            
             Add(name, address);
         }
         
