@@ -32,5 +32,33 @@ namespace S7PLCSIM_Library
         {
             return Enum.GetName(typeof(EPrimitiveDataType), t) ?? "(Unknown Type)";
         }
+
+        public static byte ToBitSize(this EPrimitiveDataType t)
+        {
+            switch (t)
+            {
+                case EPrimitiveDataType.Bool:
+                    return 1;
+                case EPrimitiveDataType.Char:
+                case EPrimitiveDataType.Int8:
+                case EPrimitiveDataType.UInt8:
+                    return 8;
+                case EPrimitiveDataType.Int16:
+                case EPrimitiveDataType.UInt16:
+                case EPrimitiveDataType.WChar:
+                    return 16;
+                case EPrimitiveDataType.UInt32:
+                case EPrimitiveDataType.Int32:
+                case EPrimitiveDataType.Float:
+                    return 32;
+                case EPrimitiveDataType.Double:
+                case EPrimitiveDataType.Int64:
+                case EPrimitiveDataType.UInt64:
+                    return 64;
+                default:
+                    throw new ArgumentException(
+                        $"Invalid primitive data type for simulation address: {t.ToHumanString()} = {t}");
+            }
+        }
     }
 }

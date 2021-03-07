@@ -35,7 +35,7 @@ namespace S7PLCSIM_Library
 
         // If bit size is unspecified, use default bit size associated with dataType. eg UInt32 will have BitSize = 32
         public SimulationAddress(string name, uint byteOffset, byte bitOffset, EPrimitiveDataType dataType, IInstance instance) 
-            : this(name, byteOffset, bitOffset, DataTypeToBitSize(dataType), dataType, instance) { }
+            : this(name, byteOffset, bitOffset, dataType.ToBitSize(), dataType, instance) { }
 
         public SimulationAddress(string name, uint byteOffset, byte bitOffset, byte bitSize, EPrimitiveDataType dataType, IInstance instance)
         {
@@ -108,33 +108,6 @@ namespace S7PLCSIM_Library
             }
         }
         
-        private static byte DataTypeToBitSize(EPrimitiveDataType dataType)
-        {
-            switch (dataType)
-            {
-                case EPrimitiveDataType.Bool:
-                    return 1;
-                case EPrimitiveDataType.Char:
-                case EPrimitiveDataType.Int8:
-                case EPrimitiveDataType.UInt8:
-                    return 8;
-                case EPrimitiveDataType.Int16:
-                case EPrimitiveDataType.UInt16:
-                case EPrimitiveDataType.WChar:
-                    return 16;
-                case EPrimitiveDataType.UInt32:
-                case EPrimitiveDataType.Int32:
-                case EPrimitiveDataType.Float:
-                    return 32;
-                case EPrimitiveDataType.Double:
-                case EPrimitiveDataType.Int64:
-                case EPrimitiveDataType.UInt64:
-                    return 64;
-                default:
-                    throw new ArgumentException(
-                        $"Invalid primitive data type for simulation address: {dataType.ToHumanString()} = {dataType}");
-            }
-        }
         public override string ToString() => $"{ByteOffset}.{BitOffset}, Bits={BitSize}, Type={DataType.ToHumanString()} ({DataType})";
     }
 }
