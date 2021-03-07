@@ -1,3 +1,4 @@
+using System;
 using Siemens.Simatic.Simulation.Runtime;
 
 namespace S7PLCSIM_Library
@@ -25,6 +26,11 @@ namespace S7PLCSIM_Library
                     $"Type = {value.Type}",
                 }
             );
+        }
+
+        public static string ToHumanString(this EPrimitiveDataType t)
+        {
+            return Enum.GetName(typeof(EPrimitiveDataType), t) ?? "(Unknown Type)";
         }
     }
 }
