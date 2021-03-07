@@ -40,8 +40,17 @@ namespace S7PLCSIM_Library
             
             foreach (var existing in _addresses.Values)
             {
-                if (address.StartBit >= existing.StartBit &&
-                    address.StartBit < existing.EndBit)
+                // Address start bit lies between existing address
+                bool startBitBetween =
+                    (address.StartBit >= existing.StartBit) &&
+                    (address.StartBit <= existing.EndBit);
+
+                // Address end bit lies between existing address
+                bool endBitBetween =
+                    (address.EndBit >= existing.StartBit) &&
+                    (address.EndBit <= existing.EndBit);
+
+                if (startBitBetween || endBitBetween)
                 {
                     overlapper = existing;
                     return true;
