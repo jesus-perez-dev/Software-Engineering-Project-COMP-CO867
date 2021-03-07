@@ -10,11 +10,11 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Assets Include="assets/**"/>
+        <Assets Include="assets/**" />
     </ItemGroup>
 
     <Target Name="PostBuild" AfterTargets="AfterBuild">
-        <Copy SourceFiles="@(Assets)"  DestinationFolder="$(OutDir)\assets\" SkipUnchangedFiles="true" />
+        <Copy SourceFiles="@(Assets)" DestinationFolder="$(OutDir)\assets\" SkipUnchangedFiles="true" />
     </Target>
     
 </Project>
