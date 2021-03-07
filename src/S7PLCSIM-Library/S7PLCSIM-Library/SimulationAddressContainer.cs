@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using Siemens.Simatic.Simulation.Runtime;
 
 namespace S7PLCSIM_Library
@@ -27,10 +28,17 @@ namespace S7PLCSIM_Library
             _addresses.Remove(name);
         }
 
-        private void Add(string name, T address)
+        private void Add(string name, T? address)
         {
+            if (address == null)
+                throw new S7PlcSimLibraryException($"Unable to initialize address of type: {typeof(T).FullName}");
+            
+            if (Overlaps(address, out T? overlapper))
+                throw new S7PlcSimLibraryException($"New address \"{name}\" overlaps previously registered address in simulation memory: \"{overlapper?.Name}\"");
+            
             if (_addresses.ContainsKey(name))
                 throw new S7PlcSimLibraryException($"Cannot add address \"{name}\": Address was previously added.");
+            
             _addresses.Add(name, address);
         }
 
@@ -59,17 +67,11 @@ namespace S7PLCSIM_Library
 
             return false;
         }
-
-        public void Add(string name, uint byteOffset, byte bitOffset, EPrimitiveDataType dataType)
+        
+        public void Add(string name, uint byteOffset, byte bitOffset, EPrimitiveDataType dataType, byte bitSize = 0)
         {
-            var address = (T?)Activator.CreateInstance(typeof(T), name, byteOffset, bitOffset, dataType, _instance);
-            
-            if (address == null)
-                throw new S7PlcSimLibraryException($"Unable to initialize address of type: {typeof(T).FullName}");
-            
-            if (Overlaps(address, out T? overlapper))
-                throw new S7PlcSimLibraryException($"New address \"{name}\" overlaps previously registered address in simulation memory: \"{overlapper?.Name}\"");
-            
+            bitSize = bitSize == 0 ? dataType.ToBitSize() : bitSize; // Use bitsize from datatype by default
+            var address = (T?)Activator.CreateInstance(typeof(T), name, byteOffset, bitOffset, bitSize, dataType, _instance);
             Add(name, address);
         }
         
