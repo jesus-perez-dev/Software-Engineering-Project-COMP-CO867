@@ -33,7 +33,7 @@ namespace MarbleSorterGame
             _assets = assetBundle;
 
             _activeMenu = Menu.Main;
-            _font = new Font("Assets/OpenSans-Regular.ttf");
+            _font = new Font("assets/OpenSans-Regular.ttf");
 
             //========= creating window ===========
             //if decide on fullscreen mode, will have to figure out new way to place entites other than hardcoding coordinates
