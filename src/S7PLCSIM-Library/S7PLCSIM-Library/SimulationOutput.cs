@@ -5,25 +5,17 @@ namespace S7PLCSIM_Library
 {
     public class SimulationOutput : SimulationAddress
     {
-        public SimulationOutput(string name, uint byteOffset, byte bitOffset, EPrimitiveDataType dataType, IInstance instance) : base(name, byteOffset, bitOffset, dataType, instance)
-        {
-        }
-    
+        public SimulationOutput(string name, uint byteOffset, byte bitOffset, byte bitSize, EPrimitiveDataType dataType, IInstance instance) 
+            : base(name, byteOffset, bitOffset, bitSize, dataType, instance) { }
+
+        private SDataValue _value;
+        public SDataValue Value => _value;
+
         public SDataValue Read()
         {
-            SDataValue value = new SDataValue();
-            if (DataType == EPrimitiveDataType.Bool)
-            {
-                value.Bool = Instance.OutputArea.ReadBit(ByteOffset, BitOffset);
-            }
-            else
-            {
-                byte[] bytes = Instance.OutputArea.ReadBytes(ByteOffset, BitOffset);
-                value = BytesToValue(bytes);
-            }
-            // Record last-read value and return it
-            Value = value;
-            return value;
+            byte[] bytes = Instance.OutputArea.ReadBytes(ByteOffset, ByteSize);
+            _value.UInt64 = ShiftRead(bytes, BitOffset, BitSize);
+            return _value;
         }
         
         public override string ToString() => $"%Q{base.ToString()}";

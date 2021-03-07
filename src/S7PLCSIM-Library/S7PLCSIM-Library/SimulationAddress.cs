@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using Siemens.Simatic.Simulation.Runtime;
 
 namespace S7PLCSIM_Library
@@ -11,9 +12,6 @@ namespace S7PLCSIM_Library
         /// Data type at address
         public EPrimitiveDataType DataType { get; }
 
-        /// String version of DataType - Helps with error messages
-        protected string DataTypeName { get; }
-
         /// Byte value in Q{Byte}.{Bit}
         public uint ByteOffset { get; }
 
@@ -21,20 +19,73 @@ namespace S7PLCSIM_Library
         public byte BitOffset { get; }
 
         /// Number of bits taken up by primitive type 'type'
-        public uint Size { get; }
+        public byte BitSize { get; }
         
         /// Bit offset where this address object begins in memory
-        public uint StartBit { get; }
-        
+        public uint StartBit => ByteOffset * 8 + BitOffset;
+
         /// Bit offset where this address object ends in memory
-        public uint EndBit { get; }
+        public uint EndBit => StartBit + BitSize - 1;
+        
+        /// Minimum number of bytes to read from simulation memory to retrieve full value
+        public uint ByteSize => ((StartBit + BitSize - 1) / 8) + 1;
 
         /// Human friendly name to reference to IO address
         public string Name { get; }
 
-        /// Current value of IO address
-        public SDataValue Value { get; protected set; }
+        // If bit size is unspecified, use default bit size associated with dataType. eg UInt32 will have BitSize = 32
+        public SimulationAddress(string name, uint byteOffset, byte bitOffset, EPrimitiveDataType dataType, IInstance instance) 
+            : this(name, byteOffset, bitOffset, dataType.ToBitSize(), dataType, instance) { }
+
+        public SimulationAddress(string name, uint byteOffset, byte bitOffset, byte bitSize, EPrimitiveDataType dataType, IInstance instance)
+        {
+            Instance = instance;
+            Name = name;
+            ByteOffset = byteOffset;
+            BitOffset = bitOffset;
+            DataType = dataType;
+            BitSize = bitSize;
+            
+            if (bitOffset > 7)
+                throw new ArgumentException($"Invalid Bit Offset specified - Bit offset must be between 0-7. Given Bit Offset = {bitOffset}");
+            
+            if (bitSize > 64)
+                throw new ArgumentException($"Invalid Bit Size specified - Bit size must not exceed 64 bits. Given Bit Size = {bitSize}");
+
+            if (dataType == EPrimitiveDataType.Unspecific || dataType == EPrimitiveDataType.Struct)
+                throw new ArgumentException($"Invalid Data Type - The following data types are unsupported: {EPrimitiveDataType.Unspecific.ToHumanString()}, {EPrimitiveDataType.Struct.ToHumanString()}");
+        }
         
+        
+        /// <summary>
+        /// Write the bits of `value` overtop bits of `input` starting at `bitOffset` until `bitSize`
+        /// </summary>
+        protected static byte[] ShiftWrite(byte[] inputBytes, ulong value, byte bitOffset, byte bitSize)
+        {
+            var inputBitArray = new BitArray(inputBytes);
+            var valueBitArray = new BitArray(BitConverter.GetBytes(value));
+            for (int i = bitOffset, j = 0; i < bitOffset+bitSize; i++, j++)
+                inputBitArray.Set(i, valueBitArray[j]);
+            // 8 bytes + 1 extra byte for bit offset. Eg. write Int64 to %I0.2 -> Reads 9 bytes from simulation
+            byte[] outputBytes = new byte[9];
+            inputBitArray.CopyTo(outputBytes, 0);
+            return outputBytes;
+        }
+
+        /// <summary>
+        /// Extract a ulong value from input array, interpreting the value from binary as starting at `bitCount` and ranging until `bitOffset`
+        /// </summary>
+        protected static ulong ShiftRead(byte[] inputBytes, byte bitOffset, byte bitSize)
+        {
+            var inputBitArray = new BitArray(inputBytes);
+            var outputBitArray = new BitArray(bitSize);
+            for (int i=bitOffset, j = 0; i < bitOffset + bitSize; i++, j++)
+                outputBitArray.Set(j, inputBitArray[i]);
+            byte[] outputBytes = new byte[8];
+            outputBitArray.CopyTo(outputBytes, 0);
+            return BitConverter.ToUInt64(outputBytes);
+        }
+
         protected byte[] ValueToBytes(SDataValue value)
         {
             switch (DataType)
@@ -54,114 +105,10 @@ namespace S7PLCSIM_Library
                 case EPrimitiveDataType.WChar: return BitConverter.GetBytes(value.WChar);
                 default:
                     throw new ArgumentException(
-                        $"Cannot convert data type to byte array: {DataTypeName} = {DataType}");
+                        $"Cannot convert data type to byte array: {DataType.ToHumanString()} = {DataType}");
             }
         }
-
-        protected SDataValue BytesToValue(byte[] bytes)
-        {
-            SDataValue value = new SDataValue();
-
-            // TODO: Confirm `BitConverter` does the right thing WRT endianness compared to the simulator
-            switch (DataType)
-            {
-                case EPrimitiveDataType.Bool:
-                    value.Bool = BitConverter.ToBoolean(bytes);
-                    break;
-                case EPrimitiveDataType.Char:
-                    value.Char = (sbyte) bytes[0];
-                    break;
-                case EPrimitiveDataType.Double:
-                    value.Double = BitConverter.ToDouble(bytes);
-                    break;
-                case EPrimitiveDataType.Float:
-                    value.Float = BitConverter.ToSingle(bytes);
-                    break;
-                case EPrimitiveDataType.Int8:
-                    value.Int8 = (sbyte) bytes[0];
-                    break;
-                case EPrimitiveDataType.Int16:
-                    value.Int16 = BitConverter.ToInt16(bytes);
-                    break;
-                case EPrimitiveDataType.Int32:
-                    value.Int32 = BitConverter.ToInt32(bytes);
-                    break;
-                case EPrimitiveDataType.Int64:
-                    value.Int64 = BitConverter.ToInt64(bytes);
-                    break;
-                case EPrimitiveDataType.UInt8:
-                    value.UInt8 = bytes[0];
-                    break;
-                case EPrimitiveDataType.UInt16:
-                    value.UInt16 = BitConverter.ToUInt16(bytes);
-                    break;
-                case EPrimitiveDataType.UInt32:
-                    value.UInt32 = BitConverter.ToUInt32(bytes);
-                    break;
-                case EPrimitiveDataType.UInt64:
-                    value.UInt64 = BitConverter.ToUInt64(bytes);
-                    break;
-                case EPrimitiveDataType.WChar:
-                    value.WChar = BitConverter.ToChar(bytes);
-                    break;
-                default:
-                    throw new ArgumentException(
-                        $"Cannot convert byte array to desired Type: {DataTypeName} = {DataType}, Bytes = {{{string.Join(",", bytes)}}}");
-            }
-
-            return value;
-        }
-
-        // Note: Types 'EPrimitiveDataType.Struct' and 'EPrimitiveDataType.Unspecific' not supported
-        public SimulationAddress(string name, uint byteOffset, byte bitOffset, EPrimitiveDataType dataType, IInstance instance)
-        {
-            Instance = instance;
-            Name = name;
-            ByteOffset = byteOffset;
-            BitOffset = bitOffset;
-            DataType = dataType;
-            DataTypeName = Enum.GetName(typeof(EPrimitiveDataType), dataType);
-
-            switch (dataType)
-            {
-                case EPrimitiveDataType.Bool:
-                    Size = 1;
-                    break;
-                case EPrimitiveDataType.Char:
-                case EPrimitiveDataType.Int8:
-                case EPrimitiveDataType.UInt8:
-                    Size = 8;
-                    break;
-                case EPrimitiveDataType.Int16:
-                case EPrimitiveDataType.UInt16:
-                case EPrimitiveDataType.WChar:
-                    Size = 16;
-                    break;
-                case EPrimitiveDataType.UInt32:
-                case EPrimitiveDataType.Int32:
-                case EPrimitiveDataType.Float:
-                    Size = 32;
-                    break;
-                case EPrimitiveDataType.Double:
-                case EPrimitiveDataType.Int64:
-                case EPrimitiveDataType.UInt64:
-                    Size = 64;
-                    break;
-                default:
-                    throw new ArgumentException(
-                        $"Invalid primitive data type for simulation address: {DataTypeName} = {DataType}");
-            }
-
-            StartBit = byteOffset * 8 + bitOffset;
-            EndBit = StartBit + Size;
-            
-            // TODO: Throw an exception bitOffset > 0 when dataType != EPrimitiveDataType.Bool
-            if (dataType != EPrimitiveDataType.Bool && bitOffset > 0)
-            {
-                throw new ArgumentException(
-                    @$"Using non-zero bit offset for data types other than ""Bool"" is unsupported. Data-Type = {DataTypeName} = {DataType}, Bit-Offset = {BitOffset}");
-            }
-        }
-        public override string ToString() => $"{ByteOffset}.{BitOffset}, Bits={Size}, Type={DataTypeName} ({DataType})";
+        
+        public override string ToString() => $"{ByteOffset}.{BitOffset}, Bits={BitSize}, Type={DataType.ToHumanString()} ({DataType})";
     }
 }
