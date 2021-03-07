@@ -6,8 +6,8 @@ namespace S7PLCSIM_Library
 {
     public class SimulationInput : SimulationAddress
     {
-        public SimulationInput(string name, uint byteOffset, byte bitOffset, EPrimitiveDataType dataType, IInstance instance) 
-            : base(name, byteOffset, bitOffset, dataType, instance) { }
+        public SimulationInput(string name, uint byteOffset, byte bitOffset, byte bitSize, EPrimitiveDataType dataType, IInstance instance) 
+            : base(name, byteOffset, bitOffset, bitSize, dataType, instance) { }
 
         private SDataValue _value;
         public SDataValue Value => _value;
