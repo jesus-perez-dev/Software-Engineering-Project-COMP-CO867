@@ -235,7 +235,7 @@ namespace S7PLCSIM_Tool
         {
             // TODO: How do we set appropriate SDataValue fields based on address value type?
             // Should we have a generic extension method somewhere?
-            client.IAddress[name].Write(new SDataValue() { UInt8 = byte.Parse(value)});
+            client.IAddress[name].Write(new SDataValue() { UInt64 = ulong.Parse(value)});
         }
 
         private static void CommandCreate(SimulationClient client, string name, string location, string type)
