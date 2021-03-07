@@ -66,7 +66,8 @@ namespace S7PLCSIM_Library
             var valueBitArray = new BitArray(BitConverter.GetBytes(value));
             for (int i = bitOffset, j = 0; i < bitOffset+bitSize; i++, j++)
                 inputBitArray.Set(i, valueBitArray[j]);
-            byte[] outputBytes = new byte[8];
+            // 8 bytes + 1 extra byte for bit offset. Eg. write Int64 to %I0.2 -> Reads 9 bytes from simulation
+            byte[] outputBytes = new byte[9];
             inputBitArray.CopyTo(outputBytes, 0);
             return outputBytes;
         }
