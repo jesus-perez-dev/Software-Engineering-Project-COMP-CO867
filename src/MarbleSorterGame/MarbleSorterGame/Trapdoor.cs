@@ -10,8 +10,12 @@ namespace MarbleSorterGame
         public bool Open { get; private set; }
         public float RotationAngle { get; set; }
 
+        /// <summary>
+        /// Rotatable part of the conveyer belt that drops marbles onto buckets below
+        /// </summary>
         public Trapdoor()
         {
+            _trapdoor = new RectangleShape();
             _trapdoor.Size = Dimensions;
             _trapdoor.Position = Position;
 
@@ -19,6 +23,10 @@ namespace MarbleSorterGame
             this.Open = false;
         }
 
+        /// <summary>
+        /// Rotates trapdoor at an angle
+        /// </summary>
+        /// <param name="angleChange"></param>
         public void Rotate(float angleChange)
         {
             this.RotationAngle += angleChange;

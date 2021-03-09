@@ -59,7 +59,7 @@ namespace MarbleSorterGame
             window.Draw(conveyor);
             instructions.Draw(window);
 
-            Marble marbleRed = new Marble(15, Color.Red, Weight.Large);
+            Marble marbleRed = new Marble(Color.Red, Weight.Large);
 
             marbleRed.Dimensions = new Vector2f(30, 30);
             marbleRed.Position = new Vector2f(50, 200);

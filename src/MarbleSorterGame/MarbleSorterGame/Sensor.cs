@@ -7,9 +7,9 @@ namespace MarbleSorterGame
     public abstract class Sensor : GameEntity
     {
         private Sprite _sensorSprite;
-        private SoundBuffer _sensorActivateBuffer;
         private Sound _sensorActivate;
 
+        //make enum?
         public String SensorType;
 
         public Sensor()
@@ -22,22 +22,32 @@ namespace MarbleSorterGame
             //write to PLC
         }
 
-        public void Render(RenderWindow window)
+
+        /// <summary>
+        /// Plays sensor activation sound
+        /// </summary>
+        public void playActivateSound()
+        {
+            _sensorActivate.Play();
+        }
+
+        /// <summary>
+        /// Draws sensor onto render target window
+        /// </summary>
+        /// <param name="window"></param>
+        public new void Render(RenderWindow window)
         {
             window.Draw(_sensorSprite);
         }
-        public void Load(IAssetBundle bundle)
+
+        /// <summary>
+        /// extracts sensor assets from assets bundle
+        /// </summary>
+        /// <param name="bundle"></param>
+        public new void Load(IAssetBundle bundle)
         {
             _sensorSprite.Texture = bundle.SensorTexture;
-            //_sensorActivateBuffer = bundle.SensorActivateBuffer;
-        }
-
-        public void PlayAudio()
-        {
-            //if activates
-            //multiple sounds can be stored in the same buffer, option could be to pass in the buffer
-            _sensorActivate.SoundBuffer = _sensorActivateBuffer;
-            _sensorActivate.Play();
+            _sensorActivate = bundle.SensorActivate;
         }
 
         public event EventHandler SenseCallback;

@@ -19,9 +19,13 @@ namespace MarbleSorterGame
         public float RotationAngle { get; set; }
         public Vector2f Velocity { get; set; }
 
-        public Marble(float radius, Color color, Weight weight)
+        /// <summary>
+        /// Marble that rolls across the conveyer, contains data about color and weight that needs to be dropped in the right buckets
+        /// </summary>
+        /// <param name="color">Color of marble</param>
+        /// <param name="weight">Weight of marble</param>
+        public Marble(Color color, Weight weight)
         {
-            this.Radius = radius;
             this.Color = color;
             this.Weight = weight;
             this.RotationAngle = 0f;
@@ -57,7 +61,7 @@ namespace MarbleSorterGame
         /// Draws marble onto render target RenderWindow
         /// </summary>
         /// <param name="window">RenderWindow for marble to be drawn onto</param>
-        public void Render(RenderWindow window)
+        public new void Render(RenderWindow window)
         {
             window.Draw(_marble);
         }
@@ -66,7 +70,7 @@ namespace MarbleSorterGame
         /// Extracts marble texture from bundle from chosen color and scales it correctly to marble dimension
         /// </summary>
         /// <param name="bundle"></param>
-        public void Load(IAssetBundle bundle)
+        public new void Load(IAssetBundle bundle)
         {
             switch (this.Color)
             {
