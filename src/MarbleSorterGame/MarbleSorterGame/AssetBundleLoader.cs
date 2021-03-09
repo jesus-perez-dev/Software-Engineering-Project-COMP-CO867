@@ -12,6 +12,7 @@ namespace MarbleSorterGame
     {
         private String assetDirectoryPath;
         
+        public Sound BucketDrop { get; set; }
         public Sound BucketDropSuccess { get; set; }
         public Sound BucketDropFail { get; set; }
         public Texture BucketTexture { get; set; }
@@ -19,6 +20,8 @@ namespace MarbleSorterGame
         public Texture MarbleBlueTexture { get; set; }
         public Texture MarbleGreenTexture { get; set; }
         public Texture SensorTexture { get; set; }
+        public Texture SensorSignalOffTexture { get; set; }
+        public Texture SensorSignalOnTexture { get; set; }
         public Sound SensorActivate { get; set; }
         public MarbleGameConfiguration GameConfiguration { get; set; }
 
@@ -28,28 +31,22 @@ namespace MarbleSorterGame
 
             try
             {
-                //Sound BucketDropSuccess = new Sound(new SoundBuffer(this.assetDirectoryPath + "/BucketDropSuccess.ogg"));
-                //Sound BucketDropFail = new Sound(new SoundBuffer(this.assetDirectoryPath + "/BucketDropFail.ogg"));
-                //Sound SensorActivate = new Sound(new SoundBuffer(this.assetDirectoryPath + "/SensorActivate.ogg"));
-
-                SensorTexture = new Texture(this.assetDirectoryPath + "sensor.jpg");
-                BucketTexture = new Texture(this.assetDirectoryPath + "bucket.png");
                 GameConfiguration = ConfigurationLoader.Load(this.assetDirectoryPath + "presets.json");
+
+                this.BucketDrop = new Sound(new SoundBuffer(this.assetDirectoryPath + "/bucketDrop.ogg"));
+                this.BucketDropSuccess = new Sound(new SoundBuffer(this.assetDirectoryPath + "/bucketDropSuccess.ogg"));
+                this.BucketDropFail = new Sound(new SoundBuffer(this.assetDirectoryPath + "/bucketDropFail.ogg"));
+                this.SensorActivate = new Sound(new SoundBuffer(this.assetDirectoryPath + "/SensorActivate.ogg"));
+
+                this.SensorTexture = new Texture(this.assetDirectoryPath + "sensor.jpg");
+                this.SensorSignalOffTexture = new Texture(this.assetDirectoryPath + "sensorSignalOff1.png");
+                this.SensorSignalOnTexture = new Texture(this.assetDirectoryPath + "sensorSignalOn1.png");
+                this.BucketTexture = new Texture(this.assetDirectoryPath + "bucket.png");
                 
-                Texture MarbleRedTexture = new Texture(this.assetDirectoryPath + "marbleRed.png");
-                Texture MarbleBlueTexture = new Texture(this.assetDirectoryPath + "marbleBlue.png");
-                Texture MarbleGreenTexture = new Texture(this.assetDirectoryPath + "marbleGreen.png");
+                this.MarbleRedTexture = new Texture(this.assetDirectoryPath + "marbleRed.png");
+                this.MarbleBlueTexture = new Texture(this.assetDirectoryPath + "marbleBlue.png");
+                this.MarbleGreenTexture = new Texture(this.assetDirectoryPath + "marbleGreen.png");
 
-                //this.BucketDropSuccess = BucketDropSuccess;
-                //this.BucketDropFail = BucketDropFail;
-                //this.SensorActivate = SensorActivate;
-
-                this.SensorTexture = SensorTexture;
-                this.BucketTexture = BucketTexture;
-
-                this.MarbleRedTexture = MarbleRedTexture;
-                this.MarbleBlueTexture = MarbleBlueTexture;
-                this.MarbleGreenTexture = MarbleGreenTexture;
             }
             catch (SFML.System.LoadingFailedException e)
             {

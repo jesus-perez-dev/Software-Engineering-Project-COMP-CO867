@@ -71,8 +71,8 @@ namespace MarbleSorterGame
             Trapdoor trapdoor3 = new Trapdoor();
             var trapdoors = new List<Trapdoor>() { trapdoor1, trapdoor2, trapdoor3 };
 
-            Marble marbleRedCorrect = new Marble(15, Color.Red, Weight.Large);
-            Marble marbleRedIncorrect = new Marble(15, Color.Red, Weight.Small);
+            Marble marbleRedCorrect = new Marble(Color.Red, Weight.Large);
+            Marble marbleRedIncorrect = new Marble(Color.Red, Weight.Small);
             var marbles = new List<Marble>() { marbleRedCorrect, marbleRedIncorrect } ;
 
             var bucketSignal1= new CircleShape();
