@@ -23,9 +23,6 @@ namespace MarbleSorterGame
         private Styles _windowStyles;
         private Menu _activeMenu;
 
-        //have in assets loader?
-        private static Font _font;
-
         //add parameter SimulationClient client when library implemented
         public MarbleSorter(IAssetBundle assetBundle)
         {
@@ -33,7 +30,6 @@ namespace MarbleSorterGame
             _assets = assetBundle;
 
             _activeMenu = Menu.Main;
-            _font = new Font("assets/OpenSans-Regular.ttf");
 
             //========= creating window ===========
             //if decide on fullscreen mode, will have to figure out new way to place entites other than hardcoding coordinates
@@ -129,12 +125,12 @@ namespace MarbleSorterGame
             var menuTitlePosition = new Vector2f(menu.Size.X / 2, menu.Size.Y / 5);
             var copyrightPosition = new Vector2f(menu.Size.X - 100, menu.Size.Y - 20);
 
-            var menuTitle = new Label("Marble Sorter Game", menuTitlePosition, menuTitleSize, SFML.Graphics.Color.Red, _font);
-            var copyright= new Label("Copyright 2021 - Mohawk College", copyrightPosition, 10, SFML.Graphics.Color.White, _font);
+            var menuTitle = new Label("Marble Sorter Game", menuTitlePosition, menuTitleSize, SFML.Graphics.Color.Red, _assets.Font);
+            var copyright= new Label("Copyright 2021 - Mohawk College", copyrightPosition, 10, SFML.Graphics.Color.White, _assets.Font);
 
-            var buttonStartLabel = new Label("Start", null, menuButtonSize, SFML.Graphics.Color.Black, _font);
-            var buttonSettingsLabel = new Label("Settings", null, menuButtonSize, SFML.Graphics.Color.Black, _font);
-            var buttonExitLabel = new Label("Exit", null, menuButtonSize, SFML.Graphics.Color.Black, _font);
+            var buttonStartLabel = new Label("Start", null, menuButtonSize, SFML.Graphics.Color.Black, _assets.Font);
+            var buttonSettingsLabel = new Label("Settings", null, menuButtonSize, SFML.Graphics.Color.Black, _assets.Font);
+            var buttonExitLabel = new Label("Exit", null, menuButtonSize, SFML.Graphics.Color.Black, _assets.Font);
 
             Button buttonStart = new Button(buttonStartPosition, buttonSize, buttonStartLabel);
             Button buttonSettings = new Button(buttonSettingsPosition, buttonSize, buttonSettingsLabel);
@@ -215,18 +211,18 @@ namespace MarbleSorterGame
             var marbleActivePosition = new Vector2f(0, menu.Size.Y / 2 );
 
             //============ Game Menu buttons/text ============
-            var buttonStartSimulationLabel = new Label("Start", null, 10, SFML.Graphics.Color.Black, _font);
-            var buttonBackLabel = new Label("Back", null, 10, SFML.Graphics.Color.Black, _font);
-            var buttonResetLabel = new Label("Reset", null, 10, SFML.Graphics.Color.Black, _font);
+            var buttonStartSimulationLabel = new Label("Start", null, 10, SFML.Graphics.Color.Black, _assets.Font);
+            var buttonBackLabel = new Label("Back", null, 10, SFML.Graphics.Color.Black, _assets.Font);
+            var buttonResetLabel = new Label("Reset", null, 10, SFML.Graphics.Color.Black, _assets.Font);
 
             var buttonStartSimulation = new Button(buttonStartSimulationPosition, buttonSize, buttonStartSimulationLabel);
             var buttonBack = new Button(buttonBackPosition, buttonSize, buttonBackLabel);
             var buttonReset= new Button(buttonResetPosition, buttonSize, buttonResetLabel);
 
-            Text instructions = new Text("sample instructions", _font, 25);
-            Text labelBucketReq1 = new Text("Bucket 1 Requirements", _font);
-            Text labelBucketReq2 = new Text("Bucket 2 Requirements", _font);
-            Text labelBucketReq3 = new Text("Bucket 3 Requirements", _font);
+            Text instructions = new Text("sample instructions", _assets.Font, 25);
+            Text labelBucketReq1 = new Text("Bucket 1 Requirements", _assets.Font);
+            Text labelBucketReq2 = new Text("Bucket 2 Requirements", _assets.Font);
+            Text labelBucketReq3 = new Text("Bucket 3 Requirements", _assets.Font);
 
             //var sample = new Dictionary<GameEntity, Text>();
 

@@ -22,6 +22,8 @@ namespace MarbleSorterGame
         public Sound SensorActivate { get; set; }
         public MarbleGameConfiguration GameConfiguration { get; set; }
 
+        public Font Font { get; set; }
+
         public AssetBundleLoader(String assetDirectoryPath)
         {
             this.assetDirectoryPath = assetDirectoryPath;
@@ -35,6 +37,7 @@ namespace MarbleSorterGame
                 //Sound BucketDropFail = new Sound(new SoundBuffer(this.assetDirectoryPath + "/BucketDropFail.ogg"));
                 //Sound SensorActivate = new Sound(new SoundBuffer(this.assetDirectoryPath + "/SensorActivate.ogg"));
 
+                Font = new Font(assetDirectoryPath + "OpenSans-Regular.ttf");
                 SensorTexture = new Texture(this.assetDirectoryPath + "sensor.jpg");
                 BucketTexture = new Texture(this.assetDirectoryPath + "bucket.png");
                 GameConfiguration = ConfigurationLoader.Load(this.assetDirectoryPath + "presets.json");
