@@ -22,7 +22,6 @@ namespace MarbleSorterGame
             conveyor.Size = new Vector2f(1000, 0);
             conveyor.OutlineColor = SFML.Graphics.Color.Red;
             conveyor.OutlineThickness = 2f;
-            window.Draw(conveyor);
             
             //default menu button size
             Vector2f buttonSize = new Vector2f(window.Size.X / 7, window.Size.Y / 11);
@@ -55,9 +54,19 @@ namespace MarbleSorterGame
 
             //var sample = new Dictionary<GameEntity, Text>();
 
-            //=============== Setting Positions ===================
+            //=============== Drawing ===================
 
+            window.Draw(conveyor);
             instructions.Draw(window);
+
+            Marble marbleRed = new Marble(15, Color.Red, Weight.Large);
+
+            marbleRed.Dimensions = new Vector2f(30, 30);
+            marbleRed.Position = new Vector2f(50, 200);
+            AssetBundleLoader bundle = new AssetBundleLoader("assets/");
+            marbleRed.Load(bundle);
+
+            marbleRed.Render(window);
         }
 
     }
