@@ -12,25 +12,30 @@ namespace MarbleSorterGame
     {
         public static void Main(string[] args)
         {
+            //
+            // Console.WriteLine("==========DEMO============");
+            // Console.WriteLine("Press ESC key to close window");
+            // //========= TRAPDOOR/SENSOR DEMO =============/
+            // /**
+            // var window = new SimpleWindow();
+            // window.Run();
+            // */
+            // //========= MARBLE SORTER GAME DEMO ============/
+            // AssetBundleLoader assetBundle = new AssetBundleLoader("assets/");
+            // MarbleSorter marbleSorterGame = new MarbleSorter(assetBundle);
+            //
+            // // Print game configuration loaded from JSON files
+            // // foreach (var preset in assetBundle.GameConfiguration.Presets)
+            // //    Console.WriteLine(preset.ToString());
+            //
+            // marbleSorterGame.Run();
+            //
+            // Console.WriteLine("All done");
 
-            Console.WriteLine("==========DEMO============");
-            Console.WriteLine("Press ESC key to close window");
-            //========= TRAPDOOR/SENSOR DEMO =============/
-            /**
-            var window = new SimpleWindow();
-            window.Run();
-            */
-            //========= MARBLE SORTER GAME DEMO ============/
-            AssetBundleLoader assetBundle = new AssetBundleLoader("assets/");
-            MarbleSorter marbleSorterGame = new MarbleSorter(assetBundle);
             
-            // Print game configuration loaded from JSON files
-            // foreach (var preset in assetBundle.GameConfiguration.Presets)
-            //    Console.WriteLine(preset.ToString());
-            
-            marbleSorterGame.Run();
-            
-            Console.WriteLine("All done");
+            MarbleSorterGame msg = new MarbleSorterGame();
+            msg.Run();
+           
         }
 
     }
