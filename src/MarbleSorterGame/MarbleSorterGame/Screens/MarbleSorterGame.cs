@@ -5,6 +5,9 @@ using SFML.System;
 
 namespace MarbleSorterGame
 {
+    /// <summary>
+    /// The implementation of the abstract game loop 
+    /// </summary>
     public class MarbleSorterGame : GameLoop
     {
         public const uint DEFAULT_WINDOW_WIDTH = 800;
@@ -25,11 +28,18 @@ namespace MarbleSorterGame
         {
         }
 
+        /// <summary>
+        /// Loading of content
+        /// todo: add assets here?
+        /// </summary>
         public override void LoadContent()
         {
             _font = new Font("assets/OpenSans-Regular.ttf");
         }
 
+        /// <summary>
+        /// Initializing any objects the game will need
+        /// </summary>
         public override void Initialize()
         {
             //========= Game Menu Entities Requirements ===========
@@ -86,11 +96,18 @@ namespace MarbleSorterGame
             };
         }
 
+        /// <summary>
+        /// Update any data for the game
+        /// todo: copy draw method and have each of the screen classes handle data changes (eg, marbles moving)
+        /// </summary>
         public override void Update()
         {
             
         }
 
+        /// <summary>
+        /// Draw method for the game. Each of the screens call their draw method depending on the active menu
+        /// </summary>
         public override void Draw()
         {
             switch (ActiveMenu)
