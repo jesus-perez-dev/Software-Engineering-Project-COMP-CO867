@@ -20,5 +20,6 @@ namespace MarbleSorterGame
         public Texture SensorTexture { get; set; }
         public Sound SensorActivate { get; set; }
 
+        public Font Font { get; set;  }
     }
 }
