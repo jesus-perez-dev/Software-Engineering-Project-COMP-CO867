@@ -28,9 +28,6 @@ namespace MarbleSorterGame
 
             try
             {
-
-                //SFML.Audio.Music music = new Music(assetDirectoryPath + "/BackgroundMusic");
-
                 //Sound BucketDropSuccess = new Sound(new SoundBuffer(this.assetDirectoryPath + "/BucketDropSuccess.ogg"));
                 //Sound BucketDropFail = new Sound(new SoundBuffer(this.assetDirectoryPath + "/BucketDropFail.ogg"));
                 //Sound SensorActivate = new Sound(new SoundBuffer(this.assetDirectoryPath + "/SensorActivate.ogg"));
@@ -39,12 +36,9 @@ namespace MarbleSorterGame
                 BucketTexture = new Texture(this.assetDirectoryPath + "bucket.png");
                 GameConfiguration = ConfigurationLoader.Load(this.assetDirectoryPath + "presets.json");
                 
-                /**
-                 * marble textures do not load, do not know why
-                Texture MarbleRedTexture = new Texture(this.assetDirectoryPath + "marble_red_texture.jpg");
-                Texture MarbleGreenTexture = new Texture(this.assetDirectoryPath + "marble_green_texture.jpg");
-                Texture MarbleBlueTexture = new Texture(this.assetDirectoryPath + "marble_blue_texture.jpg");
-                */
+                Texture MarbleRedTexture = new Texture(this.assetDirectoryPath + "marbleRed.png");
+                Texture MarbleBlueTexture = new Texture(this.assetDirectoryPath + "marbleBlue.png");
+                Texture MarbleGreenTexture = new Texture(this.assetDirectoryPath + "marbleGreen.png");
 
                 //this.BucketDropSuccess = BucketDropSuccess;
                 //this.BucketDropFail = BucketDropFail;
@@ -52,9 +46,10 @@ namespace MarbleSorterGame
 
                 this.SensorTexture = SensorTexture;
                 this.BucketTexture = BucketTexture;
+
                 this.MarbleRedTexture = MarbleRedTexture;
-                this.MarbleGreenTexture = MarbleGreenTexture;
                 this.MarbleBlueTexture = MarbleBlueTexture;
+                this.MarbleGreenTexture = MarbleGreenTexture;
             }
             catch (SFML.System.LoadingFailedException e)
             {

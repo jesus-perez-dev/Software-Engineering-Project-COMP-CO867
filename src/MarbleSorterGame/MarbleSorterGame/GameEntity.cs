@@ -1,4 +1,5 @@
-﻿using SFML.Graphics;
+﻿using SFML.System;
+using SFML.Graphics;
 using System;
 
 namespace MarbleSorterGame
@@ -6,36 +7,42 @@ namespace MarbleSorterGame
     public class GameEntity
     {
         public String Name { get; set; }
-
-        public int X;
-        public int Y;
-        public int Width;
-        public int Height;
+        public Vector2f Dimensions { get; set; }
+        public Vector2f Position { get; set; }
 
         public GameEntity()
         {
 
         }
 
-        public void SetDimensions(int width, int height)
+        /// <summary>
+        /// Provides layout for basic game entity object
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="dimensions"></param>
+        /// <param name="position"></param>
+        public GameEntity(String name, Vector2f dimensions, Vector2f position)
         {
-            this.Width = width;
-            this.Height = height;
+            this.Name = name;
+            this.Dimensions = dimensions;
+            this.Position = position;
         }
 
-        public void SetPosition(int x, int y)
+        /// <summary>
+        /// Sets new position of gameentity based on current position and new position vector
+        /// </summary>
+        /// <param name="position">vector describing change in position</param>
+        public void UpdatePosition(Vector2f position)
         {
-            this.X = x;
-            this.Y = y;
+            this.Position = new Vector2f(this.Position.X + position.X, this.Position.Y + position.Y);
         }
 
-        public void setSpacial(int x, int y, int width, int height)
-        {
-            this.SetPosition(x, y);
-            this.SetDimensions(width, height);
-        }
-
-        public bool Overlaps(GameEntity entity)
+        /// <summary>
+        /// Checks to see whether colliding entity intersects with game entity
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns></returns>
+        public bool Overlaps(Shape entity)
         {
             //use .intersects and .getGlobalBounds (only for Shapes)
             return false;
@@ -47,12 +54,19 @@ namespace MarbleSorterGame
             return false;
         }
 
-        public void Render(RenderWindow window)
+        /// <summary>
+        /// Renders GameEntity object onto target window
+        /// </summary>
+        /// <param name="window">RenderWindow target</param>
+        public virtual void Render(RenderWindow window)
         {
-
         }
 
-        public void Load(IAssetBundle bundle)
+        /// <summary>
+        /// Loads assets bundle such as textures and sounds onto the game entity
+        /// </summary>
+        /// <param name="bundle"></param>
+        public virtual void Load(IAssetBundle bundle)
         {
 
         }
