@@ -4,8 +4,16 @@ using SFML.System;
 
 namespace MarbleSorterGame
 {
+    /// <summary>
+    /// The game itself
+    /// </summary>
     public class Game
     {
+        /// <summary>
+        /// Method that gets called when the screen is to be redrawn
+        /// </summary>
+        /// <param name="window"></param>
+        /// <param name="font"></param>
         public static void Draw(RenderWindow window, Font font)
         {
             //CONVEYOR
