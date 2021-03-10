@@ -14,6 +14,7 @@ namespace MarbleSorterGame
         // Perform all IO with the PLC Simulator in SenseCallback handler
         public event EventHandler SenseCallback;
         
+        public Sensor() { }
         protected Sensor(Vector2f position, Vector2f size) : base(position, size) {
         }
 
@@ -38,6 +39,7 @@ namespace MarbleSorterGame
         /// <param name="window"></param>
         public override void Render(RenderWindow window)
         {
+            _sensorSprite.Position = Position;
             window.Draw(_sensorSprite);
         }
 

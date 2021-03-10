@@ -18,10 +18,15 @@ namespace MarbleSorterGame
         {
             _trapdoor = new RectangleShape();
             _trapdoor.Size = Size;
-            _trapdoor.Position = Position;
+            _trapdoor.FillColor = SFML.Graphics.Color.Red;
+            _trapdoor.Position = position;
 
             this.RotationAngle = 0f;
             this.Open = false;
+        }
+
+        public Trapdoor()
+        {
         }
 
         /// <summary>

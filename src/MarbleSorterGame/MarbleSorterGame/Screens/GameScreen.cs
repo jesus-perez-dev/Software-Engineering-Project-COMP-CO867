@@ -30,26 +30,27 @@ namespace MarbleSorterGame
             };
 
             //================= Buttons ====================//
-            // Start Button
-            Button buttonStart = new Button(
+            Button buttonStart;
+            Button buttonReset;
+            Button buttonExit;
+
+            buttonStart = new Button(
                 "Start Simulation",
                 0.4f,
                 font,
                 sizer.Percent(60, 3),
                 sizer.Percent(13, 5)
             );
-            
-            // Reset Button
-            Button buttonReset = new Button(
+
+            buttonReset = new Button(
                 "Reset Game",
                 0.4f,
                 font,
                 sizer.Percent(75, 3),
                 sizer.Percent(13, 5)
                 );
-            
-            // Exit Button
-            Button buttonExit = new Button(
+
+            buttonExit = new Button(
                 "Exit Game",
                 0.4f,
                 font,
@@ -58,6 +59,7 @@ namespace MarbleSorterGame
             );
 
             //================= Game Entities ====================//
+
             String instructionsText = "Use the Input/Output Addresses shown below to create a working PLC for the marble sorter, \nbased on the requirements on the buckets below.";
             Label instructions = new Label(
                 instructionsText,
@@ -68,47 +70,46 @@ namespace MarbleSorterGame
 
             //instructions.Draw(window);
 
-            // Conveyer Belt Lines
             Conveyor conveyor1 = new Conveyor(
                 sizer.Percent(0, 60),
-                sizer.Percent(0, 100),
+                sizer.Percent(100, 1),
                 new Vector2f(1, 0)
                 );
 
             Trapdoor trapdoor1 = new Trapdoor(
-                sizer.Percent(30, 60),
-                sizer.Percent(5, 1)
+                sizer.Percent(27, 60),
+                sizer.Percent(6, 1)
                 );
 
             Trapdoor trapdoor2 = new Trapdoor(
-                sizer.Percent(50, 60),
-                sizer.Percent(5, 1)
+                sizer.Percent(51, 60),
+                sizer.Percent(6, 1)
                 );
 
             Trapdoor trapdoor3 = new Trapdoor(
-                sizer.Percent(70, 60),
-                sizer.Percent(5, 1)
+                sizer.Percent(76, 60),
+                sizer.Percent(6, 1)
                 );
 
             Bucket bucket1 = new Bucket(
-                sizer.Percent(20, 80),
-                sizer.Percent(5, 10),
+                sizer.Percent(25, 80),
+                sizer.Percent(10, 20),
                 Color.Red,
                 Weight.Large,
                 20
                 );
 
             Bucket bucket2 = new Bucket(
-                sizer.Percent(45, 80),
-                sizer.Percent(5, 10),
+                sizer.Percent(50, 80),
+                sizer.Percent(10, 20),
                 Color.Red,
                 Weight.Large,
                 20
                 );
 
             Bucket bucket3 = new Bucket(
-                sizer.Percent(65, 80),
-                sizer.Percent(5, 10),
+                sizer.Percent(75, 80),
+                sizer.Percent(10, 20),
                 Color.Red,
                 Weight.Large,
                 20
@@ -116,7 +117,7 @@ namespace MarbleSorterGame
 
             Gate gateEntrance = new Gate(
                 sizer.Percent(13, 50),
-                sizer.Percent(2, 7)
+                sizer.Percent(1, 7)
                 );
 
             PressureSensor startSensorPressure = new PressureSensor(
@@ -135,7 +136,7 @@ namespace MarbleSorterGame
                 );
 
             MotionSensor sensorMotionBucket1 = new MotionSensor(
-                sizer.Percent(20, 100),
+                sizer.Percent(25, 100),
                 sizer.Percent(0, 0)
                 );
 
@@ -149,13 +150,62 @@ namespace MarbleSorterGame
                 sizer.Percent(0, 0)
                 );
 
-            // Game Instructions
-            //Text instructions = QuickShape.Label("sample instructions", sizer.Percent(0,0), font, SFML.Graphics.Color.Black);
+            Vector2f signalSize = sizer.Percent(3, 8);
+            SignalLight gateOpen = new SignalLight(
+                sizer.Percent(10, 20),
+                signalSize
+                );
             
-            _drawables = new Drawable[]
-            {
-                menuBarBackground,
-            };
+            SignalLight gateClosed = new SignalLight(
+                sizer.Percent(gateOpen.Position.X + signalSize.X, gateOpen.Position.Y),
+                signalSize
+                );
+
+            SignalLight conveyerOn = new SignalLight(
+                sizer.Percent(15, 80),
+                signalSize
+                );
+
+            SignalLight bucketDropped = new SignalLight(
+                sizer.Percent(50, 80),
+                signalSize
+                );
+
+            SignalLight trapdoorOpen1 = new SignalLight(
+                new Vector2f(trapdoor1.Position.X, trapdoor1.Position.Y - 20),
+                signalSize
+                );
+
+            SignalLight trapdoorClosed1 = new SignalLight(
+                new Vector2f (trapdoorOpen1.Position.X + signalSize.X, trapdoorOpen1.Position.Y),
+                signalSize
+                );
+
+            SignalLight trapdoorOpen2 = new SignalLight(
+                new Vector2f(trapdoor2.Position.X, trapdoor2.Position.Y - 20),
+                signalSize
+                );
+
+            SignalLight trapdoorClosed2 = new SignalLight(
+                new Vector2f(trapdoor2.Position.X + signalSize.X, trapdoorOpen2.Position.Y),
+                signalSize
+                );
+
+            SignalLight trapdoorOpen3 = new SignalLight(
+                new Vector2f(trapdoor3.Position.X, trapdoor3.Position.Y - 20),
+                signalSize
+                );
+
+            SignalLight trapdoorClosed3 = new SignalLight(
+                new Vector2f(trapdoorOpen3.Position.X + signalSize.X, trapdoorOpen3.Position.Y),
+                signalSize
+                );
+
+            SignalLight marblePassed = new SignalLight(
+                sizer.Percent(90, 70),
+                signalSize
+                );
+
 
             _entities = new GameEntity[]
             {
@@ -175,13 +225,32 @@ namespace MarbleSorterGame
                 endSensorMotion,
                 sensorMotionBucket1,
                 sensorMotionBucket2,
-                sensorMotionBucket3
+                sensorMotionBucket3,
+                gateOpen,
+                gateClosed,
+                conveyerOn,
+                bucketDropped,
+                trapdoorOpen1,
+                trapdoorClosed1,
+                trapdoorOpen2,
+                trapdoorClosed2,
+                trapdoorOpen3,
+                trapdoorClosed3,
+                marblePassed
             };
 
-            foreach (var entity in _entities) 
+            foreach (GameEntity entity in _entities)
             {
                 entity.Load(bundle);
+
             }
+            // Game Instructions
+            //Text instructions = QuickShape.Label("sample instructions", sizer.Percent(0,0), font, SFML.Graphics.Color.Black);
+            
+            _drawables = new Drawable[]
+            {
+                menuBarBackground,
+            };
 
         }
         

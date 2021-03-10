@@ -11,6 +11,10 @@ namespace MarbleSorterGame
     {
         Color Value;
 
+        public ColorSensor()
+        {
+        }
+
         public ColorSensor(Vector2f size, Vector2f position) : base(size, position)
         {
         }

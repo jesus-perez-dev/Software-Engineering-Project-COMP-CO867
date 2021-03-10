@@ -9,13 +9,20 @@ namespace MarbleSorterGame
         private RectangleShape _conveyor;
         private Vector2f _conveyorSpeed;
 
+        public Conveyor()
+        {
+
+        }
+
         public Conveyor(Vector2f position, Vector2f size, Vector2f conveyorSpeed) : base(position, size)
         {
-            _conveyorSpeed = conveyorSpeed;
             _conveyor = new RectangleShape(size);
-            _conveyor.Position = position;
+            _conveyorSpeed = conveyorSpeed;
 
             _conveyor.OutlineColor = SFML.Graphics.Color.Black;
+            _conveyor.FillColor = SFML.Graphics.Color.Black;
+
+            _conveyor.Position = position;
         }
 
         public override void Load(IAssetBundle bundle)

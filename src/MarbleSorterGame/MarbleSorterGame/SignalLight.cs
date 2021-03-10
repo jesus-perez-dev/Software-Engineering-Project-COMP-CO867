@@ -27,12 +27,17 @@ namespace MarbleSorterGame
 
             _signalLightOff.Scale = ScaleEntity(bundle.SensorSignalOffTexture);
             _signalLightOn.Scale = ScaleEntity(bundle.SensorSignalOnTexture);
+
+            _signalLightOff.Origin = CenterOrigin(bundle.SensorSignalOffTexture);
+            _signalLightOn.Origin = CenterOrigin(bundle.SensorSignalOnTexture);
         }
 
         public override void Render(RenderWindow window)
         {
             window.Draw(_signalLightOff);
 
+            _signalLightOn.Position = Position;
+            _signalLightOff.Position = Position;
             if (SignalState)
             {
                 window.Draw(_signalLightOn);

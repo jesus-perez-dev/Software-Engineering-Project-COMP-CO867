@@ -12,6 +12,11 @@ namespace MarbleSorterGame
     {
 
         private int _maxCapacity;
+
+        public MotionSensor()
+        {
+        }
+
         public MotionSensor(Vector2f position, Vector2f size): base(position, size)
         {
         }
