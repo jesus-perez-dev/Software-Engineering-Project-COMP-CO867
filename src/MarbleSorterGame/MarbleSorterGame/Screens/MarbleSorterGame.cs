@@ -60,6 +60,7 @@ namespace MarbleSorterGame
             bucketsReqColor.AddRange(new Color[3] { Color.Red, Color.Blue, Color.Green});
 
             //========= Game Menu Entities ===========
+            /**
             Sensor colorSensor = new ColorSensor();
             Sensor pressureSensor = new PressureSensor(new Vector2f(2, 5), new Vector2f(2,5));
             Sensor motionSensor = new MotionSensor();
@@ -69,8 +70,6 @@ namespace MarbleSorterGame
             Bucket bucket2 = new Bucket(bucketsReqColor[1], bucketsReqWeight[1], bucketsCapacity[1]);
             Bucket bucket3 = new Bucket(bucketsReqColor[2], bucketsReqWeight[2], bucketsCapacity[2]);
             var Buckets = new List<Bucket>() {bucket1, bucket2, bucket3};
-
-            /**
             Trapdoor trapdoor1 = new Trapdoor();
             Trapdoor trapdoor2 = new Trapdoor();
             Trapdoor trapdoor3 = new Trapdoor();
@@ -93,12 +92,6 @@ namespace MarbleSorterGame
 
             _entities = new List<GameEntity>()
             {
-                colorSensor,
-                pressureSensor,
-                motionSensor,
-                bucket1,
-                bucket2,
-                bucket3,
                 marbleRedCorrect,
             };
 
@@ -131,6 +124,8 @@ namespace MarbleSorterGame
         /// </summary>
         public override void Draw()
         {
+            GameScreen.Draw(Window, _font, _entities);
+            /**
             switch (ActiveMenu)
             {
                 case Menu.Main:
@@ -143,6 +138,7 @@ namespace MarbleSorterGame
                     GameScreen.Draw(Window, _font, _entities);
                     break;
             }
+            */
         }
         
     }

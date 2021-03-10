@@ -1,4 +1,5 @@
 ﻿using SFML.Graphics;
+using SFML.System;
 using System;
 
 namespace MarbleSorterGame
@@ -10,7 +11,7 @@ namespace MarbleSorterGame
     {
         Color Value;
 
-        public ColorSensor()
+        public ColorSensor(Vector2f position, Vector2f size) : base(position, size)
         {
         }
 

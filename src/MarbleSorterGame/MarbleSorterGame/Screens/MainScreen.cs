@@ -17,6 +17,7 @@ namespace MarbleSorterGame
         /// <param name="font"></param>
         public static void Draw(RenderWindow window, Font font)
         {
+            /**
             var sizer = new Sizer(window.Size.X,window.Size.Y);
             
             Text menuTitle = QuickShape.Label(
@@ -63,6 +64,7 @@ namespace MarbleSorterGame
             };
 
             window.MouseButtonPressed += Game_MousePressed;
+            */
         }
     }
 }

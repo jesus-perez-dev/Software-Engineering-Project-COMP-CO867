@@ -1,6 +1,7 @@
 ﻿using System;
 using SFML.Audio;
 using SFML.Graphics;
+using SFML.System;
 
 namespace MarbleSorterGame
 {
@@ -23,7 +24,7 @@ namespace MarbleSorterGame
         /// <param name="requiredColor"></param>
         /// <param name="requiredWeight"></param>
         /// <param name="capacity"></param>
-        public Bucket(Color requiredColor, Weight requiredWeight, int capacity)
+        public Bucket(Vector2f position, Vector2f size, Color requiredColor, Weight requiredWeight, int capacity) :  base (position, size)
         {
             this._requiredColor = requiredColor;
             this._requiredWeight = requiredWeight;
@@ -44,7 +45,7 @@ namespace MarbleSorterGame
         /// Draws the bucket onto render target RenderWindow
         /// </summary>
         /// <param name="window">RenderWindow for marble to be drawn onto</param>
-        public Override void Render(RenderWindow window)
+        public override void Render(RenderWindow window)
         {
             window.Draw(_bucket);
         }
@@ -53,7 +54,7 @@ namespace MarbleSorterGame
         /// Extracts bucket assets, such as texture and sound, from bundle
         /// </summary>
         /// <param name="bundle"></param>
-        public Override void Load(IAssetBundle bundle)
+        public override void Load(IAssetBundle bundle)
         {
             _bucketTexture = bundle.BucketTexture;
             _dropSound = bundle.BucketDrop;
