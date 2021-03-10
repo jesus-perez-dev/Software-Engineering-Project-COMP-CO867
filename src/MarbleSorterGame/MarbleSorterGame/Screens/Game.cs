@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using SFML.Graphics;
 using SFML.System;
 
@@ -14,8 +15,9 @@ namespace MarbleSorterGame
         /// </summary>
         /// <param name="window"></param>
         /// <param name="font"></param>
-        public static void Draw(RenderWindow window, Font font)
+        public static void Draw(RenderWindow window, Font font, List<GameEntity> entities)
         {
+            /**
             //CONVEYOR
             RectangleShape conveyor = new RectangleShape();
             conveyor.Position = new Vector2f(0, 350);
@@ -52,22 +54,10 @@ namespace MarbleSorterGame
             Text labelBucketReq2 = new Text("Bucket 2 Requirements", font);
             Text labelBucketReq3 = new Text("Bucket 3 Requirements", font);
 
-            //var sample = new Dictionary<GameEntity, Text>();
-
-            //=============== Drawing ===================
-
-            window.Draw(conveyor);
-            instructions.Draw(window);
-
-            Marble marbleRed = new Marble(Color.Red, Weight.Large);
-
-            marbleRed.Dimensions = new Vector2f(30, 30);
-            marbleRed.Position = new Vector2f(50, 200);
-            AssetBundleLoader bundle = new AssetBundleLoader("assets/");
-            marbleRed.Load(bundle);
-
-            marbleRed.Render(window);
+            */
+            foreach(GameEntity entity in entities){
+                entity.Render(window);
+            }
         }
-
     }
 }

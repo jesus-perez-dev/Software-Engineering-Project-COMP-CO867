@@ -35,7 +35,6 @@ namespace MarbleSorterGame
             _marbleShape.Position = Position;
 
             _marble = new Sprite();
-            //_marble.Origin = new Vector2f(Dimensions.X / 2f, Dimensions.Y / 2f);
         }
 
         /// <summary>
@@ -58,11 +57,20 @@ namespace MarbleSorterGame
         }
 
         /// <summary>
+        /// Moves marble in direction of current marble velocity vector
+        /// </summary>
+        public void Move()
+        {
+            Position = new Vector2f(Position.X + Velocity.X, Position.Y + Velocity.Y);
+        }
+
+        /// <summary>
         /// Draws marble onto render target RenderWindow
         /// </summary>
         /// <param name="window">RenderWindow for marble to be drawn onto</param>
-        public new void Render(RenderWindow window)
+        public override void Render(RenderWindow window)
         {
+            _marble.Position = Position;
             window.Draw(_marble);
         }
 
@@ -70,7 +78,7 @@ namespace MarbleSorterGame
         /// Extracts marble texture from bundle from chosen color and scales it correctly to marble dimension
         /// </summary>
         /// <param name="bundle"></param>
-        public new void Load(IAssetBundle bundle)
+        public override void Load(IAssetBundle bundle)
         {
             switch (this.Color)
             {
@@ -92,10 +100,11 @@ namespace MarbleSorterGame
             //_marble.TextureRect = new IntRect(0, 0, 100, 100);
             _texture.Smooth = true;
 
+            //center marble origin
+            _marble.Origin = new Vector2f(Position.X + (Dimensions.X / 2f), Position.Y + (Dimensions.Y / 2f));
+
             //scale texture to correct dimensions
-            Vector2u textureSize = _texture.Size;
-            Vector2f scaleRatio = new Vector2f(Dimensions.X / textureSize.X, Dimensions.Y / textureSize.Y);
-            _marble.Scale = scaleRatio;
+            _marble.Scale = ScaleEntity(_texture);
         }
     }
 }

@@ -59,6 +59,7 @@ namespace MarbleSorterGame
             _dropSound = bundle.BucketDrop;
 
             _bucket.Texture = _bucketTexture;
+            _bucket.Scale = ScaleEntity(_bucketTexture);
         }
     }
 }
