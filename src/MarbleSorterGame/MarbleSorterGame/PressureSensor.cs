@@ -1,6 +1,7 @@
 ﻿using SFML.Graphics;
 using SFML.System;
 using System;
+using SFML.System;
 
 namespace MarbleSorterGame
 {
@@ -13,20 +14,14 @@ namespace MarbleSorterGame
         }
 
 
-        //PLC logic here
-        public override void Sense(Marble m)
-        {
-            this.Value = m.Weight;
-        }
-        public override void Load(IAssetBundle bundle)
-        {
-            throw new NotImplementedException();
-        }
-
         public override void Render(RenderWindow window)
         {
             throw new NotImplementedException();
         }
 
+        public override void Load(IAssetBundle bundle)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

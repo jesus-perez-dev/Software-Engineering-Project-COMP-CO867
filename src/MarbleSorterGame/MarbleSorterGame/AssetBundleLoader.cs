@@ -48,10 +48,15 @@ namespace MarbleSorterGame
                 MarbleGreenTexture = new Texture(this.assetDirectoryPath + "marbleGreen.png");
                 MarbleBlueTexture = new Texture(this.assetDirectoryPath + "marbleBlue.png");
 
-                //this.BucketDropSuccess = BucketDropSuccess;
-                //this.BucketDropFail = BucketDropFail;
-                //this.SensorActivate = SensorActivate;
+                //BucketDropSuccess = BucketDropSuccess;
+                //BucketDropFail = BucketDropFail;
+                //SensorActivate = SensorActivate;
 
+                SensorTexture = SensorTexture;
+                BucketTexture = BucketTexture;
+                MarbleRedTexture = MarbleRedTexture;
+                MarbleGreenTexture = MarbleGreenTexture;
+                MarbleBlueTexture = MarbleBlueTexture;
             }
             catch (SFML.System.LoadingFailedException e)
             {

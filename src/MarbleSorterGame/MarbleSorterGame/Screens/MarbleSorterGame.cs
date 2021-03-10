@@ -13,6 +13,10 @@ namespace MarbleSorterGame
         public const string WINDOW_TITLE = "PLC Training Simulator - Marble Sorter Game";
         public const uint DEFAULT_WINDOW_WIDTH = 800;
         public const uint DEFAULT_WINDOW_HEIGHT = 600;
+        
+        public const string WINDOW_TITLE = "PLC Training Simulator - Marble Sorter Game";
+
+        private GameScreen _gameScreen;
 
         public static Menu ActiveMenu
         {
@@ -28,6 +32,9 @@ namespace MarbleSorterGame
 
         public MarbleSorterGame() : base(DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT, WINDOW_TITLE, SFML.Graphics.Color.White)
         {
+            //IAssetBundle
+            var loader = new AssetBundleLoader("assets/");
+            _gameScreen = new GameScreen(loader, Window.Size.X, Window.Size.Y);
             _velocityConveyer = new Vector2f(1, 0);
             _velocityGravity= new Vector2f(0, 1);
         }
@@ -60,12 +67,13 @@ namespace MarbleSorterGame
             bucketsReqColor.AddRange(new Color[3] { Color.Red, Color.Blue, Color.Green});
 
             //========= Game Menu Entities ===========
-            /**
-            Sensor colorSensor = new ColorSensor();
-            Sensor pressureSensor = new PressureSensor(new Vector2f(2, 5), new Vector2f(2,5));
-            Sensor motionSensor = new MotionSensor();
-            var sensors = new List<Sensor>() { colorSensor, pressureSensor, motionSensor };
+            //Sensor colorSensor = new ColorSensor();
+            //Sensor pressureSensor = new PressureSensor();
+            //Sensor motionSensor = new MotionSensor();
+            //var sensors = new List<Sensor>() { colorSensor, pressureSensor, motionSensor };
 
+
+            /*
             Bucket bucket1 = new Bucket(bucketsReqColor[0], bucketsReqWeight[0], bucketsCapacity[0]);
             Bucket bucket2 = new Bucket(bucketsReqColor[1], bucketsReqWeight[1], bucketsCapacity[1]);
             Bucket bucket3 = new Bucket(bucketsReqColor[2], bucketsReqWeight[2], bucketsCapacity[2]);
@@ -76,9 +84,10 @@ namespace MarbleSorterGame
             var trapdoors = new List<Trapdoor>() { trapdoor1, trapdoor2, trapdoor3 };
             */
 
-            Marble marbleRedCorrect = new Marble(new Vector2f(30, 30), new Vector2f(30,30),Color.Red, Weight.Large);
-            marbleRedCorrect.Velocity = _velocityConveyer;
-            //Marble marbleRedIncorrect = new Marble(Color.Red, Weight.Small, _velocityConveyer);
+            Marble marbleRedCorrect = new Marble(15, Color.Red, Weight.Large);
+            Marble marbleRedIncorrect = new Marble(15, Color.Red, Weight.Small);
+            var marbles = new List<Marble>() { marbleRedCorrect, marbleRedIncorrect } ;
+            */
 
             marbleRedCorrect.Position = new Vector2f(200f, 200f);
             marbleRedCorrect.Size = new Vector2f(50, 50);
@@ -92,7 +101,19 @@ namespace MarbleSorterGame
 
             _entities = new List<GameEntity>()
             {
+                /*
+                colorSensor,
+                pressureSensor,
+                motionSensor,
+                bucket1,
+                bucket2,
+                bucket3,
+                trapdoor1,
+                trapdoor2,
+                trapdoor3,
                 marbleRedCorrect,
+                marbleRedIncorrect
+                */
             };
 
             foreach(GameEntity entity in _entities)
@@ -124,18 +145,16 @@ namespace MarbleSorterGame
         /// </summary>
         public override void Draw()
         {
-            GameScreen.Draw(Window, _font, _entities);
-            /**
             switch (ActiveMenu)
             {
                 case Menu.Main:
-                    Main.Draw(Window, _font);
+                    MainScreen.Draw(Window, _font);
                     break;
                 case Menu.Settings:
-                    Settings.Draw(Window, _font);
+                    SettingsScreen.Draw(Window, _font);
                     break;
                 case Menu.Game:
-                    GameScreen.Draw(Window, _font, _entities);
+                    _gameScreen.Draw(Window, _font);
                     break;
             }
             */

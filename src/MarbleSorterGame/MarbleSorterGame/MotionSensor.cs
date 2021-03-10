@@ -2,6 +2,7 @@
 using SFML.Graphics;
 using SFML.System;
 using System;
+using SFML.System;
 
 namespace MarbleSorterGame
 {
@@ -12,14 +13,19 @@ namespace MarbleSorterGame
     {
         private int _maxCapacity;
 
-        public MotionSensor(Vector2f position, Vector2f size) : base(position, size)
+        private int _maxCapacity;
+        public MotionSensor(Vector2f position, Vector2f size): base(position, size)
         {
         }
 
-        //PLC logic here
-        public override void Sense(Marble m)
+        public override void Render(RenderWindow window)
         {
+            throw new NotImplementedException();
         }
 
+        public override void Load(IAssetBundle bundle)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

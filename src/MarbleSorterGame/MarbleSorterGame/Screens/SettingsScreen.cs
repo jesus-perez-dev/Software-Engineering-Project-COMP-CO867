@@ -7,7 +7,7 @@ namespace MarbleSorterGame
     /// <summary>
     /// The settings screen
     /// </summary>
-    public class Settings
+    public class SettingsScreen
     {
         /// <summary>
         /// Method that gets called when the screen is to be redrawn
