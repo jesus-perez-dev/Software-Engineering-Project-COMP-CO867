@@ -61,17 +61,30 @@ namespace MarbleSorterGame
                 sizer.Percent(13, 5)
             );
 
-            //================= Game Entities ====================//
+            //================= Labels ====================//
+            String instructionsText = "Use the Input/Output Addresses shown below to create a working \nPLC for the marble sorter, based on the requirements on the buckets below.";
 
-            String instructionsText = "Use the Input/Output Addresses shown below to create a working PLC for the marble sorter, \nbased on the requirements on the buckets below.";
             Label instructions = new Label(
                 instructionsText,
-                sizer.Percent(35, 3),
+                sizer.Percent(30, 3),
                 10,
                 SFML.Graphics.Color.Black,
                 font);
 
-            //instructions.Draw(window);
+            Label infobar = new Label(
+                instructionsText,
+                sizer.Percent(30, 3),
+                10,
+                SFML.Graphics.Color.Black,
+                font);
+
+
+            //================= Game Entities ====================//
+
+            Vector2f trapdoorSize = sizer.Percent(8, 1);
+            Vector2f gateEntranceSize = sizer.Percent(1, 9);
+            Vector2f signalSize = sizer.Percent(3, 8);
+            Vector2f sensorSize = new Vector2f(20, 20);
 
             Conveyor conveyor1 = new Conveyor(
                 sizer.Percent(0, 60),
@@ -79,7 +92,6 @@ namespace MarbleSorterGame
                 new Vector2f(1, 0)
                 );
 
-            Vector2f trapdoorSize = sizer.Percent(8, 1);
             Trapdoor trapdoor1 = new Trapdoor(
                 sizer.Percent(27, 60),
                 trapdoorSize
@@ -119,25 +131,24 @@ namespace MarbleSorterGame
                 20
                 );
 
-            Vector2f gateEntranceSize = sizer.Percent(1, 9);
             Gate gateEntrance = new Gate(
                 sizer.Percent(13, 52),
                 gateEntranceSize
                 );
 
             PressureSensor sensorPressureStart = new PressureSensor(
-                sizer.Percent(5, 55),
-                sizer.Percent(3, 3)
+                sizer.Percent(3, 55),
+                sensorSize
                 );
 
             ColorSensor sensorColorStart = new ColorSensor(
-                sizer.Percent(7, 55),
-                sizer.Percent(3, 3)
-                );
+                sizer.Percent(6, 55),
+                sensorSize
+                ) ;
 
             MotionSensor sensorMotionEnd = new MotionSensor(
-                sizer.Percent(20, 100),
-                sizer.Percent(0, 0)
+                sizer.Percent(94, 55),
+                sensorSize
                 );
 
             MotionSensor sensorMotionBucket1 = new MotionSensor(
@@ -155,29 +166,48 @@ namespace MarbleSorterGame
                 sizer.Percent(0, 0)
                 );
 
-            Vector2f signalSize = sizer.Percent(3, 8);
+            SignalLight signalColor1 = new SignalLight(
+                sizer.Percent(30, 20),
+                signalSize
+                );
+
+            SignalLight signalColor2 = new SignalLight(
+                new Vector2f(signalColor1.Position.X + signalSize.X, signalColor1.Position.Y),
+                signalSize
+                );
+
+            SignalLight signalPressure1 = new SignalLight(
+                new Vector2f(signalColor1.Position.X + 100, signalColor1.Position.Y),
+                signalSize
+                );
+
+            SignalLight signalMotion1 = new SignalLight(
+                sizer.Percent(95, 50),
+                signalSize
+                );
+
             SignalLight gateOpen = new SignalLight(
-                sizer.Percent(10, 20),
+                sizer.Percent(10, 40),
                 signalSize
                 );
             
             SignalLight gateClosed = new SignalLight(
-                sizer.Percent(gateOpen.Position.X + signalSize.X, gateOpen.Position.Y),
+                new Vector2f(gateOpen.Position.X + signalSize.X, gateOpen.Position.Y),
                 signalSize
                 );
 
             SignalLight conveyerOn = new SignalLight(
-                sizer.Percent(15, 80),
+                sizer.Percent(5, 75),
                 signalSize
                 );
 
             SignalLight bucketDropped = new SignalLight(
-                sizer.Percent(50, 80),
+                sizer.Percent(95, 90),
                 signalSize
                 );
 
             SignalLight trapdoorOpen1 = new SignalLight(
-                new Vector2f(trapdoor1.Position.X, trapdoor1.Position.Y - 20),
+                new Vector2f(trapdoor1.Position.X, trapdoor1.Position.Y - 60),
                 signalSize
                 );
 
@@ -187,7 +217,7 @@ namespace MarbleSorterGame
                 );
 
             SignalLight trapdoorOpen2 = new SignalLight(
-                new Vector2f(trapdoor2.Position.X, trapdoor2.Position.Y - 20),
+                new Vector2f(trapdoor2.Position.X, trapdoor2.Position.Y - 60),
                 signalSize
                 );
 
@@ -197,7 +227,7 @@ namespace MarbleSorterGame
                 );
 
             SignalLight trapdoorOpen3 = new SignalLight(
-                new Vector2f(trapdoor3.Position.X, trapdoor3.Position.Y - 20),
+                new Vector2f(trapdoor3.Position.X, trapdoor3.Position.Y - 60),
                 signalSize
                 );
 
@@ -205,12 +235,6 @@ namespace MarbleSorterGame
                 new Vector2f(trapdoorOpen3.Position.X + signalSize.X, trapdoorOpen3.Position.Y),
                 signalSize
                 );
-
-            SignalLight marblePassed = new SignalLight(
-                sizer.Percent(90, 70),
-                signalSize
-                );
-
 
             _entities = new GameEntity[]
             {
@@ -227,6 +251,9 @@ namespace MarbleSorterGame
                 gateEntrance,
                 sensorColorStart,
                 sensorPressureStart,
+                signalColor1,
+                signalColor2,
+                signalPressure1,
                 sensorMotionEnd,
                 sensorMotionBucket1,
                 sensorMotionBucket2,
@@ -241,7 +268,7 @@ namespace MarbleSorterGame
                 trapdoorClosed2,
                 trapdoorOpen3,
                 trapdoorClosed3,
-                marblePassed
+                signalMotion1
             };
 
             foreach (GameEntity entity in _entities)
@@ -252,6 +279,8 @@ namespace MarbleSorterGame
             _drawables = new Drawable[]
             {
                 menuBarBackground,
+                instructions,
+                infobar
             };
 
             //============ Mouse buttons event handlers ============

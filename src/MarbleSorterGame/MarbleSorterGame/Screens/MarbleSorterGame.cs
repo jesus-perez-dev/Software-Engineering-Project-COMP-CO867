@@ -34,6 +34,7 @@ namespace MarbleSorterGame
             _gameScreen = new GameScreen(Window, _bundle, Window.Size.X, Window.Size.Y);
             _mainScreen = new MainScreen(Window, _bundle, Window.Size.X, Window.Size.Y);
             _settingsScreen = new SettingsScreen(Window, _bundle, Window.Size.X, Window.Size.Y);
+            _entities = new List<GameEntity>();
 
             _velocityConveyer = new Vector2f(1, 0);
             _velocityGravity= new Vector2f(0, 1);
@@ -97,23 +98,6 @@ namespace MarbleSorterGame
             var bucketSignal3= new CircleShape();
             var bucketSignals = new List<CircleShape>() { bucketSignal1, bucketSignal2, bucketSignal3 };
 
-            _entities = new List<GameEntity>()
-            {
-                /*
-                colorSensor,
-                pressureSensor,
-                motionSensor,
-                bucket1,
-                bucket2,
-                bucket3,
-                trapdoor1,
-                trapdoor2,
-                trapdoor3,
-                marbleRedIncorrect
-                */
-                marbleRedCorrect,
-            };
-
             foreach(GameEntity entity in _entities)
             {
                 entity.Load(_bundle);
@@ -126,6 +110,13 @@ namespace MarbleSorterGame
         /// </summary>
         public override void Update()
         {
+            String infoText = String.Format(
+                "Conveyor speed: {0}\n" +
+                "Marbles ouput total: {1}\n" +
+                "Marbles passed: {2}\n" +
+                "#Correctly dropped Marbles: {3}\n" +
+                "#Incorrectly dropped Marbles: {4}\n",
+                "", "", "", "", "");
         }
 
         /// <summary>
