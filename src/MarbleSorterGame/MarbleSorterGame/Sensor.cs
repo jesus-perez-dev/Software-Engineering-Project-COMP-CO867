@@ -9,13 +9,12 @@ namespace MarbleSorterGame
     {
         private Sprite _sensorSprite;
         private Sound _sensorActivate;
-
-        //make enum?
-        public String SensorType;
-
-        protected Sensor(Vector2f position, Vector2f size) : base(position, size)
-        {
-        }
+        public string SensorType;
+        
+        // Perform all IO with the PLC Simulator in SenseCallback handler
+        public event EventHandler SenseCallback;
+        
+        protected Sensor(Vector2f position, Vector2f size) : base(position, size) { }
 
         //inherted members might also call override
         public virtual void Sense(Marble m)
@@ -50,8 +49,5 @@ namespace MarbleSorterGame
             _sensorSprite.Texture = bundle.SensorTexture;
             _sensorActivate = bundle.SensorActivate;
         }
-
-        public event EventHandler SenseCallback;
-        
     }
 }

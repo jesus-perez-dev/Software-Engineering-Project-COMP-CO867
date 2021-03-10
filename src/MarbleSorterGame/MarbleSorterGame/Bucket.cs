@@ -7,10 +7,9 @@ namespace MarbleSorterGame
 {
     public class Bucket : GameEntity
     {
-        private Sprite _bucket;
-        private Texture _bucketTexture;
-        private Sound _dropSound;
-
+        private Sprite _sprite;
+        private Sound _failSound;
+        private Sound _successSound;
         private Color _requiredColor;
         private Weight _requiredWeight;
 
@@ -25,6 +24,23 @@ namespace MarbleSorterGame
         /// <param name="requiredWeight"></param>
         /// <param name="capacity"></param>
         public Bucket(Vector2f position, Vector2f size, Color requiredColor, Weight requiredWeight, int capacity) :  base (position, size)
+        public Bucket(Color requiredColor, Weight requiredWeight, int capacity, Vector2f position, Vector2f size) 
+            : base(position, size)
+        {
+            _requiredColor = requiredColor;
+            _requiredWeight = requiredWeight;
+            Capacity = capacity;
+        }
+
+        public override void Render(RenderWindow window)
+        {
+            if (_sprite == null)
+                return;
+            
+            window.Draw(_sprite);
+        }
+
+        public override void Load(IAssetBundle bundle)
         {
             this._requiredColor = requiredColor;
             this._requiredWeight = requiredWeight;

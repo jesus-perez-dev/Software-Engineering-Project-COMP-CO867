@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Dynamic;
+using System.Runtime.CompilerServices;
 using SFML.System;
 using SFML.Graphics;
 using UtilityCentering;
@@ -7,6 +9,7 @@ using UtilityCentering;
 /// label is simply a centered text
 /// </summary>
 
+/*
 public class Label
 {
 	public Text Text { get; }
@@ -43,8 +46,22 @@ public class Label
 		Text.Position = _labelPosition;
 	}
 
+	public static Text Create(string displayString, Vector2f position, Font font, Color color)
+	{
+		return new Text
+		{
+			Position = position,
+			DisplayedString = displayString,
+			Font = font,
+			FillColor = color,
+		};
+		//text.Origin = text.CenterOrigin();
+		//return text;
+	}
+	
 	public void Draw(RenderWindow window)
     {
 		window.Draw(Text);
     }
 }
+*/

@@ -45,7 +45,10 @@ namespace MarbleSorterGame
 
         public override void Render(RenderWindow window)
         {
-            window.Draw(_trapdoor);
+            if (_sprite == null)
+                return;
+            
+            window.Draw(_sprite);
         }
 
         public override void Load(IAssetBundle bundle)
