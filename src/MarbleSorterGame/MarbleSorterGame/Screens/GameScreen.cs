@@ -5,26 +5,21 @@ using SFML.System;
 
 namespace MarbleSorterGame
 {
+    
+    
     /// <summary>
     /// The game itself
     /// </summary>
-    public class Game
+    public class GameScreen
     {
-
-        public Game()
-        {
-            
-        }
+        private Drawable[] _drawables = { };
+        private GameEntity[] _entities = { };
         
-        
-        /// <summary>
-        /// Method that gets called when the screen is to be redrawn
-        /// </summary>
-        /// <param name="window"></param>
-        /// <param name="font"></param>
-        public static void Draw(RenderWindow window, Font font)
+        // TODO: Pass a game configuration structure in here instead of width/height uints
+        public GameScreen(IAssetBundle bundle, uint screenWidth, uint screenHeight)
         {
-            Sizer sizer = new Sizer(window.Size.X, window.Size.Y);
+            Font font = bundle.Font;
+            Sizer sizer = new Sizer(screenWidth, screenHeight);
             
             // Menu bar background (slight gray recantgle behind buttons)
             RectangleShape menuBarBackground = new RectangleShape
@@ -62,10 +57,7 @@ namespace MarbleSorterGame
             );
             
             // Bucket #1
-
-            Bucket bucket1 = new Bucket();
-            
-            
+            //Bucket bucket1 = new Bucket();
             
             // Conveyer Belt Line
             RectangleShape conveyor = new RectangleShape();
@@ -73,27 +65,35 @@ namespace MarbleSorterGame
             conveyor.Size = sizer.Percent(100, 0);
             conveyor.OutlineColor = SFML.Graphics.Color.Black;
             conveyor.OutlineThickness = 2f;
-            window.Draw(conveyor);
             
-            Text instructions = QuickShape.Label("sample instructions", sizer.Percent(0,0), font, SFML.Graphics.Color.Black);
-
-            Drawable[] drawables =
+            // Game Instructions
+            //Text instructions = QuickShape.Label("sample instructions", sizer.Percent(0,0), font, SFML.Graphics.Color.Black);
+            
+            _drawables = new Drawable[]
             {
                 menuBarBackground,
-                instructions
             };
 
-            GameEntity[] entities =
+            _entities = new GameEntity[]
             {
                 startButton,
                 resetButton,
                 exitButton
             };
-            
-            foreach (var drawable in drawables)
+        }
+        
+        
+        /// <summary>
+        /// Method that gets called when the screen is to be redrawn
+        /// </summary>
+        /// <param name="window"></param>
+        /// <param name="font"></param>
+        public void Draw(RenderWindow window, Font font)
+        {
+            foreach (var drawable in _drawables)
                 window.Draw(drawable);
             
-            foreach (var entity in entities)
+            foreach (var entity in _entities)
                 entity.Render(window);
         }
     }

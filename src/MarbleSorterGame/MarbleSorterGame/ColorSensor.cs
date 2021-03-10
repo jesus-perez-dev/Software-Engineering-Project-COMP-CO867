@@ -1,5 +1,6 @@
 ﻿using SFML.Graphics;
 using System;
+using SFML.System;
 
 namespace MarbleSorterGame
 {
@@ -10,14 +11,18 @@ namespace MarbleSorterGame
     {
         Color Value;
 
-        public ColorSensor()
+        public ColorSensor(Vector2f size, Vector2f position) : base(size, position)
         {
         }
 
-        //PLC logic here
-        public override void Sense(Marble m)
+        public override void Render(RenderWindow window)
         {
-            this.Value = m.Color;
+            throw new NotImplementedException();
+        }
+
+        public override void Load(IAssetBundle bundle)
+        {
+            throw new NotImplementedException();
         }
     }
 }

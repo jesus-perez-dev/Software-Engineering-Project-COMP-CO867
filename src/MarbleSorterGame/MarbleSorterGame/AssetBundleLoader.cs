@@ -30,7 +30,6 @@ namespace MarbleSorterGame
 
             try
             {
-
                 //SFML.Audio.Music music = new Music(assetDirectoryPath + "/BackgroundMusic");
 
                 //Sound BucketDropSuccess = new Sound(new SoundBuffer(this.assetDirectoryPath + "/BucketDropSuccess.ogg"));
@@ -42,22 +41,19 @@ namespace MarbleSorterGame
                 BucketTexture = new Texture(this.assetDirectoryPath + "bucket.png");
                 GameConfiguration = ConfigurationLoader.Load(this.assetDirectoryPath + "presets.json");
                 
-                /**
-                 * marble textures do not load, do not know why
-                Texture MarbleRedTexture = new Texture(this.assetDirectoryPath + "marble_red_texture.jpg");
-                Texture MarbleGreenTexture = new Texture(this.assetDirectoryPath + "marble_green_texture.jpg");
-                Texture MarbleBlueTexture = new Texture(this.assetDirectoryPath + "marble_blue_texture.jpg");
-                */
+                //Texture MarbleRedTexture = new Texture(this.assetDirectoryPath + "marble_red_texture.jpg");
+                //Texture MarbleGreenTexture = new Texture(this.assetDirectoryPath + "marble_green_texture.jpg");
+                //Texture MarbleBlueTexture = new Texture(this.assetDirectoryPath + "marble_blue_texture.jpg");
 
-                //this.BucketDropSuccess = BucketDropSuccess;
-                //this.BucketDropFail = BucketDropFail;
-                //this.SensorActivate = SensorActivate;
+                //BucketDropSuccess = BucketDropSuccess;
+                //BucketDropFail = BucketDropFail;
+                //SensorActivate = SensorActivate;
 
-                this.SensorTexture = SensorTexture;
-                this.BucketTexture = BucketTexture;
-                this.MarbleRedTexture = MarbleRedTexture;
-                this.MarbleGreenTexture = MarbleGreenTexture;
-                this.MarbleBlueTexture = MarbleBlueTexture;
+                SensorTexture = SensorTexture;
+                BucketTexture = BucketTexture;
+                MarbleRedTexture = MarbleRedTexture;
+                MarbleGreenTexture = MarbleGreenTexture;
+                MarbleBlueTexture = MarbleBlueTexture;
             }
             catch (SFML.System.LoadingFailedException e)
             {

@@ -1,39 +1,34 @@
 ﻿using System;
 using SFML.Graphics;
+using SFML.System;
 
 namespace MarbleSorterGame
 {
     public class Trapdoor : GameEntity
     {
-        //private Texture _texture;
+        private Sprite _sprite;
         public bool Open;
 
-        public Trapdoor()
+        public Trapdoor(Vector2f position, Vector2f size) : base(position, size)
         {
-            this.Open = false;
-
+            Open = false;
         }
 
         public void Toggle()
         {
-            if (this.Open)
-            {
-                this.Open = false;
-            }
-            else
-            {
-                this.Open = true;
-            }
+            Open = !Open;
         }
 
-
-        public void Render(RenderWindow window)
+        public override void Render(RenderWindow window)
         {
+            if (_sprite == null)
+                return;
+            
+            window.Draw(_sprite);
         }
 
-        public void Load(IAssetBundle bundle)
+        public override void Load(IAssetBundle bundle)
         {
-            //trapdoor should be just line
         }
     }
 }
