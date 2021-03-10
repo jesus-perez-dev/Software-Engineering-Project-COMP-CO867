@@ -10,15 +10,25 @@ namespace MarbleSorterGame
     /// </summary>
     public class MainScreen
     {
+        public MainScreen(AssetBundleLoader bundle, uint screenWidth, uint screenHeight)
+        {
+            Font font = bundle.Font;
+            Sizer sizer = new Sizer(screenWidth, screenHeight);
+
+        }
+
         /// <summary>
         /// Method that gets called when the screen is to be redrawn
         /// </summary>
         /// <param name="window"></param>
         /// <param name="font"></param>
-        public static void Draw(RenderWindow window, Font font)
+        public void Draw(RenderWindow window, Font font)
         {
             var sizer = new Sizer(window.Size.X,window.Size.Y);
-            
+
+            Label menuTitle = new Label("Marble Sorter Game", sizer.Percent(50, 30), 50, SFML.Graphics.Color.Black, font);
+            Label copyright = new Label("Copyright 2021 - Mohawk College", sizer.Percent(80, 95), 15, SFML.Graphics.Color.Black, font);
+            /**
             Text menuTitle = QuickShape.Label(
                 "Marble Sorter Game",
                 sizer.Percent(50, 30),
@@ -27,9 +37,10 @@ namespace MarbleSorterGame
             
             Text copyright = QuickShape.Label(
                 "Copyright 2021 - Mohawk College",
-                sizer.Percent(95, 95),
+                sizer.Percent(60, 95),
                 font,
                 SFML.Graphics.Color.Black);
+            */
 
             Vector2f buttonSize = sizer.Percent(15f, 10f); // new Vector2f(window.Size.X / 7, window.Size.Y / 11);
             Button buttonStart = new Button("Start", 1f, font, sizer.Percent(30f, 70f), buttonSize);
@@ -39,10 +50,10 @@ namespace MarbleSorterGame
             buttonStart.Render(window);
             buttonSettings.Render(window);
             buttonExit.Render(window);
-            
+
             // Draw text on-top
-            window.Draw(menuTitle);
-            window.Draw(copyright);
+            menuTitle.Draw(window);
+            copyright.Draw(window);
 
             //============ Menu buttons event handlers ============
             EventHandler<SFML.Window.MouseButtonEventArgs> Game_MousePressed = (Object sender, SFML.Window.MouseButtonEventArgs mouse) =>

@@ -1,4 +1,5 @@
 using System;
+using MarbleSorterGame.Utilities;
 using SFML.Graphics;
 using SFML.System;
 
@@ -9,12 +10,19 @@ namespace MarbleSorterGame
     /// </summary>
     public class SettingsScreen
     {
+        public SettingsScreen(AssetBundleLoader bundle, uint screenWidth, uint screenHeight)
+        {
+            Font font = bundle.Font;
+            Sizer sizer = new Sizer(screenWidth, screenHeight);
+
+        }
+
         /// <summary>
         /// Method that gets called when the screen is to be redrawn
         /// </summary>
         /// <param name="window"></param>
         /// <param name="font"></param>
-        public static void Draw(RenderWindow window, Font font)
+        public void Draw(RenderWindow window, Font font)
         {
             //default sizes
             Vector2f buttonSize = new Vector2f(window.Size.X / 7, window.Size.Y / 11);

@@ -33,6 +33,30 @@ namespace MarbleSorterGame
 
 
         /// <summary>
+        /// Plays sound of marble dropping into the bucket
+        /// </summary>
+        public void PlayDropSound()
+        {
+            _dropSound.Play();
+        }
+
+        /// <summary>
+        /// Plays sound that indicates marble correctly fits all of the bucket requirements
+        /// </summary>
+        public void PlaySuccessSound()
+        {
+            _successSound.Play();
+        }
+
+        /// <summary>
+        /// Plays sound that indicates marble did not fit bucket requirements
+        /// </summary>
+        public void PlayFailSound()
+        {
+            _failSound.Play();
+        }
+
+        /// <summary>
         /// Draws the bucket onto render target RenderWindow
         /// </summary>
         /// <param name="window">RenderWindow for marble to be drawn onto</param>
@@ -50,18 +74,12 @@ namespace MarbleSorterGame
         /// <param name="bundle"></param>
         public override void Load(IAssetBundle bundle)
         {
-            _sprite = new Sprite(bundle.BucketTexture);
             _dropSound = bundle.BucketDrop;
+            _successSound = bundle.BucketDropSuccess;
+            _failSound = bundle.BucketDropFail;
 
+            _sprite = new Sprite(bundle.BucketTexture);
             _sprite.Scale = ScaleEntity(bundle.BucketTexture);
-        }
-
-        /// <summary>
-        /// Plays sound of marble dropping into the bucket
-        /// </summary>
-        public void PlayDropSound()
-        {
-            _dropSound.Play();
         }
 
     }

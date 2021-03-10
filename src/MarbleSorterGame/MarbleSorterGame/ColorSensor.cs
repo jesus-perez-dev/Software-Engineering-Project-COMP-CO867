@@ -14,15 +14,5 @@ namespace MarbleSorterGame
         public ColorSensor(Vector2f size, Vector2f position) : base(size, position)
         {
         }
-
-        public override void Render(RenderWindow window)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override void Load(IAssetBundle bundle)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

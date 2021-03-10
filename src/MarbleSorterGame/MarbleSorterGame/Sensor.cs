@@ -14,7 +14,8 @@ namespace MarbleSorterGame
         // Perform all IO with the PLC Simulator in SenseCallback handler
         public event EventHandler SenseCallback;
         
-        protected Sensor(Vector2f position, Vector2f size) : base(position, size) { }
+        protected Sensor(Vector2f position, Vector2f size) : base(position, size) {
+        }
 
         //inherted members might also call override
         public void Sense(Marble m)
@@ -46,8 +47,10 @@ namespace MarbleSorterGame
         /// <param name="bundle"></param>
         public override void Load(IAssetBundle bundle)
         {
-            _sensorSprite.Texture = bundle.SensorTexture;
             _sensorActivate = bundle.SensorActivate;
+
+            _sensorSprite = new Sprite(bundle.SensorTexture);
+            _sensorSprite.Scale = ScaleEntity(bundle.SensorTexture);
         }
     }
 }
