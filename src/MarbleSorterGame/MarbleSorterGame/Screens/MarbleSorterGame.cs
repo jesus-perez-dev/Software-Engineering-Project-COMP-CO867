@@ -15,12 +15,10 @@ namespace MarbleSorterGame
         public const uint DEFAULT_WINDOW_HEIGHT = 600;
         
         private GameScreen _gameScreen;
+        private SettingsScreen _settingsScreen;
+        private MainScreen _mainScreen;
 
-        public static Menu ActiveMenu
-        {
-            get;
-            set;
-        }
+        public static Menu ActiveMenu { get; set; }
 
         private AssetBundleLoader _bundle;
         private static Font _font;
@@ -30,9 +28,12 @@ namespace MarbleSorterGame
 
         public MarbleSorterGame() : base(DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT, WINDOW_TITLE, SFML.Graphics.Color.White)
         {
-            //IAssetBundle
-            var loader = new AssetBundleLoader("assets/");
-            _gameScreen = new GameScreen(loader, Window.Size.X, Window.Size.Y);
+            _bundle = new AssetBundleLoader("assets/");
+            _font = new Font("assets/OpenSans-Regular.ttf");
+            _gameScreen = new GameScreen(_bundle, Window.Size.X, Window.Size.Y);
+            _mainScreen = new MainScreen(_bundle, Window.Size.X, Window.Size.Y);
+            _settingsScreen = new SettingsScreen(_bundle, Window.Size.X, Window.Size.Y);
+
             _velocityConveyer = new Vector2f(1, 0);
             _velocityGravity= new Vector2f(0, 1);
         }
@@ -145,10 +146,10 @@ namespace MarbleSorterGame
             switch (ActiveMenu)
             {
                 case Menu.Main:
-                    MainScreen.Draw(Window, _font);
+                    _mainScreen.Draw(Window, _font);
                     break;
                 case Menu.Settings:
-                    SettingsScreen.Draw(Window, _font);
+                    _settingsScreen.Draw(Window, _font);
                     break;
                 case Menu.Game:
                     _gameScreen.Draw(Window, _font);

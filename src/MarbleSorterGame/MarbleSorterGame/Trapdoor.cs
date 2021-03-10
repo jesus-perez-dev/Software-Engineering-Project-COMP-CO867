@@ -45,11 +45,11 @@ namespace MarbleSorterGame
 
         public override void Render(RenderWindow window)
         {
+            window.Draw(_trapdoor);
         }
 
         public override void Load(IAssetBundle bundle)
         {
-            throw new NotImplementedException();
         }
     }
 }

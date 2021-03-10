@@ -34,25 +34,20 @@ namespace MarbleSorterGame
             try
             {
                 GameConfiguration = ConfigurationLoader.Load(this.assetDirectoryPath + "presets.json");
-
-                /**
-                BucketDropSuccess = new Sound(new SoundBuffer(this.assetDirectoryPath + "/BucketDropSuccess.ogg"));
-                BucketDropFail = new Sound(new SoundBuffer(this.assetDirectoryPath + "/BucketDropFail.ogg"));
-                SensorActivate = new Sound(new SoundBuffer(this.assetDirectoryPath + "/SensorActivate.ogg"));
-
-                */
                 Font = new Font(assetDirectoryPath + "OpenSans-Regular.ttf");
-                //SensorTexture = new Texture(this.assetDirectoryPath + "sensor.jpg");
-                BucketTexture = new Texture(this.assetDirectoryPath + "bucket.png");
-                GameConfiguration = ConfigurationLoader.Load(this.assetDirectoryPath + "presets.json");
-                
+
+                BucketTexture = new Texture(this.assetDirectoryPath + "bucket3.png");
+                BucketDropSuccess = new Sound(new SoundBuffer(this.assetDirectoryPath + "BucketDropSuccess.ogg"));
+                BucketDropFail = new Sound(new SoundBuffer(this.assetDirectoryPath + "BucketDropFail.ogg"));
+
+                SensorTexture = new Texture(this.assetDirectoryPath + "sensor.png");
+                SensorSignalOffTexture = new Texture(this.assetDirectoryPath + "sensorSignalOff1.png");
+                SensorSignalOnTexture = new Texture(this.assetDirectoryPath + "sensorSignalOn1.png");
+                SensorActivate = new Sound(new SoundBuffer(this.assetDirectoryPath + "SensorActivate.ogg"));
+
                 MarbleRedTexture = new Texture(this.assetDirectoryPath + "marbleRed.png");
                 MarbleGreenTexture = new Texture(this.assetDirectoryPath + "marbleGreen.png");
                 MarbleBlueTexture = new Texture(this.assetDirectoryPath + "marbleBlue.png");
-
-                //BucketDropSuccess = BucketDropSuccess;
-                //BucketDropFail = BucketDropFail;
-                //SensorActivate = SensorActivate;
 
             }
             catch (SFML.System.LoadingFailedException e)

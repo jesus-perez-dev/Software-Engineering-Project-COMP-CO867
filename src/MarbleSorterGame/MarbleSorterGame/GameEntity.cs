@@ -29,7 +29,6 @@ namespace MarbleSorterGame
         }
 
         public FloatRect GlobalBounds => _rect.GetGlobalBounds();
-        
 
         public GameEntity(Vector2f position, Vector2f size)
         {

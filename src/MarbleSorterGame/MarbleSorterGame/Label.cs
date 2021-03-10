@@ -9,7 +9,6 @@ using UtilityCentering;
 /// label is simply a centered text
 /// </summary>
 
-/*
 public class Label
 {
 	public Text Text { get; }
@@ -30,7 +29,6 @@ public class Label
 	public Label(String labelText, Vector2f ?labelPosition, int labelSize, Color labelColor, Font labelFont)
 	{
 		_labelText = labelText;
-		//find way for optional parameter, this is a hack!
 		if (labelPosition != null) {
 			_labelPosition = (Vector2f)labelPosition;
         }
@@ -48,6 +46,7 @@ public class Label
 
 	public static Text Create(string displayString, Vector2f position, Font font, Color color)
 	{
+		/**
 		return new Text
 		{
 			Position = position,
@@ -55,8 +54,8 @@ public class Label
 			Font = font,
 			FillColor = color,
 		};
-		//text.Origin = text.CenterOrigin();
-		//return text;
+		*/
+		return null;
 	}
 	
 	public void Draw(RenderWindow window)
@@ -64,4 +63,3 @@ public class Label
 		window.Draw(Text);
     }
 }
-*/

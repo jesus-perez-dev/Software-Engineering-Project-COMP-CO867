@@ -13,14 +13,5 @@ namespace MarbleSorterGame
         }
 
 
-        public override void Render(RenderWindow window)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override void Load(IAssetBundle bundle)
-        {
-            throw new NotImplementedException();
-        }
     }
 }
