@@ -1,61 +1,76 @@
 ﻿using SFML.Graphics;
 using System;
+using SFML.System;
 
 namespace MarbleSorterGame
 {
-    public class GameEntity
+    public abstract class GameEntity
     {
-        public String Name { get; set; }
+        private RectangleShape _rect;
+        
+        public string Name { get; set; }
 
-        public int X;
-        public int Y;
-        public int Width;
-        public int Height;
-
-        public GameEntity()
+        /// <summary>
+        /// Position of the game entity
+        /// </summary>
+        public Vector2f Position
         {
-
+            get => _rect.Position;
+            set => _rect.Position = value;
         }
 
-        public void SetDimensions(int width, int height)
+        /// <summary>
+        /// Size of the game entity
+        /// </summary>
+        public Vector2f Size
         {
-            this.Width = width;
-            this.Height = height;
+            get => _rect.Size;
+            set => _rect.Size = value;
         }
 
-        public void SetPosition(int x, int y)
+        public FloatRect GlobalBounds => _rect.GetGlobalBounds();
+        
+
+        public GameEntity(Vector2f position, Vector2f size)
         {
-            this.X = x;
-            this.Y = y;
+            _rect = new RectangleShape
+            {
+                Position = position,
+                Size = size,
+            };
         }
 
-        public void setSpacial(int x, int y, int width, int height)
-        {
-            this.SetPosition(x, y);
-            this.SetDimensions(width, height);
-        }
-
+        /// <summary>
+        /// Does any point on the entity fit inside this entity
+        /// </summary>
         public bool Overlaps(GameEntity entity)
         {
-            //use .intersects and .getGlobalBounds (only for Shapes)
-            return false;
+            return _rect.GetGlobalBounds().Intersects(entity.GlobalBounds);
         }
 
+        /// <summary>
+        /// Does every point on the entity fit inside this entity
+        /// </summary>
         public bool Inside(GameEntity entity)
         {
-            //if inside bucket?
-            return false;
+            var corners = new Vector2f[]
+            {
+                new Vector2f(entity.Position.X, entity.Position.Y), // Top-Left corner
+                new Vector2f(entity.Position.X + entity.Size.X, entity.Position.Y), // Top-Right corner
+                new Vector2f(entity.Position.X + entity.Size.X, entity.Position.Y + entity.Size.Y), // Bottom-Right corner
+                new Vector2f(entity.Position.X, entity.Position.Y + entity.Size.Y), // Bottom-Left corner
+            };
+
+            foreach (var corner in corners)
+            {
+                if (!_rect.GetGlobalBounds().Contains(corner.X, corner.Y))
+                    return false;
+            }
+
+            return true;
         }
 
-        public void Render(RenderWindow window)
-        {
-
-        }
-
-        public void Load(IAssetBundle bundle)
-        {
-
-        }
-
+        public abstract void Render(RenderWindow window);
+        public abstract void Load(IAssetBundle bundle);
     }
 }
