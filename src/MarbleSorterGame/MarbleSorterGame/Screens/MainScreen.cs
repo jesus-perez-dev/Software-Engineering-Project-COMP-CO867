@@ -10,7 +10,7 @@ namespace MarbleSorterGame
     /// </summary>
     public class MainScreen
     {
-        public MainScreen(AssetBundleLoader bundle, uint screenWidth, uint screenHeight)
+        public MainScreen(RenderWindow window, AssetBundleLoader bundle, uint screenWidth, uint screenHeight)
         {
             Font font = bundle.Font;
             Sizer sizer = new Sizer(screenWidth, screenHeight);

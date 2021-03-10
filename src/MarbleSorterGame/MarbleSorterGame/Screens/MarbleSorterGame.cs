@@ -30,9 +30,9 @@ namespace MarbleSorterGame
         {
             _bundle = new AssetBundleLoader("assets/");
             _font = new Font("assets/OpenSans-Regular.ttf");
-            _gameScreen = new GameScreen(_bundle, Window.Size.X, Window.Size.Y);
-            _mainScreen = new MainScreen(_bundle, Window.Size.X, Window.Size.Y);
-            _settingsScreen = new SettingsScreen(_bundle, Window.Size.X, Window.Size.Y);
+            _gameScreen = new GameScreen(Window, _bundle, Window.Size.X, Window.Size.Y);
+            _mainScreen = new MainScreen(Window, _bundle, Window.Size.X, Window.Size.Y);
+            _settingsScreen = new SettingsScreen(Window, _bundle, Window.Size.X, Window.Size.Y);
 
             _velocityConveyer = new Vector2f(1, 0);
             _velocityGravity= new Vector2f(0, 1);
@@ -126,16 +126,6 @@ namespace MarbleSorterGame
         /// </summary>
         public override void Update()
         {
-
-            foreach(GameEntity entity in _entities)
-            {
-                if (entity is Marble)
-                {
-                    Marble marble = (Marble)entity;
-                    marble.Move();
-                    marble.Rotate(2f);
-                }
-            }
         }
 
         /// <summary>
