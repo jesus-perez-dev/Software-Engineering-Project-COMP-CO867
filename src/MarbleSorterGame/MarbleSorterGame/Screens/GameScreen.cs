@@ -13,9 +13,12 @@ namespace MarbleSorterGame
     {
         private Drawable[] _drawables = { };
         private GameEntity[] _entities = { };
-        
+
+        private EventHandler<SFML.Window.MouseButtonEventArgs> _game_mouseEvent;
+        private EventHandler<SFML.Window.KeyEventArgs> _game_keyEvent;
+
         // TODO: Pass a game configuration structure in here instead of width/height uints
-        public GameScreen(AssetBundleLoader bundle, uint screenWidth, uint screenHeight)
+        public GameScreen(RenderWindow window, AssetBundleLoader bundle, uint screenWidth, uint screenHeight)
         {
             Font font = bundle.Font;
             Sizer sizer = new Sizer(screenWidth, screenHeight);
@@ -244,12 +247,49 @@ namespace MarbleSorterGame
                 entity.Load(bundle);
 
             }
-            // Game Instructions
-            //Text instructions = QuickShape.Label("sample instructions", sizer.Percent(0,0), font, SFML.Graphics.Color.Black);
             
             _drawables = new Drawable[]
             {
                 menuBarBackground,
+            };
+
+            //============ Mouse buttons event handlers ============
+            _game_mouseEvent = (Object sender, SFML.Window.MouseButtonEventArgs mouse) =>
+            {
+                if (buttonStart.IsPressed(mouse.X, mouse.Y))
+                {
+                    /**
+                    foreach(GameEntity entity in _entities)
+                    {
+                        if (entity is Marble)
+                        {
+                            Marble marble = (Marble)entity;
+                            marble.Move();
+                            marble.Rotate(2f);
+                        }
+                    }
+                    */
+                }
+                else if (buttonReset.IsPressed(mouse.X, mouse.Y))
+                {
+                }
+                else if (buttonExit.IsPressed(mouse.X, mouse.Y))
+                {
+                    window.Close();
+                }
+            };
+
+            //============ Keyboard buttons event handlers ============
+            _game_keyEvent = (Object sender, SFML.Window.KeyEventArgs key) =>
+            {
+                if (key.Code == SFML.Window.Keyboard.Key.R)
+                {
+                    trapdoor1.Open(2f);
+                }
+                else if (key.Code == SFML.Window.Keyboard.Key.C)
+                {
+                    trapdoor1.Close(2f);
+                }
             };
 
         }
@@ -272,26 +312,8 @@ namespace MarbleSorterGame
                 entity.Render(window);
             }
 
-            //============ Menu buttons event handlers ============
-            EventHandler<SFML.Window.MouseButtonEventArgs> Game_MousePressed = (Object sender, SFML.Window.MouseButtonEventArgs mouse) =>
-            {
-                Button buttonStart = (Button)_entities[0];
-                Button buttonReset = (Button)_entities[1];
-                Button buttonExit = (Button)_entities[2];
-                if (buttonStart.IsPressed(mouse.X, mouse.Y))
-                {
-                }
-                else if (buttonReset.IsPressed(mouse.X, mouse.Y))
-                {
-                    window.Close();
-                }
-                else if (buttonExit.IsPressed(mouse.X, mouse.Y))
-                {
-                    window.Close();
-                }
-            };
-
-            window.MouseButtonPressed += Game_MousePressed;
+            window.MouseButtonPressed += _game_mouseEvent;
+            window.KeyPressed += _game_keyEvent;
         }
     }
 }
