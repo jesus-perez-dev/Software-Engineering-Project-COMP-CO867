@@ -37,13 +37,13 @@ namespace MarbleSorterGame
                 Font = new Font(assetDirectoryPath + "OpenSans-Regular.ttf");
 
                 BucketTexture = new Texture(this.assetDirectoryPath + "bucket3.png");
-                BucketDropSuccess = new Sound(new SoundBuffer(this.assetDirectoryPath + "BucketDropSuccess.ogg"));
-                BucketDropFail = new Sound(new SoundBuffer(this.assetDirectoryPath + "BucketDropFail.ogg"));
+                BucketDropSuccess = new Sound(new SoundBuffer(this.assetDirectoryPath + "bucketDropSuccess.ogg"));
+                BucketDropFail = new Sound(new SoundBuffer(this.assetDirectoryPath + "bucketDropFail.ogg"));
 
                 SensorTexture = new Texture(this.assetDirectoryPath + "sensor.png");
                 SensorSignalOffTexture = new Texture(this.assetDirectoryPath + "sensorSignalOff1.png");
                 SensorSignalOnTexture = new Texture(this.assetDirectoryPath + "sensorSignalOn1.png");
-                SensorActivate = new Sound(new SoundBuffer(this.assetDirectoryPath + "SensorActivate.ogg"));
+                SensorActivate = new Sound(new SoundBuffer(this.assetDirectoryPath + "sensorActivate.ogg"));
 
                 MarbleRedTexture = new Texture(this.assetDirectoryPath + "marbleRed.png");
                 MarbleGreenTexture = new Texture(this.assetDirectoryPath + "marbleGreen.png");
