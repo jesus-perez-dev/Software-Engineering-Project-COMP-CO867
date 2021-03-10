@@ -17,7 +17,7 @@ namespace MarbleSorterGame
         protected Sensor(Vector2f position, Vector2f size) : base(position, size) { }
 
         //inherted members might also call override
-        public virtual void Sense(Marble m)
+        public void Sense(Marble m)
         {
             //write to PLC
         }

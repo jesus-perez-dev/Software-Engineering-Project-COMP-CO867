@@ -2,7 +2,6 @@
 using SFML.Graphics;
 using SFML.System;
 using System;
-using SFML.System;
 
 namespace MarbleSorterGame
 {
@@ -11,7 +10,6 @@ namespace MarbleSorterGame
     /// </summary>
     public class MotionSensor : Sensor
     {
-        private int _maxCapacity;
 
         private int _maxCapacity;
         public MotionSensor(Vector2f position, Vector2f size): base(position, size)
