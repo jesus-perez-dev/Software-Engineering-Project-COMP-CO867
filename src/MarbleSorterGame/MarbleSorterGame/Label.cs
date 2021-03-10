@@ -9,7 +9,7 @@ using UtilityCentering;
 /// label is simply a centered text
 /// </summary>
 
-public class Label
+public class Label : Drawable
 {
 	public Text Text { get; }
 	public Vector2f _labelPosition { get; }
@@ -61,5 +61,10 @@ public class Label
 	public void Draw(RenderWindow window)
     {
 		window.Draw(Text);
+    }
+
+    public void Draw(RenderTarget target, RenderStates states)
+    {
+		target.Draw(Text);
     }
 }
