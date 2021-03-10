@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using MarbleSorterGame.Utilities;
 using SFML.Graphics;
 using SFML.System;
 
@@ -91,9 +92,12 @@ namespace MarbleSorterGame
         public void Draw(RenderWindow window, Font font)
         {
             foreach (var drawable in _drawables)
+            {
                 window.Draw(drawable);
+            }
             
-            foreach (var entity in _entities)
+            foreach (var entity in _entities) 
+            {
                 entity.Render(window);
             }
         }

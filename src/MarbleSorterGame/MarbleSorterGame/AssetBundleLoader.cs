@@ -35,12 +35,14 @@ namespace MarbleSorterGame
             {
                 GameConfiguration = ConfigurationLoader.Load(this.assetDirectoryPath + "presets.json");
 
-                Sound BucketDropSuccess = new Sound(new SoundBuffer(this.assetDirectoryPath + "/BucketDropSuccess.ogg"));
-                Sound BucketDropFail = new Sound(new SoundBuffer(this.assetDirectoryPath + "/BucketDropFail.ogg"));
-                Sound SensorActivate = new Sound(new SoundBuffer(this.assetDirectoryPath + "/SensorActivate.ogg"));
+                /**
+                BucketDropSuccess = new Sound(new SoundBuffer(this.assetDirectoryPath + "/BucketDropSuccess.ogg"));
+                BucketDropFail = new Sound(new SoundBuffer(this.assetDirectoryPath + "/BucketDropFail.ogg"));
+                SensorActivate = new Sound(new SoundBuffer(this.assetDirectoryPath + "/SensorActivate.ogg"));
 
+                */
                 Font = new Font(assetDirectoryPath + "OpenSans-Regular.ttf");
-                SensorTexture = new Texture(this.assetDirectoryPath + "sensor.jpg");
+                //SensorTexture = new Texture(this.assetDirectoryPath + "sensor.jpg");
                 BucketTexture = new Texture(this.assetDirectoryPath + "bucket.png");
                 GameConfiguration = ConfigurationLoader.Load(this.assetDirectoryPath + "presets.json");
                 
@@ -52,11 +54,6 @@ namespace MarbleSorterGame
                 //BucketDropFail = BucketDropFail;
                 //SensorActivate = SensorActivate;
 
-                SensorTexture = SensorTexture;
-                BucketTexture = BucketTexture;
-                MarbleRedTexture = MarbleRedTexture;
-                MarbleGreenTexture = MarbleGreenTexture;
-                MarbleBlueTexture = MarbleBlueTexture;
             }
             catch (SFML.System.LoadingFailedException e)
             {

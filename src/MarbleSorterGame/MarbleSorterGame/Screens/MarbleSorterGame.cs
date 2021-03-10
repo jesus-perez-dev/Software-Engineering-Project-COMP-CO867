@@ -14,8 +14,6 @@ namespace MarbleSorterGame
         public const uint DEFAULT_WINDOW_WIDTH = 800;
         public const uint DEFAULT_WINDOW_HEIGHT = 600;
         
-        public const string WINDOW_TITLE = "PLC Training Simulator - Marble Sorter Game";
-
         private GameScreen _gameScreen;
 
         public static Menu ActiveMenu
@@ -84,15 +82,14 @@ namespace MarbleSorterGame
             var trapdoors = new List<Trapdoor>() { trapdoor1, trapdoor2, trapdoor3 };
             */
 
-            Marble marbleRedCorrect = new Marble(15, Color.Red, Weight.Large);
-            Marble marbleRedIncorrect = new Marble(15, Color.Red, Weight.Small);
+            Marble marbleRedCorrect = new Marble(new Vector2f(30,30), new Vector2f(100,100), Color.Red, Weight.Large);
+            Marble marbleRedIncorrect = new Marble(new Vector2f(30,30), new Vector2f(100,100), Color.Red, Weight.Small);
             var marbles = new List<Marble>() { marbleRedCorrect, marbleRedIncorrect } ;
-            */
 
             marbleRedCorrect.Position = new Vector2f(200f, 200f);
             marbleRedCorrect.Size = new Vector2f(50, 50);
 
-            var marbles = new List<Marble>() { marbleRedCorrect} ;
+            //var marbles = new List<Marble>() { marbleRedCorrect} ;
 
             var bucketSignal1= new CircleShape();
             var bucketSignal2= new CircleShape();
@@ -111,9 +108,9 @@ namespace MarbleSorterGame
                 trapdoor1,
                 trapdoor2,
                 trapdoor3,
-                marbleRedCorrect,
                 marbleRedIncorrect
                 */
+                marbleRedCorrect,
             };
 
             foreach(GameEntity entity in _entities)
@@ -157,7 +154,6 @@ namespace MarbleSorterGame
                     _gameScreen.Draw(Window, _font);
                     break;
             }
-            */
         }
         
     }
