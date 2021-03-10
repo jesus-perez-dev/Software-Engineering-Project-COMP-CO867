@@ -29,12 +29,10 @@ namespace MarbleSorterGame
             _requiredColor = requiredColor;
             _requiredWeight = requiredWeight;
             Capacity = capacity;
-        }
 
-        public Bucket()
-        {
+            _bucket = new Sprite();
+            _bucket.Position = Position;
         }
-
 
         /// <summary>
         /// Plays sound of marble dropping into the bucket
@@ -69,7 +67,6 @@ namespace MarbleSorterGame
             if (_bucket == null)
                 return;
 
-            _bucket.Position = Position;
             window.Draw(_bucket);
         }
 
@@ -83,7 +80,7 @@ namespace MarbleSorterGame
             _successSound = bundle.BucketDropSuccess;
             _failSound = bundle.BucketDropFail;
 
-            _bucket = new Sprite(bundle.BucketTexture);
+            _bucket.Texture = bundle.BucketTexture;
             _bucket.Scale = ScaleEntity(bundle.BucketTexture);
         }
 

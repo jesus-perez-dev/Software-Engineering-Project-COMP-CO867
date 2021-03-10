@@ -79,19 +79,20 @@ namespace MarbleSorterGame
                 new Vector2f(1, 0)
                 );
 
+            Vector2f trapdoorSize = sizer.Percent(8, 1);
             Trapdoor trapdoor1 = new Trapdoor(
                 sizer.Percent(27, 60),
-                sizer.Percent(6, 1)
+                trapdoorSize
                 );
 
             Trapdoor trapdoor2 = new Trapdoor(
                 sizer.Percent(51, 60),
-                sizer.Percent(6, 1)
+                trapdoorSize
                 );
 
             Trapdoor trapdoor3 = new Trapdoor(
                 sizer.Percent(76, 60),
-                sizer.Percent(6, 1)
+                trapdoorSize
                 );
 
             Bucket bucket1 = new Bucket(
@@ -118,22 +119,23 @@ namespace MarbleSorterGame
                 20
                 );
 
+            Vector2f gateEntranceSize = sizer.Percent(1, 9);
             Gate gateEntrance = new Gate(
-                sizer.Percent(13, 50),
-                sizer.Percent(1, 7)
+                sizer.Percent(13, 52),
+                gateEntranceSize
                 );
 
-            PressureSensor startSensorPressure = new PressureSensor(
+            PressureSensor sensorPressureStart = new PressureSensor(
                 sizer.Percent(5, 55),
                 sizer.Percent(3, 3)
                 );
 
-            ColorSensor startSensorColor = new ColorSensor(
+            ColorSensor sensorColorStart = new ColorSensor(
                 sizer.Percent(7, 55),
                 sizer.Percent(3, 3)
                 );
 
-            MotionSensor endSensorMotion = new MotionSensor(
+            MotionSensor sensorMotionEnd = new MotionSensor(
                 sizer.Percent(20, 100),
                 sizer.Percent(0, 0)
                 );
@@ -223,9 +225,9 @@ namespace MarbleSorterGame
                 bucket2,
                 bucket3,
                 gateEntrance,
-                startSensorColor,
-                startSensorPressure,
-                endSensorMotion,
+                sensorColorStart,
+                sensorPressureStart,
+                sensorMotionEnd,
                 sensorMotionBucket1,
                 sensorMotionBucket2,
                 sensorMotionBucket3,
@@ -245,7 +247,6 @@ namespace MarbleSorterGame
             foreach (GameEntity entity in _entities)
             {
                 entity.Load(bundle);
-
             }
             
             _drawables = new Drawable[]
@@ -284,10 +285,12 @@ namespace MarbleSorterGame
             {
                 if (key.Code == SFML.Window.Keyboard.Key.R)
                 {
+                    gateEntrance.Open(2f);
                     trapdoor1.Open(2f);
                 }
                 else if (key.Code == SFML.Window.Keyboard.Key.C)
                 {
+                    gateEntrance.Close(2f);
                     trapdoor1.Close(2f);
                 }
             };

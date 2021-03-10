@@ -35,6 +35,7 @@ namespace MarbleSorterGame
             _marbleShape.Position = Position;
 
             _marble = new Sprite();
+            _marble.Position = position;
         }
 
         /// <summary>
@@ -70,7 +71,6 @@ namespace MarbleSorterGame
         /// <param name="window">RenderWindow for marble to be drawn onto</param>
         public override void Render(RenderWindow window)
         {
-            _marble.Position = Position;
             window.Draw(_marble);
         }
 
