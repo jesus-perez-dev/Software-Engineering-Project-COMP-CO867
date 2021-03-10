@@ -7,7 +7,7 @@ namespace MarbleSorterGame
 {
     public class Bucket : GameEntity
     {
-        private Sprite _sprite;
+        private Sprite _bucket;
         private Sound _dropSound;
         private Sound _failSound;
         private Sound _successSound;
@@ -29,6 +29,10 @@ namespace MarbleSorterGame
             _requiredColor = requiredColor;
             _requiredWeight = requiredWeight;
             Capacity = capacity;
+        }
+
+        public Bucket()
+        {
         }
 
 
@@ -62,10 +66,11 @@ namespace MarbleSorterGame
         /// <param name="window">RenderWindow for marble to be drawn onto</param>
         public override void Render(RenderWindow window)
         {
-            if (_sprite == null)
+            if (_bucket == null)
                 return;
-            
-            window.Draw(_sprite);
+
+            _bucket.Position = Position;
+            window.Draw(_bucket);
         }
 
         /// <summary>
@@ -78,8 +83,8 @@ namespace MarbleSorterGame
             _successSound = bundle.BucketDropSuccess;
             _failSound = bundle.BucketDropFail;
 
-            _sprite = new Sprite(bundle.BucketTexture);
-            _sprite.Scale = ScaleEntity(bundle.BucketTexture);
+            _bucket = new Sprite(bundle.BucketTexture);
+            _bucket.Scale = ScaleEntity(bundle.BucketTexture);
         }
 
     }

@@ -8,6 +8,10 @@ namespace MarbleSorterGame
     {
         Weight Value;
 
+        public PressureSensor()
+        {
+        }
+
         public PressureSensor(Vector2f position, Vector2f size) : base(position, size)
         {
         }

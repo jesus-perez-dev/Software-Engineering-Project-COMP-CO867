@@ -30,6 +30,7 @@ namespace MarbleSorterGame
 
         public FloatRect GlobalBounds => _rect.GetGlobalBounds();
 
+        public GameEntity() { }
         public GameEntity(Vector2f position, Vector2f size)
         {
             _rect = new RectangleShape
@@ -45,6 +46,20 @@ namespace MarbleSorterGame
         public void UpdatePosition(Vector2f position)
         {
             this.Position = new Vector2f(this.Position.X + position.X, this.Position.Y + position.Y);
+        }
+
+
+        public Vector2f CenterOrigin(Texture texture)
+        {
+            FloatRect bounds = this.GlobalBounds;
+
+            return (
+                new Vector2f(
+                        bounds.Left + texture.Size.X / 2f,
+                        bounds.Top + texture.Size.Y / 2f
+                    )
+                );
+
         }
 
         /// <summary>

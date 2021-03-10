@@ -12,7 +12,12 @@ namespace MarbleSorterGame
         public Gate(Vector2f position, Vector2f size) : base(position,size)
         {
             _gate = new RectangleShape(size);
+            _gate.FillColor = SFML.Graphics.Color.Black;
             _gate.Position = position;
+        }
+
+        public Gate()
+        {
         }
 
         /// <summary>
@@ -25,11 +30,13 @@ namespace MarbleSorterGame
 
         public void Open()
         {
+            _gate.Position = Position;
 
         }
 
         public void Close()
         {
+            _gate.Position = Position;
 
         }
 
