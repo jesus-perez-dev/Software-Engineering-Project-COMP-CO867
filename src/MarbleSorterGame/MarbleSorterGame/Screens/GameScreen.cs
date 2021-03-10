@@ -1,5 +1,5 @@
 using System;
-using MarbleSorterGame.Utilities;
+using System.Collections.Generic;
 using SFML.Graphics;
 using SFML.System;
 
@@ -10,91 +10,54 @@ namespace MarbleSorterGame
     /// </summary>
     public class GameScreen
     {
-
-        public GameScreen()
-        {
-            
-        }
-        
-        
         /// <summary>
         /// Method that gets called when the screen is to be redrawn
         /// </summary>
         /// <param name="window"></param>
         /// <param name="font"></param>
-        public static void Draw(RenderWindow window, Font font)
+        public static void Draw(RenderWindow window, Font font, List<GameEntity> entities)
         {
-            Sizer sizer = new Sizer(window.Size.X, window.Size.Y);
-            
-            // Menu bar background (slight gray recantgle behind buttons)
-            RectangleShape menuBarBackground = new RectangleShape
-            {
-                Position = sizer.Percent(0f, 0f),
-                Size = sizer.Percent(100f, 6f),
-                FillColor = new SFML.Graphics.Color(89, 105, 115) // dark-blue-gray ish color
-            };
-
-            // Start Button
-            Button startButton = new Button(
-                "Start Simulation",
-                0.8f,
-                font,
-                sizer.Percent(91, 3),
-                sizer.Percent(8, 5)
-            );
-            
-            // Reset Button
-            Button resetButton = new Button(
-                "Reset Game",
-                0.8f,
-                font,
-                sizer.Percent(81, 3),
-                sizer.Percent(8, 5)
-                );
-            
-            // Exit Button
-            Button exitButton = new Button(
-                "Exit Game",
-                0.8f,
-                font,
-                sizer.Percent(71, 3),
-                sizer.Percent(8, 5)
-            );
-            
-            // Bucket #1
-
-            Bucket bucket1 = new Bucket();
-            
-            
-            
-            // Conveyer Belt Line
+            /**
+            //CONVEYOR
             RectangleShape conveyor = new RectangleShape();
-            conveyor.Position = sizer.Percent(0, 60); //new Vector2f(0, 350);
-            conveyor.Size = sizer.Percent(100, 0);
-            conveyor.OutlineColor = SFML.Graphics.Color.Black;
+            conveyor.Position = new Vector2f(0, 350);
+            conveyor.Size = new Vector2f(1000, 0);
+            conveyor.OutlineColor = SFML.Graphics.Color.Red;
             conveyor.OutlineThickness = 2f;
-            window.Draw(conveyor);
             
-            Text instructions = QuickShape.Label("sample instructions", sizer.Percent(0,0), font, SFML.Graphics.Color.Black);
+            //default menu button size
+            Vector2f buttonSize = new Vector2f(window.Size.X / 7, window.Size.Y / 11);
+            var buttonColor = SFML.Graphics.Color.Black;
+            var labelColor = SFML.Graphics.Color.White;
+            var labelSize = 15;
 
-            Drawable[] drawables =
-            {
-                menuBarBackground,
-                instructions
-            };
+            //button/text positions
+            var buttonStartSimulationPosition = new Vector2f(window.Size.X / 3f * 2, window.Size.Y / 10);
+            var buttonBackPosition = new Vector2f(window.Size.X / 3f * 2, window.Size.Y / 10);
+            var buttonResetPosition = new Vector2f(window.Size.X / 4f * 2, window.Size.Y / 10);
+            var instructionsPosition = new Vector2f(120, 25);
 
-            GameEntity[] entities =
-            {
-                startButton,
-                resetButton,
-                exitButton
-            };
-            
-            foreach (var drawable in drawables)
-                window.Draw(drawable);
-            
-            foreach (var entity in entities)
+            //initial marble position
+            var marbleActivePosition = new Vector2f(0, window.Size.Y / 2 );
+
+            //============ Game Menu buttons/text ============
+            var buttonStartSimulationLabel = new Label("Start", null, 10, SFML.Graphics.Color.Black, font);
+            var buttonBackLabel = new Label("Back", null, 10, SFML.Graphics.Color.Black, font);
+            var buttonResetLabel = new Label("Reset", null, 10, SFML.Graphics.Color.Black, font);
+
+            var buttonStartSimulation = new Button(buttonStartSimulationPosition, buttonSize, buttonStartSimulationLabel);
+            var buttonBack = new Button(buttonBackPosition, buttonSize, buttonBackLabel);
+            var buttonReset= new Button(buttonResetPosition, buttonSize, buttonResetLabel);
+
+            Label instructions = new Label("sample instructions", instructionsPosition, 25, SFML.Graphics.Color.Black, font);
+            Text labelBucketReq1 = new Text("Bucket 1 Requirements", font);
+            Text labelBucketReq2 = new Text("Bucket 2 Requirements", font);
+            Text labelBucketReq3 = new Text("Bucket 3 Requirements", font);
+
+            */
+            foreach(GameEntity entity in entities){
                 entity.Render(window);
+            }
         }
     }
 }

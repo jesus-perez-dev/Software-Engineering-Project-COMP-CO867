@@ -44,12 +44,9 @@ namespace MarbleSorterGame
                 BucketTexture = new Texture(this.assetDirectoryPath + "bucket.png");
                 GameConfiguration = ConfigurationLoader.Load(this.assetDirectoryPath + "presets.json");
                 
-                /**
-                 * marble textures do not load, do not know why
-                Texture MarbleRedTexture = new Texture(this.assetDirectoryPath + "marble_red_texture.jpg");
-                Texture MarbleGreenTexture = new Texture(this.assetDirectoryPath + "marble_green_texture.jpg");
-                Texture MarbleBlueTexture = new Texture(this.assetDirectoryPath + "marble_blue_texture.jpg");
-                */
+                MarbleRedTexture = new Texture(this.assetDirectoryPath + "marbleRed.png");
+                MarbleGreenTexture = new Texture(this.assetDirectoryPath + "marbleGreen.png");
+                MarbleBlueTexture = new Texture(this.assetDirectoryPath + "marbleBlue.png");
 
                 //this.BucketDropSuccess = BucketDropSuccess;
                 //this.BucketDropFail = BucketDropFail;
