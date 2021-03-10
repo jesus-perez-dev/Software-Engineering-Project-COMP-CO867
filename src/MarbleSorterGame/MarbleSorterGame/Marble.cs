@@ -1,6 +1,7 @@
 ﻿using System;
 using SFML.Audio;
 using SFML.Graphics;
+using SFML.System;
 using SFML.Window;
 
 namespace MarbleSorterGame
@@ -16,7 +17,7 @@ namespace MarbleSorterGame
         public Weight Weight;
 
         //parameter should be int instead? otherwise main game would have to reference enum class instead of this one
-        public Marble(float radius, Color color, Weight weight)
+        public Marble(float radius, Color color, Weight weight, Vector2f position, Vector2f size) : base(position, size)
         {
             this.Radius = radius;
             //add enum.isDefined for more strict type check? color/weight must be < 3
@@ -26,12 +27,12 @@ namespace MarbleSorterGame
             _marbleShape = new CircleShape(Radius);
         }
 
-        public void Render(RenderWindow window)
+        public override void Render(RenderWindow window)
         {
             window.Draw(_marble);
         }
 
-        public void Load(IAssetBundle bundle)
+        public override void Load(IAssetBundle bundle)
         {
             switch (this.Color)
             {

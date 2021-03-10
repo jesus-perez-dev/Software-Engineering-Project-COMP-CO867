@@ -8,7 +8,7 @@ namespace MarbleSorterGame
     /// <summary>
     /// The main page where users can go to the setting screen or the game
     /// </summary>
-    public class Main
+    public class MainScreen
     {
         /// <summary>
         /// Method that gets called when the screen is to be redrawn
