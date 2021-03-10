@@ -61,7 +61,7 @@ namespace MarbleSorterGame
 
             //========= Game Menu Entities ===========
             Sensor colorSensor = new ColorSensor();
-            Sensor pressureSensor = new PressureSensor();
+            Sensor pressureSensor = new PressureSensor(new Vector2f(2, 5), new Vector2f(2,5));
             Sensor motionSensor = new MotionSensor();
             var sensors = new List<Sensor>() { colorSensor, pressureSensor, motionSensor };
 
@@ -70,17 +70,19 @@ namespace MarbleSorterGame
             Bucket bucket3 = new Bucket(bucketsReqColor[2], bucketsReqWeight[2], bucketsCapacity[2]);
             var Buckets = new List<Bucket>() {bucket1, bucket2, bucket3};
 
+            /**
             Trapdoor trapdoor1 = new Trapdoor();
             Trapdoor trapdoor2 = new Trapdoor();
             Trapdoor trapdoor3 = new Trapdoor();
             var trapdoors = new List<Trapdoor>() { trapdoor1, trapdoor2, trapdoor3 };
+            */
 
-            Marble marbleRedCorrect = new Marble(Color.Red, Weight.Large);
+            Marble marbleRedCorrect = new Marble(new Vector2f(30, 30), new Vector2f(30,30),Color.Red, Weight.Large);
             marbleRedCorrect.Velocity = _velocityConveyer;
             //Marble marbleRedIncorrect = new Marble(Color.Red, Weight.Small, _velocityConveyer);
 
             marbleRedCorrect.Position = new Vector2f(200f, 200f);
-            marbleRedCorrect.Dimensions = new Vector2f(50, 50);
+            marbleRedCorrect.Size = new Vector2f(50, 50);
 
             var marbles = new List<Marble>() { marbleRedCorrect} ;
 
@@ -97,9 +99,6 @@ namespace MarbleSorterGame
                 bucket1,
                 bucket2,
                 bucket3,
-                trapdoor1,
-                trapdoor2,
-                trapdoor3,
                 marbleRedCorrect,
             };
 
@@ -141,7 +140,7 @@ namespace MarbleSorterGame
                     Settings.Draw(Window, _font);
                     break;
                 case Menu.Game:
-                    Game.Draw(Window, _font, _entities);
+                    GameScreen.Draw(Window, _font, _entities);
                     break;
             }
         }

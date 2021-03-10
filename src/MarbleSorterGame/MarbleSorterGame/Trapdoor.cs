@@ -1,5 +1,6 @@
 ﻿using System;
 using SFML.Graphics;
+using SFML.System;
 
 namespace MarbleSorterGame
 {
@@ -13,10 +14,10 @@ namespace MarbleSorterGame
         /// <summary>
         /// Rotatable part of the conveyer belt that drops marbles onto buckets below
         /// </summary>
-        public Trapdoor()
+        public Trapdoor(Vector2f position, Vector2f size) : base(position, size)
         {
             _trapdoor = new RectangleShape();
-            _trapdoor.Size = Dimensions;
+            _trapdoor.Size = Size;
             _trapdoor.Position = Position;
 
             this.RotationAngle = 0f;
@@ -39,12 +40,17 @@ namespace MarbleSorterGame
         /// </summary>
         public void Toggle()
         {
-            this.Open = !this.Open;
+            Open = !Open;
         }
 
         public override void Render(RenderWindow window)
         {
             window.Draw(_trapdoor);
+        }
+
+        public override void Load(IAssetBundle bundle)
+        {
+            throw new NotImplementedException();
         }
     }
 }

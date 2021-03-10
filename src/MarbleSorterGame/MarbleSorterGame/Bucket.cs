@@ -44,7 +44,7 @@ namespace MarbleSorterGame
         /// Draws the bucket onto render target RenderWindow
         /// </summary>
         /// <param name="window">RenderWindow for marble to be drawn onto</param>
-        public new void Render(RenderWindow window)
+        public Override void Render(RenderWindow window)
         {
             window.Draw(_bucket);
         }
@@ -53,7 +53,7 @@ namespace MarbleSorterGame
         /// Extracts bucket assets, such as texture and sound, from bundle
         /// </summary>
         /// <param name="bundle"></param>
-        public new void Load(IAssetBundle bundle)
+        public Override void Load(IAssetBundle bundle)
         {
             _bucketTexture = bundle.BucketTexture;
             _dropSound = bundle.BucketDrop;

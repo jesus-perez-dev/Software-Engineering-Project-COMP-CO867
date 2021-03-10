@@ -4,30 +4,41 @@ using System;
 
 namespace MarbleSorterGame
 {
-    public class GameEntity
+    public abstract class GameEntity
     {
-        public String Name { get; set; }
-        public Vector2f Dimensions { get; set; }
-        public Vector2f Position { get; set; }
+        private RectangleShape _rect;
+        
+        public string Name { get; set; }
 
-        public GameEntity()
+        /// <summary>
+        /// Position of the game entity
+        /// </summary>
+        public Vector2f Position
         {
-
+            get => _rect.Position;
+            set => _rect.Position = value;
         }
 
         /// <summary>
-        /// Provides layout for basic game entity object
+        /// Size of the game entity
         /// </summary>
-        /// <param name="name"></param>
-        /// <param name="dimensions"></param>
-        /// <param name="position"></param>
-        public GameEntity(String name, Vector2f dimensions, Vector2f position)
+        public Vector2f Size
         {
-            this.Name = name;
-            this.Dimensions = dimensions;
-            this.Position = position;
+            get => _rect.Size;
+            set => _rect.Size = value;
         }
 
+        public FloatRect GlobalBounds => _rect.GetGlobalBounds();
+        
+
+        public GameEntity(Vector2f position, Vector2f size)
+        {
+            _rect = new RectangleShape
+            {
+                Position = position,
+                Size = size,
+            };
+        }
         /// <summary>
         /// Sets new position of gameentity based on current position and new position vector
         /// </summary>
@@ -38,23 +49,6 @@ namespace MarbleSorterGame
         }
 
         /// <summary>
-        /// Checks to see whether colliding entity intersects with game entity
-        /// </summary>
-        /// <param name="entity"></param>
-        /// <returns></returns>
-        public bool Overlaps(Shape entity)
-        {
-            //use .intersects and .getGlobalBounds (only for Shapes)
-            return false;
-        }
-
-        public bool Inside(GameEntity entity)
-        {
-            //if inside bucket?
-            return false;
-        }
-
-        /// <summary>
         /// Scales the game entity texture so that it fits its dimensions
         /// </summary>
         /// <param name="texture"></param>
@@ -62,26 +56,43 @@ namespace MarbleSorterGame
         public Vector2f ScaleEntity(Texture texture)
         {
             Vector2u textureSize = texture.Size;
-            Vector2f scaleRatio = new Vector2f(Dimensions.X / textureSize.X, Dimensions.Y / textureSize.Y);
+            Vector2f scaleRatio = new Vector2f(Size.X / textureSize.X, Size.Y / textureSize.Y);
             return scaleRatio;
         }
 
         /// <summary>
-        /// Renders GameEntity object onto target window
+        /// Checks to see whether colliding entity intersects with game entity
         /// </summary>
-        /// <param name="window">RenderWindow target</param>
-        public virtual void Render(RenderWindow window)
+        /// <param name="entity"></param>
+        /// <returns></returns>
+        public bool Overlaps(GameEntity entity)
         {
+            return _rect.GetGlobalBounds().Intersects(entity.GlobalBounds);
         }
 
         /// <summary>
-        /// Loads assets bundle such as textures and sounds onto the game entity
+        /// Does every point on the entity fit inside this entity
         /// </summary>
-        /// <param name="bundle"></param>
-        public virtual void Load(IAssetBundle bundle)
+        public bool Inside(GameEntity entity)
         {
+            var corners = new Vector2f[]
+            {
+                new Vector2f(entity.Position.X, entity.Position.Y), // Top-Left corner
+                new Vector2f(entity.Position.X + entity.Size.X, entity.Position.Y), // Top-Right corner
+                new Vector2f(entity.Position.X + entity.Size.X, entity.Position.Y + entity.Size.Y), // Bottom-Right corner
+                new Vector2f(entity.Position.X, entity.Position.Y + entity.Size.Y), // Bottom-Left corner
+            };
 
+            foreach (var corner in corners)
+            {
+                if (!_rect.GetGlobalBounds().Contains(corner.X, corner.Y))
+                    return false;
+            }
+
+            return true;
         }
 
+        public abstract void Render(RenderWindow window);
+        public abstract void Load(IAssetBundle bundle);
     }
 }

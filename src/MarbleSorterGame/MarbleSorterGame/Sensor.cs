@@ -1,6 +1,7 @@
 ﻿using System;
 using SFML.Audio;
 using SFML.Graphics;
+using SFML.System;
 
 namespace MarbleSorterGame
 {
@@ -12,7 +13,7 @@ namespace MarbleSorterGame
         //make enum?
         public String SensorType;
 
-        public Sensor()
+        protected Sensor(Vector2f position, Vector2f size) : base(position, size)
         {
         }
 
@@ -35,7 +36,7 @@ namespace MarbleSorterGame
         /// Draws sensor onto render target window
         /// </summary>
         /// <param name="window"></param>
-        public new void Render(RenderWindow window)
+        public override void Render(RenderWindow window)
         {
             window.Draw(_sensorSprite);
         }
@@ -44,7 +45,7 @@ namespace MarbleSorterGame
         /// extracts sensor assets from assets bundle
         /// </summary>
         /// <param name="bundle"></param>
-        public new void Load(IAssetBundle bundle)
+        public override void Load(IAssetBundle bundle)
         {
             _sensorSprite.Texture = bundle.SensorTexture;
             _sensorActivate = bundle.SensorActivate;
