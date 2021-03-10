@@ -7,15 +7,19 @@ namespace MarbleSorterGame
 {
     public abstract class Sensor : GameEntity
     {
-        private Sprite _sensorSprite;
-        private Sound _sensorActivate;
+        protected Sprite _sensorSprite;
+        protected Sound _sensorActivate;
         public string SensorType;
         
         // Perform all IO with the PLC Simulator in SenseCallback handler
         public event EventHandler SenseCallback;
         
-        public Sensor() { }
         protected Sensor(Vector2f position, Vector2f size) : base(position, size) {
+            _sensorSprite = new Sprite();
+            _sensorActivate = new Sound();
+
+            _sensorSprite.Position = Position;
+            Console.WriteLine(_sensorSprite.Position);
         }
 
         //inherted members might also call override
@@ -39,7 +43,6 @@ namespace MarbleSorterGame
         /// <param name="window"></param>
         public override void Render(RenderWindow window)
         {
-            _sensorSprite.Position = Position;
             window.Draw(_sensorSprite);
         }
 
@@ -49,10 +52,10 @@ namespace MarbleSorterGame
         /// <param name="bundle"></param>
         public override void Load(IAssetBundle bundle)
         {
-            _sensorActivate = bundle.SensorActivate;
-
-            _sensorSprite = new Sprite(bundle.SensorTexture);
+            _sensorSprite.Texture = bundle.SensorTexture;
             _sensorSprite.Scale = ScaleEntity(bundle.SensorTexture);
+
+            _sensorActivate = bundle.SensorActivate;
         }
     }
 }

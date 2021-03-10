@@ -13,7 +13,8 @@ namespace MarbleSorterGame
         private RectangleShape _trapdoor;
         private RectangleShape _indicateConveyorDrop;
         private bool _dropPossible;
-        private bool _moving;
+
+        public bool Moving { get; protected set; }
 
         public bool OpenStatus { get; private set; }
         public float RotationAngle { get; set; }
@@ -36,11 +37,7 @@ namespace MarbleSorterGame
             RotationAngle = 0f;
             OpenStatus = false;
             _dropPossible = false;
-            _moving = false;
-        }
-
-        public Trapdoor()
-        {
+            Moving = false;
         }
 
         /// <summary>
@@ -51,14 +48,12 @@ namespace MarbleSorterGame
         {
             RotationAngle += angleChange;
             _trapdoor.Rotation = RotationAngle;
-
-            Console.WriteLine(RotationAngle);
         }
 
         public void Open(float angleChange)
         {
-            if (_moving) return;
-            _moving = true;
+            if (Moving) return;
+            Moving = true;
 
             System.Timers.Timer timer = new System.Timers.Timer();
             timer.Interval = 100;
@@ -71,7 +66,7 @@ namespace MarbleSorterGame
                     timer.Dispose();
 
                     OpenStatus = true;
-                    _moving = false;
+                    Moving = false;
                 } else
                 {
                     Rotate(angleChange);
@@ -82,8 +77,8 @@ namespace MarbleSorterGame
 
         public void Close(float angleChange)
         {
-            if (_moving) return;
-            _moving = true;
+            if (Moving) return;
+            Moving = true;
 
             System.Timers.Timer timer = new System.Timers.Timer();
             timer.Interval = 100;
@@ -96,7 +91,7 @@ namespace MarbleSorterGame
                     timer.Dispose();
 
                     OpenStatus = false;
-                    _moving = false;
+                    Moving = false;
                 } else
                 {
                     Rotate(-angleChange);
@@ -106,7 +101,7 @@ namespace MarbleSorterGame
         }
         private void checkDropPossible()
         {
-            if(RotationAngle > _DROP_ANGLE && RotationAngle <= _OPEN_MAX_ANGLE + 1f)
+            if (RotationAngle > _DROP_ANGLE && RotationAngle <= _OPEN_MAX_ANGLE + 1f)
             {
                 _dropPossible = true;
             } else

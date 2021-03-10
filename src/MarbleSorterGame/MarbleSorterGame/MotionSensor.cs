@@ -10,15 +10,11 @@ namespace MarbleSorterGame
     /// </summary>
     public class MotionSensor : Sensor
     {
-
-        private int _maxCapacity;
-
-        public MotionSensor()
-        {
-        }
+        public int MaxCapacity { get; set; }
 
         public MotionSensor(Vector2f position, Vector2f size): base(position, size)
         {
+            //_sensorSprite.Position = position;
         }
 
     }

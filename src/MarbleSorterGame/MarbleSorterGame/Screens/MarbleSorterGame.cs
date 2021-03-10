@@ -30,6 +30,7 @@ namespace MarbleSorterGame
         {
             _bundle = new AssetBundleLoader("assets/");
             _font = new Font("assets/OpenSans-Regular.ttf");
+
             _gameScreen = new GameScreen(Window, _bundle, Window.Size.X, Window.Size.Y);
             _mainScreen = new MainScreen(Window, _bundle, Window.Size.X, Window.Size.Y);
             _settingsScreen = new SettingsScreen(Window, _bundle, Window.Size.X, Window.Size.Y);
@@ -70,7 +71,6 @@ namespace MarbleSorterGame
             //Sensor pressureSensor = new PressureSensor();
             //Sensor motionSensor = new MotionSensor();
             //var sensors = new List<Sensor>() { colorSensor, pressureSensor, motionSensor };
-
 
             /*
             Bucket bucket1 = new Bucket(bucketsReqColor[0], bucketsReqWeight[0], bucketsCapacity[0]);
