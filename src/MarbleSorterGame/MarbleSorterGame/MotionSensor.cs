@@ -9,11 +9,8 @@ namespace MarbleSorterGame
     /// </summary>
     public class MotionSensor : Sensor
     {
-        private Sprite _sensorSprite;
-        private SoundBuffer _sensorActivateBuffer;
-        private Sound _sensorActivate;
-
         private int _maxCapacity;
+
         public MotionSensor()
         {
         }

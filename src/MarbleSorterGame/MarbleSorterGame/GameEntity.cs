@@ -55,6 +55,18 @@ namespace MarbleSorterGame
         }
 
         /// <summary>
+        /// Scales the game entity texture so that it fits its dimensions
+        /// </summary>
+        /// <param name="texture"></param>
+        /// <returns>New dimension vector correctly ratio'd for the game entity dimension</returns>
+        public Vector2f ScaleEntity(Texture texture)
+        {
+            Vector2u textureSize = texture.Size;
+            Vector2f scaleRatio = new Vector2f(Dimensions.X / textureSize.X, Dimensions.Y / textureSize.Y);
+            return scaleRatio;
+        }
+
+        /// <summary>
         /// Renders GameEntity object onto target window
         /// </summary>
         /// <param name="window">RenderWindow target</param>

@@ -42,7 +42,7 @@ namespace MarbleSorterGame
             this.Open = !this.Open;
         }
 
-        public void Render(RenderWindow window)
+        public override void Render(RenderWindow window)
         {
             window.Draw(_trapdoor);
         }
