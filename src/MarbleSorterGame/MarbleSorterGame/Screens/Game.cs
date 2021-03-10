@@ -8,7 +8,7 @@ namespace MarbleSorterGame
     /// <summary>
     /// The game itself
     /// </summary>
-    public class Game
+    public class GameScreen
     {
         /// <summary>
         /// Method that gets called when the screen is to be redrawn

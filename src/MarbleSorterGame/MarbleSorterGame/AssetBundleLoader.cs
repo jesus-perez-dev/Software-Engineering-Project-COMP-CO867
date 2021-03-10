@@ -25,6 +25,8 @@ namespace MarbleSorterGame
         public Sound SensorActivate { get; set; }
         public MarbleGameConfiguration GameConfiguration { get; set; }
 
+        public Font Font { get; set; }
+
         public AssetBundleLoader(String assetDirectoryPath)
         {
             this.assetDirectoryPath = assetDirectoryPath;
@@ -33,19 +35,25 @@ namespace MarbleSorterGame
             {
                 GameConfiguration = ConfigurationLoader.Load(this.assetDirectoryPath + "presets.json");
 
-                this.BucketDrop = new Sound(new SoundBuffer(this.assetDirectoryPath + "/bucketDrop.ogg"));
-                this.BucketDropSuccess = new Sound(new SoundBuffer(this.assetDirectoryPath + "/bucketDropSuccess.ogg"));
-                this.BucketDropFail = new Sound(new SoundBuffer(this.assetDirectoryPath + "/bucketDropFail.ogg"));
-                this.SensorActivate = new Sound(new SoundBuffer(this.assetDirectoryPath + "/SensorActivate.ogg"));
+                Sound BucketDropSuccess = new Sound(new SoundBuffer(this.assetDirectoryPath + "/BucketDropSuccess.ogg"));
+                Sound BucketDropFail = new Sound(new SoundBuffer(this.assetDirectoryPath + "/BucketDropFail.ogg"));
+                Sound SensorActivate = new Sound(new SoundBuffer(this.assetDirectoryPath + "/SensorActivate.ogg"));
 
-                this.SensorTexture = new Texture(this.assetDirectoryPath + "sensor.jpg");
-                this.SensorSignalOffTexture = new Texture(this.assetDirectoryPath + "sensorSignalOff1.png");
-                this.SensorSignalOnTexture = new Texture(this.assetDirectoryPath + "sensorSignalOn1.png");
-                this.BucketTexture = new Texture(this.assetDirectoryPath + "bucket.png");
+                Font = new Font(assetDirectoryPath + "OpenSans-Regular.ttf");
+                SensorTexture = new Texture(this.assetDirectoryPath + "sensor.jpg");
+                BucketTexture = new Texture(this.assetDirectoryPath + "bucket.png");
+                GameConfiguration = ConfigurationLoader.Load(this.assetDirectoryPath + "presets.json");
                 
-                this.MarbleRedTexture = new Texture(this.assetDirectoryPath + "marbleRed.png");
-                this.MarbleBlueTexture = new Texture(this.assetDirectoryPath + "marbleBlue.png");
-                this.MarbleGreenTexture = new Texture(this.assetDirectoryPath + "marbleGreen.png");
+                /**
+                 * marble textures do not load, do not know why
+                Texture MarbleRedTexture = new Texture(this.assetDirectoryPath + "marble_red_texture.jpg");
+                Texture MarbleGreenTexture = new Texture(this.assetDirectoryPath + "marble_green_texture.jpg");
+                Texture MarbleBlueTexture = new Texture(this.assetDirectoryPath + "marble_blue_texture.jpg");
+                */
+
+                //this.BucketDropSuccess = BucketDropSuccess;
+                //this.BucketDropFail = BucketDropFail;
+                //this.SensorActivate = SensorActivate;
 
             }
             catch (SFML.System.LoadingFailedException e)

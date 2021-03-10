@@ -24,14 +24,14 @@ namespace MarbleSorterGame
         /// </summary>
         /// <param name="color">Color of marble</param>
         /// <param name="weight">Weight of marble</param>
-        public Marble(Color color, Weight weight)
+        public Marble(Vector2f position, Vector2f size, Color color, Weight weight) : base(position, size)
         {
             this.Color = color;
             this.Weight = weight;
             this.RotationAngle = 0f;
 
             _marbleShape = new RectangleShape();
-            _marbleShape.Size = Dimensions;
+            _marbleShape.Size = Size;
             _marbleShape.Position = Position;
 
             _marble = new Sprite();
@@ -101,7 +101,7 @@ namespace MarbleSorterGame
             _texture.Smooth = true;
 
             //center marble origin
-            _marble.Origin = new Vector2f(Position.X + (Dimensions.X / 2f), Position.Y + (Dimensions.Y / 2f));
+            _marble.Origin = new Vector2f(Position.X + (Size.X / 2f), Position.Y + (Size.Y / 2f));
 
             //scale texture to correct dimensions
             _marble.Scale = ScaleEntity(_texture);
