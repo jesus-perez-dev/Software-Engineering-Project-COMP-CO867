@@ -9,11 +9,6 @@ namespace MarbleSorterGame
         private RectangleShape _conveyor;
         private Vector2f _conveyorSpeed;
 
-        public Conveyor()
-        {
-
-        }
-
         public Conveyor(Vector2f position, Vector2f size, Vector2f conveyorSpeed) : base(position, size)
         {
             _conveyor = new RectangleShape(size);

@@ -14,7 +14,8 @@ namespace MarbleSorterGame
         private Drawable[] _drawables = { };
         private GameEntity[] _entities = { };
 
-        private EventHandler<SFML.Window.MouseButtonEventArgs> _game_mouseEvent;
+        private EventHandler<SFML.Window.MouseButtonEventArgs> _game_mouseClickEvent;
+        private EventHandler<SFML.Window.MouseMoveEventArgs> _game_mouseMoveEvent;
         private EventHandler<SFML.Window.KeyEventArgs> _game_keyEvent;
 
         // TODO: Pass a game configuration structure in here instead of width/height uints
@@ -86,6 +87,8 @@ namespace MarbleSorterGame
             Vector2f signalSize = sizer.Percent(3, 8);
             Vector2f sensorSize = new Vector2f(20, 20);
 
+            Vector2f helperPopupSize = new Vector2f(70, 15);
+
             Conveyor conveyor1 = new Conveyor(
                 sizer.Percent(0, 60),
                 sizer.Percent(100, 1),
@@ -96,6 +99,7 @@ namespace MarbleSorterGame
                 sizer.Percent(27, 60),
                 trapdoorSize
                 );
+            trapdoor1.HelperPopup = new Button("TRAPDOOR1", 10, font, new Vector2f(1000, 1000), helperPopupSize);
 
             Trapdoor trapdoor2 = new Trapdoor(
                 sizer.Percent(51, 60),
@@ -284,7 +288,7 @@ namespace MarbleSorterGame
             };
 
             //============ Mouse buttons event handlers ============
-            _game_mouseEvent = (Object sender, SFML.Window.MouseButtonEventArgs mouse) =>
+            _game_mouseClickEvent = (Object sender, SFML.Window.MouseButtonEventArgs mouse) =>
             {
                 if (buttonStart.IsPressed(mouse.X, mouse.Y))
                 {
@@ -307,6 +311,21 @@ namespace MarbleSorterGame
                 {
                     window.Close();
                 }
+            };
+
+            _game_mouseMoveEvent = (Object sender, SFML.Window.MouseMoveEventArgs mouse) =>
+            {
+                var mousePosition = new Vector2f(mouse.X, mouse.Y);
+
+                Console.WriteLine(mouse);
+                foreach (GameEntity entity in _entities)
+                {
+                    if (entity.MouseHovered(mousePosition))
+                    {
+                        entity.RenderHelperPopup(window, mousePosition);
+                    }
+                }
+
             };
 
             //============ Keyboard buttons event handlers ============
@@ -344,8 +363,9 @@ namespace MarbleSorterGame
                 entity.Render(window);
             }
 
-            window.MouseButtonPressed += _game_mouseEvent;
+            window.MouseButtonPressed += _game_mouseClickEvent;
             window.KeyPressed += _game_keyEvent;
+            window.MouseMoved += _game_mouseMoveEvent;
         }
     }
 }
