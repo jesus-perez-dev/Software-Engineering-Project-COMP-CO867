@@ -343,8 +343,22 @@ namespace MarbleSorterGame
                 }
             };
 
+            window.MouseButtonPressed += _game_mouseClickEvent;
+            window.KeyPressed += _game_keyEvent;
+            window.MouseMoved += _game_mouseMoveEvent;
+
         }
         
+        public void Update(RenderWindow window, Font font)
+        {
+            String infoText = String.Format(
+                "Conveyor speed: {0}\n" +
+                "Marbles ouput total: {1}\n" +
+                "Marbles passed: {2}\n" +
+                "#Correctly dropped Marbles: {3}\n" +
+                "#Incorrectly dropped Marbles: {4}\n",
+                "", "", "", "", "");
+        }
         
         /// <summary>
         /// Method that gets called when the screen is to be redrawn
@@ -362,10 +376,6 @@ namespace MarbleSorterGame
             {
                 entity.Render(window);
             }
-
-            window.MouseButtonPressed += _game_mouseClickEvent;
-            window.KeyPressed += _game_keyEvent;
-            window.MouseMoved += _game_mouseMoveEvent;
         }
     }
 }
