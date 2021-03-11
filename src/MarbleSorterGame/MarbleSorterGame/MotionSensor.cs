@@ -1,5 +1,6 @@
 ﻿using SFML.Audio;
 using SFML.Graphics;
+using SFML.System;
 using System;
 
 namespace MarbleSorterGame
@@ -9,18 +10,11 @@ namespace MarbleSorterGame
     /// </summary>
     public class MotionSensor : Sensor
     {
-        private Sprite _sensorSprite;
-        private SoundBuffer _sensorActivateBuffer;
-        private Sound _sensorActivate;
+        public int MaxCapacity { get; set; }
 
-        private int _maxCapacity;
-        public MotionSensor()
+        public MotionSensor(Vector2f position, Vector2f size): base(position, size)
         {
-        }
-
-        //PLC logic here
-        public override void Sense(Marble m)
-        {
+            //_sensorSprite.Position = position;
         }
 
     }

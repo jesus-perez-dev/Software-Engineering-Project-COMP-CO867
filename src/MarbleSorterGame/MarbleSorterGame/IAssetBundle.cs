@@ -10,6 +10,7 @@ namespace MarbleSorterGame
     /// </summary>
     public interface IAssetBundle
     {
+        public Sound BucketDrop { get; set; }
         public Sound BucketDropSuccess { get; set; }
         public Sound BucketDropFail { get; set; }
         public Texture BucketTexture { get; set; }
@@ -18,7 +19,10 @@ namespace MarbleSorterGame
         public Texture MarbleGreenTexture { get; set; }
 
         public Texture SensorTexture { get; set; }
+        public Texture SensorSignalOffTexture { get; set; }
+        public Texture SensorSignalOnTexture { get; set; }
         public Sound SensorActivate { get; set; }
 
+        public Font Font { get; set;  }
     }
 }

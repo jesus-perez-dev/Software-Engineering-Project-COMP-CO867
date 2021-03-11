@@ -10,22 +10,34 @@ namespace MarbleSorterGame
     /// </summary>
     public class MarbleSorterGame : GameLoop
     {
+        public const string WINDOW_TITLE = "PLC Training Simulator - Marble Sorter Game";
         public const uint DEFAULT_WINDOW_WIDTH = 800;
         public const uint DEFAULT_WINDOW_HEIGHT = 600;
         
-        public const string WINDOW_TITLE = "PLC Training Simulator - Marble Sorter Game";
+        private GameScreen _gameScreen;
+        private SettingsScreen _settingsScreen;
+        private MainScreen _mainScreen;
 
-        public static Menu ActiveMenu
-        {
-            get;
-            set;
-        }
-        
+        public static Menu ActiveMenu { get; set; }
+
+        private AssetBundleLoader _bundle;
         private static Font _font;
         private List<GameEntity> _entities;
+        private Vector2f _velocityGravity;
+        private Vector2f _velocityConveyer;
 
         public MarbleSorterGame() : base(DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT, WINDOW_TITLE, SFML.Graphics.Color.White)
         {
+            _bundle = new AssetBundleLoader("assets/");
+            _font = new Font("assets/OpenSans-Regular.ttf");
+
+            _gameScreen = new GameScreen(Window, _bundle, Window.Size.X, Window.Size.Y);
+            _mainScreen = new MainScreen(Window, _bundle, Window.Size.X, Window.Size.Y);
+            _settingsScreen = new SettingsScreen(Window, _bundle, Window.Size.X, Window.Size.Y);
+            _entities = new List<GameEntity>();
+
+            _velocityConveyer = new Vector2f(1, 0);
+            _velocityGravity= new Vector2f(0, 1);
         }
 
         /// <summary>
@@ -34,6 +46,7 @@ namespace MarbleSorterGame
         /// </summary>
         public override void LoadContent()
         {
+            _bundle = new AssetBundleLoader("assets/");
             _font = new Font("assets/OpenSans-Regular.ttf");
         }
 
@@ -55,45 +68,40 @@ namespace MarbleSorterGame
             bucketsReqColor.AddRange(new Color[3] { Color.Red, Color.Blue, Color.Green});
 
             //========= Game Menu Entities ===========
-            Sensor colorSensor = new ColorSensor();
-            Sensor pressureSensor = new PressureSensor();
-            Sensor motionSensor = new MotionSensor();
-            var sensors = new List<Sensor>() { colorSensor, pressureSensor, motionSensor };
+            //Sensor colorSensor = new ColorSensor();
+            //Sensor pressureSensor = new PressureSensor();
+            //Sensor motionSensor = new MotionSensor();
+            //var sensors = new List<Sensor>() { colorSensor, pressureSensor, motionSensor };
 
-
+            /*
             Bucket bucket1 = new Bucket(bucketsReqColor[0], bucketsReqWeight[0], bucketsCapacity[0]);
             Bucket bucket2 = new Bucket(bucketsReqColor[1], bucketsReqWeight[1], bucketsCapacity[1]);
             Bucket bucket3 = new Bucket(bucketsReqColor[2], bucketsReqWeight[2], bucketsCapacity[2]);
             var Buckets = new List<Bucket>() {bucket1, bucket2, bucket3};
-
             Trapdoor trapdoor1 = new Trapdoor();
             Trapdoor trapdoor2 = new Trapdoor();
             Trapdoor trapdoor3 = new Trapdoor();
             var trapdoors = new List<Trapdoor>() { trapdoor1, trapdoor2, trapdoor3 };
+            */
 
-            Marble marbleRedCorrect = new Marble(15, Color.Red, Weight.Large);
-            Marble marbleRedIncorrect = new Marble(15, Color.Red, Weight.Small);
+            Marble marbleRedCorrect = new Marble(new Vector2f(30,30), new Vector2f(100,100), Color.Red, Weight.Large);
+            Marble marbleRedIncorrect = new Marble(new Vector2f(30,30), new Vector2f(100,100), Color.Red, Weight.Small);
             var marbles = new List<Marble>() { marbleRedCorrect, marbleRedIncorrect } ;
+
+            marbleRedCorrect.Position = new Vector2f(200f, 200f);
+            marbleRedCorrect.Size = new Vector2f(50, 50);
+
+            //var marbles = new List<Marble>() { marbleRedCorrect} ;
 
             var bucketSignal1= new CircleShape();
             var bucketSignal2= new CircleShape();
             var bucketSignal3= new CircleShape();
             var bucketSignals = new List<CircleShape>() { bucketSignal1, bucketSignal2, bucketSignal3 };
 
-            _entities = new List<GameEntity>()
+            foreach(GameEntity entity in _entities)
             {
-                colorSensor,
-                pressureSensor,
-                motionSensor,
-                bucket1,
-                bucket2,
-                bucket3,
-                trapdoor1,
-                trapdoor2,
-                trapdoor3,
-                marbleRedCorrect,
-                marbleRedIncorrect
-            };
+                entity.Load(_bundle);
+            }
         }
 
         /// <summary>
@@ -102,7 +110,18 @@ namespace MarbleSorterGame
         /// </summary>
         public override void Update()
         {
-            
+            switch (ActiveMenu)
+            {
+                case Menu.Main:
+                    _mainScreen.Update(Window, _font);
+                    break;
+                case Menu.Settings:
+                    _settingsScreen.Update(Window, _font);
+                    break;
+                case Menu.Game:
+                    _gameScreen.Update(Window, _font);
+                    break;
+            }
         }
 
         /// <summary>
@@ -113,13 +132,13 @@ namespace MarbleSorterGame
             switch (ActiveMenu)
             {
                 case Menu.Main:
-                    Main.Draw(Window, _font);
+                    _mainScreen.Draw(Window, _font);
                     break;
                 case Menu.Settings:
-                    Settings.Draw(Window, _font);
+                    _settingsScreen.Draw(Window, _font);
                     break;
                 case Menu.Game:
-                    Game.Draw(Window, _font);
+                    _gameScreen.Draw(Window, _font);
                     break;
             }
         }
