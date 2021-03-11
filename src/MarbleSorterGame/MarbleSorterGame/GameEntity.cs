@@ -6,8 +6,13 @@ namespace MarbleSorterGame
 {
     public abstract class GameEntity
     {
+        public Button HelperPopup;
         private RectangleShape _rect;
-        
+        public string HelperText {
+            get => HelperPopup.LabelText;
+            set => HelperPopup.LabelText = value;
+        }
+
         public string Name { get; set; }
 
         /// <summary>
@@ -30,7 +35,6 @@ namespace MarbleSorterGame
 
         public FloatRect GlobalBounds => _rect.GetGlobalBounds();
 
-        public GameEntity() { }
         public GameEntity(Vector2f position, Vector2f size)
         {
             _rect = new RectangleShape
@@ -39,6 +43,7 @@ namespace MarbleSorterGame
                 Size = size,
             };
         }
+
         /// <summary>
         /// Sets new position of gameentity based on current position and new position vector
         /// </summary>
@@ -104,6 +109,25 @@ namespace MarbleSorterGame
             }
 
             return true;
+        }
+
+        public void RenderHelperPopup(RenderWindow window, Vector2f mousePosition)
+        {
+            if (HelperPopup is null) return;
+
+            HelperPopup.Position = mousePosition;
+            HelperPopup.Render(window);
+
+            Console.WriteLine(HelperPopup.Position);
+            Console.WriteLine(HelperPopup.Size);
+        }
+
+        public bool MouseHovered(Vector2f mousePosition)
+        {
+            return (
+                mousePosition.X > GlobalBounds.Left && mousePosition.X < GlobalBounds.Left + GlobalBounds.Width &&
+                mousePosition.Y > GlobalBounds.Top && mousePosition.Y < GlobalBounds.Top + GlobalBounds.Height
+                );
         }
 
         public abstract void Render(RenderWindow window);

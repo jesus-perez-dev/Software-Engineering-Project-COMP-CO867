@@ -11,6 +11,12 @@ public class Button : GameEntity
     private RectangleShape _button;
     private Text _text;
 
+	public String LabelText
+    {
+		get => _text.DisplayedString;
+		set => _text.DisplayedString = value;
+    }
+
 	/// <summary>
 	/// full constructor of Button class, with all parameters
 	/// </summary>
