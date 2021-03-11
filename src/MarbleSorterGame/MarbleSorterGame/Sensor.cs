@@ -1,46 +1,61 @@
 ﻿using System;
 using SFML.Audio;
 using SFML.Graphics;
+using SFML.System;
 
 namespace MarbleSorterGame
 {
     public abstract class Sensor : GameEntity
     {
-        private Sprite _sensorSprite;
-        private SoundBuffer _sensorActivateBuffer;
-        private Sound _sensorActivate;
+        protected Sprite _sensorSprite;
+        protected Sound _sensorActivate;
+        public string SensorType;
+        
+        // Perform all IO with the PLC Simulator in SenseCallback handler
+        public event EventHandler SenseCallback;
+        
+        protected Sensor(Vector2f position, Vector2f size) : base(position, size) {
+            _sensorSprite = new Sprite();
+            _sensorActivate = new Sound();
 
-        public String SensorType;
-
-        public Sensor()
-        {
+            _sensorSprite.Position = Position;
+            Console.WriteLine(_sensorSprite.Position);
         }
 
         //inherted members might also call override
-        public virtual void Sense(Marble m)
+        public void Sense(Marble m)
         {
             //write to PLC
         }
 
-        public void Render(RenderWindow window)
-        {
-            window.Draw(_sensorSprite);
-        }
-        public void Load(IAssetBundle bundle)
-        {
-            _sensorSprite.Texture = bundle.SensorTexture;
-            //_sensorActivateBuffer = bundle.SensorActivateBuffer;
-        }
 
-        public void PlayAudio()
+        /// <summary>
+        /// Plays sensor activation sound
+        /// </summary>
+        public void playActivateSound()
         {
-            //if activates
-            //multiple sounds can be stored in the same buffer, option could be to pass in the buffer
-            _sensorActivate.SoundBuffer = _sensorActivateBuffer;
             _sensorActivate.Play();
         }
 
-        public event EventHandler SenseCallback;
-        
+        /// <summary>
+        /// Draws sensor onto render target window
+        /// </summary>
+        /// <param name="window"></param>
+        public override void Render(RenderWindow window)
+        {
+            window.Draw(_sensorSprite);
+        }
+
+        /// <summary>
+        /// extracts sensor assets from assets bundle
+        /// </summary>
+        /// <param name="bundle"></param>
+        public override void Load(IAssetBundle bundle)
+        {
+            _sensorSprite.Texture = bundle.SensorTexture;
+            _sensorSprite.Scale = ScaleEntity(bundle.SensorTexture);
+
+            _sensorActivate = bundle.SensorActivate;
+        }
     }
 }
