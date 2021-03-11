@@ -110,13 +110,18 @@ namespace MarbleSorterGame
         /// </summary>
         public override void Update()
         {
-            String infoText = String.Format(
-                "Conveyor speed: {0}\n" +
-                "Marbles ouput total: {1}\n" +
-                "Marbles passed: {2}\n" +
-                "#Correctly dropped Marbles: {3}\n" +
-                "#Incorrectly dropped Marbles: {4}\n",
-                "", "", "", "", "");
+            switch (ActiveMenu)
+            {
+                case Menu.Main:
+                    _mainScreen.Update(Window, _font);
+                    break;
+                case Menu.Settings:
+                    _settingsScreen.Update(Window, _font);
+                    break;
+                case Menu.Game:
+                    _gameScreen.Update(Window, _font);
+                    break;
+            }
         }
 
         /// <summary>
