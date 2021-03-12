@@ -9,7 +9,7 @@ namespace MarbleSorterGame
     public class Marble : GameEntity
     {
         private Sprite _marble;
-        private RectangleShape _marbleShape;
+        // private IntRect _marbleShape;
         private Texture _texture;
 
         public float Radius;
@@ -30,12 +30,13 @@ namespace MarbleSorterGame
             this.Weight = weight;
             this.RotationAngle = 0f;
 
-            _marbleShape = new RectangleShape();
-            _marbleShape.Size = Size;
-            _marbleShape.Position = Position;
+            // _marbleShape = new IntRect();
+            // _marbleShape.Size = Size;
+            // _marbleShape.Position = Position;
 
-            _marble = new Sprite();
+            _marble = new Sprite(_texture);
             _marble.Position = position;
+            // _marble.TextureRect = _marbleShape;
         }
 
         /// <summary>
@@ -63,6 +64,14 @@ namespace MarbleSorterGame
         public void Move()
         {
             Position = new Vector2f(Position.X + Velocity.X, Position.Y + Velocity.Y);
+        }
+        
+        /// <summary>
+        /// Moves marble in direction of current marble velocity vector
+        /// </summary>
+        public void Move(int directionX, int directionY)
+        {
+            _marble.Position = new Vector2f( _marble.Position.X + directionX, _marble.Position.Y + directionY);
         }
 
         /// <summary>
@@ -101,7 +110,7 @@ namespace MarbleSorterGame
             _texture.Smooth = true;
 
             //center marble origin
-            _marble.Origin = new Vector2f(Position.X + (Size.X / 2f), Position.Y + (Size.Y / 2f));
+            _marble.Origin = new Vector2f(_marble.Texture.Size.X / 2, _marble.Texture.Size.Y / 2);
 
             //scale texture to correct dimensions
             _marble.Scale = ScaleEntity(_texture);

@@ -118,8 +118,8 @@ namespace MarbleSorterGame
             HelperPopup.Position = mousePosition;
             HelperPopup.Render(window);
 
-            Console.WriteLine(HelperPopup.Position);
-            Console.WriteLine(HelperPopup.Size);
+            // Console.WriteLine(HelperPopup.Position);
+            // Console.WriteLine(HelperPopup.Size);
         }
 
         public bool MouseHovered(Vector2f mousePosition)

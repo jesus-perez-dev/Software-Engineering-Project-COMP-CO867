@@ -68,14 +68,12 @@ namespace MarbleSorterGame
 
                 Window.DispatchEvents();
                 
-                while (lag * 1000d >= FPS)
+                while (lag >= FPS / 10d)
                 {
                     Update();
                     Window.Clear(WindowClearColor);
                     Draw();
-
-
-                    lag -= FPS ;
+                    lag -= FPS / 10d;
                 }
                 Window.Display();
             }
