@@ -16,6 +16,11 @@ namespace MarbleSorterGame
             Sizer sizer = new Sizer(screenWidth, screenHeight);
 
         }
+        
+        public void Update(RenderWindow window, Font font)
+        {
+            
+        }
 
         /// <summary>
         /// Method that gets called when the screen is to be redrawn
