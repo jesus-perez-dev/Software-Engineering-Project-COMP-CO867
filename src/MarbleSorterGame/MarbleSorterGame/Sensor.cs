@@ -19,7 +19,7 @@ namespace MarbleSorterGame
             _sensorActivate = new Sound();
 
             _sensorSprite.Position = Position;
-            Console.WriteLine(_sensorSprite.Position);
+            // Console.WriteLine(_sensorSprite.Position);
         }
 
         //inherted members might also call override
