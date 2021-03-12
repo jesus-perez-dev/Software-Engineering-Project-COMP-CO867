@@ -18,6 +18,10 @@ namespace MarbleSorterGame
         private EventHandler<SFML.Window.MouseMoveEventArgs> _game_mouseMoveEvent;
         private EventHandler<SFML.Window.KeyEventArgs> _game_keyEvent;
 
+        private Marble marble1;
+        private Marble marble2;
+        private Marble marble3;
+        
         // TODO: Pass a game configuration structure in here instead of width/height uints
         public GameScreen(RenderWindow window, AssetBundleLoader bundle, uint screenWidth, uint screenHeight)
         {
@@ -240,6 +244,10 @@ namespace MarbleSorterGame
                 signalSize
                 );
 
+            marble1 = new Marble(sizer.Percent(15, 57), new Vector2f(40, 40), Color.Red, Weight.Large);
+            marble2 = new Marble(sizer.Percent(10, 57), new Vector2f(40, 40), Color.Blue, Weight.Large);
+            marble3 = new Marble(sizer.Percent(5, 57), new Vector2f(40, 40), Color.Green, Weight.Large);
+
             _entities = new GameEntity[]
             {
                 buttonStart,
@@ -272,7 +280,10 @@ namespace MarbleSorterGame
                 trapdoorClosed2,
                 trapdoorOpen3,
                 trapdoorClosed3,
-                signalMotion1
+                signalMotion1,
+                marble1,
+                marble2,
+                marble3
             };
 
             foreach (GameEntity entity in _entities)
@@ -292,17 +303,15 @@ namespace MarbleSorterGame
             {
                 if (buttonStart.IsPressed(mouse.X, mouse.Y))
                 {
-                    /**
-                    foreach(GameEntity entity in _entities)
-                    {
-                        if (entity is Marble)
-                        {
-                            Marble marble = (Marble)entity;
-                            marble.Move();
-                            marble.Rotate(2f);
-                        }
-                    }
-                    */
+                    // foreach(GameEntity entity in _entities)
+                    // {
+                    //     if (entity is Marble)
+                    //     {
+                    //         Marble marble = (Marble)entity;
+                    //         marble.Move();
+                    //         marble.Rotate(2f);
+                    //     }
+                    // }
                 }
                 else if (buttonReset.IsPressed(mouse.X, mouse.Y))
                 {
@@ -317,7 +326,7 @@ namespace MarbleSorterGame
             {
                 var mousePosition = new Vector2f(mouse.X, mouse.Y);
 
-                Console.WriteLine(mouse);
+                // Console.WriteLine(mouse);
                 foreach (GameEntity entity in _entities)
                 {
                     if (entity.MouseHovered(mousePosition))
@@ -351,13 +360,22 @@ namespace MarbleSorterGame
         
         public void Update(RenderWindow window, Font font)
         {
-            String infoText = String.Format(
-                "Conveyor speed: {0}\n" +
-                "Marbles ouput total: {1}\n" +
-                "Marbles passed: {2}\n" +
-                "#Correctly dropped Marbles: {3}\n" +
-                "#Incorrectly dropped Marbles: {4}\n",
-                "", "", "", "", "");
+            
+            marble1.Move(1,0);
+            marble1.Rotate(2);
+            
+            marble2.Move(1,0);
+            marble2.Rotate(2);
+            
+            marble3.Move(1,0);
+            marble3.Rotate(2);
+            // String infoText = String.Format(
+            //     "Conveyor speed: {0}\n" +
+            //     "Marbles ouput total: {1}\n" +
+            //     "Marbles passed: {2}\n" +
+            //     "#Correctly dropped Marbles: {3}\n" +
+            //     "#Incorrectly dropped Marbles: {4}\n",
+            //     "", "", "", "", "");
         }
         
         /// <summary>
