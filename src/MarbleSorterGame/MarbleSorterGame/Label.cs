@@ -3,68 +3,66 @@ using System.Dynamic;
 using System.Runtime.CompilerServices;
 using SFML.System;
 using SFML.Graphics;
-using UtilityCentering;
+using MarbleSorterGame;
 
 /// <summary>
-/// label is simply a centered text
+/// Centered text with basic rectangle shape surrounding it
 /// </summary>
-
-public class Label : Drawable
+public class Label : GameEntity
 {
-	public Text Text { get; }
-	public Vector2f _labelPosition { get; }
-	private String _labelText;
-	private int _labelSize;
-	private Color _labelColor;
-	private Font _labelFont;
+	protected Text _label { get; set; }
+	protected RectangleShape _labelBox { get; set; }
+	public String Text {
+		get => _label.DisplayedString;
+		set => _label.DisplayedString = value;
+	}
 
 	/// <summary>
-	/// Use when creating stand-alone label
+	/// Generates a label with a rectangle shape surrounding it
 	/// </summary>
-	/// <param name="labelText"></param>
-	/// <param name="labelPosition"></param>
-	/// <param name="labelSize"></param>
-	/// <param name="labelColor"></param>
-	/// <param name="labelFont"></param>
-	public Label(String labelText, Vector2f ?labelPosition, int labelSize, Color labelColor, Font labelFont)
+	/// <param name="text"></param>
+	/// <param name="font"></param>
+	/// <param name="textSize"></param>
+	/// <param name="textColor"></param>
+	/// <param name="labelBoxColor"></param>
+	/// <param name="labelPadding"></param>
+	/// <param name="position"></param>
+	/// <param name="size">Will not matter, size of label will be determined by text size and label padding</param>
+	public Label(String text, Font font, uint textSize, float labelPadding, SFML.Graphics.Color textColor, SFML.Graphics.Color ?labelBoxColor, Vector2f position, Vector2f size) :
+		base(position, size)
 	{
-		_labelText = labelText;
-		if (labelPosition != null) {
-			_labelPosition = (Vector2f)labelPosition;
+		_label = new Text(text, font, textSize);
+		_label.FillColor = textColor;
+
+		//resize label according to its displayed text size
+		FloatRect textBounds = _label.GetLocalBounds();
+		Size = new Vector2f(textBounds.Width, textBounds.Height);
+		_label.Origin = CenterOrigin();
+		_label.Position = position;
+
+		//resize labelbox to surround text
+		_labelBox = new RectangleShape();
+		if (!labelBoxColor.Equals(null))
+        {
+            _labelBox.FillColor = (SFML.Graphics.Color)labelBoxColor;
         }
 
-		_labelSize = labelSize;
-		_labelColor = labelColor;
-		_labelFont = labelFont;
+		_labelBox.Size = new Vector2f(textBounds.Width + labelPadding * 2, textBounds.Height + labelPadding * 2);
+		_labelBox.Origin = _label.Origin;
+		_labelBox.Position = position;
 
-		Text = new Text(_labelText, _labelFont, (uint)_labelSize);
-		Text.FillColor = _labelColor;
-
-		Text.Origin = Text.CenterOrigin();
-		Text.Position = _labelPosition;
+		//resize of label to include label box
+		FloatRect labelBounds = _labelBox.GetLocalBounds();
+		Size = new Vector2f(labelBounds.Width, labelBounds.Height);
 	}
 
-	public static Text Create(string displayString, Vector2f position, Font font, Color color)
-	{
-		/**
-		return new Text
-		{
-			Position = position,
-			DisplayedString = displayString,
-			Font = font,
-			FillColor = color,
-		};
-		*/
-		return null;
-	}
-	
-	public void Draw(RenderWindow window)
+    public override void Render(RenderWindow window)
     {
-		window.Draw(Text);
+		window.Draw(_labelBox);
+		window.Draw(_label);
     }
 
-    public void Draw(RenderTarget target, RenderStates states)
+    public override void Load(IAssetBundle bundle)
     {
-		target.Draw(Text);
     }
 }

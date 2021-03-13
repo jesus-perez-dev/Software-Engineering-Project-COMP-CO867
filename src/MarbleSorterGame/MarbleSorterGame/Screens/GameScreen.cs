@@ -11,7 +11,6 @@ namespace MarbleSorterGame
     /// </summary>
     public class GameScreen
     {
-        private Drawable[] _drawables = { };
         private GameEntity[] _entities = { };
 
         private EventHandler<SFML.Window.MouseButtonEventArgs> _game_mouseClickEvent;
@@ -38,32 +37,44 @@ namespace MarbleSorterGame
             };
 
             //================= Buttons ====================//
-            Button buttonStart;
-            Button buttonReset;
-            Button buttonExit;
+            Label buttonStart;
+            Label buttonReset;
+            Label buttonExit;
+            uint buttonTextSize = 10;
+            float buttonLabelPadding = 10f;
+            var buttonColor = new SFML.Graphics.Color(200, 200, 200);
 
-            buttonStart = new Button(
+            buttonStart = new Label(
                 "Start Simulation",
-                0.4f,
                 font,
+                buttonTextSize,
+                buttonLabelPadding,
+                SFML.Graphics.Color.Black,
+                buttonColor,
                 sizer.Percent(60, 3),
-                sizer.Percent(13, 5)
+                sizer.Percent(0, 0)
             );
 
-            buttonReset = new Button(
+            buttonReset = new Label(
                 "Reset Game",
-                0.4f,
                 font,
+                buttonTextSize,
+                buttonLabelPadding,
+                SFML.Graphics.Color.Black,
+                buttonColor,
                 sizer.Percent(75, 3),
-                sizer.Percent(13, 5)
+                sizer.Percent(0, 0)
                 );
 
-            buttonExit = new Button(
+            buttonExit = new Label(
                 "Exit Game",
-                0.4f,
                 font,
+                buttonTextSize,
+                buttonLabelPadding,
+                SFML.Graphics.Color.Black,
+                buttonColor,
                 sizer.Percent(90, 3),
-                sizer.Percent(13, 5)
+                sizer.Percent(0, 0)
             );
 
             //================= Labels ====================//
@@ -71,18 +82,14 @@ namespace MarbleSorterGame
 
             Label instructions = new Label(
                 instructionsText,
-                sizer.Percent(30, 3),
-                10,
+                font,
+                buttonTextSize,
+                buttonLabelPadding,
                 SFML.Graphics.Color.Black,
-                font);
-
-            Label infobar = new Label(
-                instructionsText,
+                buttonColor,
                 sizer.Percent(30, 3),
-                10,
-                SFML.Graphics.Color.Black,
-                font);
-
+                sizer.Percent(0, 0)
+                );
 
             //================= Game Entities ====================//
 
@@ -90,7 +97,6 @@ namespace MarbleSorterGame
             Vector2f gateEntranceSize = sizer.Percent(1, 9);
             Vector2f signalSize = sizer.Percent(3, 8);
             Vector2f sensorSize = new Vector2f(20, 20);
-
             Vector2f helperPopupSize = new Vector2f(70, 15);
 
             Conveyor conveyor1 = new Conveyor(
@@ -103,7 +109,17 @@ namespace MarbleSorterGame
                 sizer.Percent(27, 60),
                 trapdoorSize
                 );
-            trapdoor1.HelperPopup = new Button("TRAPDOOR1", 10, font, new Vector2f(1000, 1000), helperPopupSize);
+
+            trapdoor1.HelperPopup = new Label(
+                "TRAPDOOR 1",
+                font,
+                10,
+                2f,
+                SFML.Graphics.Color.Black,
+                null,
+                new Vector2f(0, 0),
+                new Vector2f(0, 0)
+                );
 
             Trapdoor trapdoor2 = new Trapdoor(
                 sizer.Percent(51, 60),
@@ -253,6 +269,7 @@ namespace MarbleSorterGame
                 buttonStart,
                 buttonReset,
                 buttonExit,
+                instructions,
                 conveyor1,
                 trapdoor1,
                 trapdoor2,
@@ -286,32 +303,18 @@ namespace MarbleSorterGame
                 marble3
             };
 
+            //============ Initialize game entity assets ============
             foreach (GameEntity entity in _entities)
             {
                 entity.Load(bundle);
             }
             
-            _drawables = new Drawable[]
-            {
-                menuBarBackground,
-                instructions,
-                infobar
-            };
 
             //============ Mouse buttons event handlers ============
             _game_mouseClickEvent = (Object sender, SFML.Window.MouseButtonEventArgs mouse) =>
             {
                 if (buttonStart.IsPressed(mouse.X, mouse.Y))
                 {
-                    // foreach(GameEntity entity in _entities)
-                    // {
-                    //     if (entity is Marble)
-                    //     {
-                    //         Marble marble = (Marble)entity;
-                    //         marble.Move();
-                    //         marble.Rotate(2f);
-                    //     }
-                    // }
                 }
                 else if (buttonReset.IsPressed(mouse.X, mouse.Y))
                 {
@@ -326,7 +329,6 @@ namespace MarbleSorterGame
             {
                 var mousePosition = new Vector2f(mouse.X, mouse.Y);
 
-                // Console.WriteLine(mouse);
                 foreach (GameEntity entity in _entities)
                 {
                     if (entity.MouseHovered(mousePosition))
@@ -369,6 +371,7 @@ namespace MarbleSorterGame
             
             marble3.Move(0.005f,0);
             marble3.Rotate(0.01f);
+
             // String infoText = String.Format(
             //     "Conveyor speed: {0}\n" +
             //     "Marbles ouput total: {1}\n" +
@@ -385,11 +388,6 @@ namespace MarbleSorterGame
         /// <param name="font"></param>
         public void Draw(RenderWindow window, Font font)
         {
-            foreach (var drawable in _drawables)
-            {
-                window.Draw(drawable);
-            }
-            
             foreach (var entity in _entities) 
             {
                 entity.Render(window);

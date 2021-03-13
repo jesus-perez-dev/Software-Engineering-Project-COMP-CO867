@@ -6,12 +6,8 @@ namespace MarbleSorterGame
 {
     public abstract class GameEntity
     {
-        public Button HelperPopup;
+        public Label HelperPopup { get; set; }
         private RectangleShape _rect;
-        public string HelperText {
-            get => HelperPopup.LabelText;
-            set => HelperPopup.LabelText = value;
-        }
 
         public string Name { get; set; }
 
@@ -34,6 +30,7 @@ namespace MarbleSorterGame
         }
 
         public FloatRect GlobalBounds => _rect.GetGlobalBounds();
+        public FloatRect LocalBounds => _rect.GetLocalBounds();
 
         public GameEntity(Vector2f position, Vector2f size)
         {
@@ -54,9 +51,14 @@ namespace MarbleSorterGame
         }
 
 
+        /// <summary>
+        /// centers origin of game entity give it's asset loaded texture
+        /// </summary>
+        /// <param name="texture"></param>
+        /// <returns></returns>
         public Vector2f CenterOrigin(Texture texture)
         {
-            FloatRect bounds = this.GlobalBounds;
+            FloatRect bounds = GlobalBounds;
 
             return (
                 new Vector2f(
@@ -64,7 +66,20 @@ namespace MarbleSorterGame
                         bounds.Top + texture.Size.Y / 2f
                     )
                 );
+        }
 
+        /// <summary>
+        /// centers origin of any game entity 
+        /// </summary>
+        /// <returns></returns>
+        public Vector2f CenterOrigin()
+        {
+            Vector2f entityCenter = new Vector2f(
+                    LocalBounds.Left + LocalBounds.Width / 2.0f,
+                    LocalBounds.Top + LocalBounds.Height / 2.0f
+                );
+
+            return entityCenter;
         }
 
         /// <summary>
@@ -87,6 +102,19 @@ namespace MarbleSorterGame
         public bool Overlaps(GameEntity entity)
         {
             return _rect.GetGlobalBounds().Intersects(entity.GlobalBounds);
+        }
+
+        /// <summary>
+        /// checks whether button has been pressed with mouse coordinates
+        /// </summary>
+        /// <param name="X">Mouse pressed x-coordinate</param>
+        /// <param name="Y">Mouse pressed y-coordinate</param>
+        /// <returns></returns>
+        public bool IsPressed(int X, int Y)
+        {
+            return (
+                X > GlobalBounds.Left && X < GlobalBounds.Left + GlobalBounds.Width &&
+                Y > GlobalBounds.Top && Y < GlobalBounds.Top + GlobalBounds.Height);
         }
 
         /// <summary>
@@ -116,10 +144,12 @@ namespace MarbleSorterGame
             if (HelperPopup is null) return;
 
             HelperPopup.Position = mousePosition;
+            //why is helper popup null here?
             HelperPopup.Render(window);
 
-            // Console.WriteLine(HelperPopup.Position);
-            // Console.WriteLine(HelperPopup.Size);
+            Console.WriteLine(HelperPopup.Position);
+            Console.WriteLine(HelperPopup.Size);
+            Console.WriteLine(HelperPopup);
         }
 
         public bool MouseHovered(Vector2f mousePosition)
