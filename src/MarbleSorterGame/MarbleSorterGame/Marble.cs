@@ -69,7 +69,7 @@ namespace MarbleSorterGame
         /// <summary>
         /// Moves marble in direction of current marble velocity vector
         /// </summary>
-        public void Move(int directionX, int directionY)
+        public void Move(float directionX, float directionY)
         {
             _marble.Position = new Vector2f( _marble.Position.X + directionX, _marble.Position.Y + directionY);
         }

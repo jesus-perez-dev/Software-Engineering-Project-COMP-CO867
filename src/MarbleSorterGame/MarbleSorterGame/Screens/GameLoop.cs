@@ -56,25 +56,28 @@ namespace MarbleSorterGame
             LoadContent();
             Initialize();
 
+            double current;
+            double elapsed;
             double previous = DateTimeOffset.Now.ToUnixTimeMilliseconds();
             double lag = 0d;
 
             while (Window.IsOpen)
             {
-                double current = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-                double elasped = current - previous;
+                current = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+                elapsed = current - previous;
                 previous = current;
-                lag += elasped;
+                lag += elapsed;
 
                 Window.DispatchEvents();
                 
-                while (lag >= FPS / 10d)
+                while (lag >= FPS / 1000d)
                 {
                     Update();
-                    Window.Clear(WindowClearColor);
-                    Draw();
-                    lag -= FPS / 10d;
+                    lag -= FPS / 1000d;
                 }
+
+                Window.Clear(WindowClearColor);
+                Draw();
                 Window.Display();
             }
         }
