@@ -361,14 +361,14 @@ namespace MarbleSorterGame
         public void Update(RenderWindow window, Font font)
         {
             
-            marble1.Move(1,0);
-            marble1.Rotate(2);
+            marble1.Move(0.005f,0);
+            marble1.Rotate(0.01f);
             
-            marble2.Move(1,0);
-            marble2.Rotate(2);
+            marble2.Move(0.005f,0);
+            marble2.Rotate(0.01f);
             
-            marble3.Move(1,0);
-            marble3.Rotate(2);
+            marble3.Move(0.005f,0);
+            marble3.Rotate(0.01f);
             // String infoText = String.Format(
             //     "Conveyor speed: {0}\n" +
             //     "Marbles ouput total: {1}\n" +
