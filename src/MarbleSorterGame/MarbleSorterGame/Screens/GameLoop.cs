@@ -56,8 +56,6 @@ namespace MarbleSorterGame
         /// </summary>
         public void Run()
         {
-            double startMs = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-
             while (Window.IsOpen)
             {
                 Window.DispatchEvents();
