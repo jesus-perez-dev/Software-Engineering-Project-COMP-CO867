@@ -36,7 +36,7 @@ namespace MarbleSorterGame.Screens
         private Button _buttonExit;
         
         // TODO: Pass a game configuration structure in here instead of width/height uints
-        public GameScreen(RenderWindow window, AssetBundleLoader bundle, uint screenWidth, uint screenHeight, IIODriver driver)
+        public GameScreen(RenderWindow window, IAssetBundle bundle, uint screenWidth, uint screenHeight, IIODriver driver)
         {
             _driver = driver;
             
