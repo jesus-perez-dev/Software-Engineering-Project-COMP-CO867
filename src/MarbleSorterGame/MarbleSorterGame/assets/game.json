@@ -1,9 +1,9 @@
 {
   "ScreenWidth": 1920,
   "ScreenHeight": 1080,
-  "MarblePeriod": 5.0,
-  "GatePeriod": 5.0,
-  "TrapDoorPeriod": 5.0,
+  "MarblePeriod": 9.0,
+  "GatePeriod": 0.5,
+  "TrapDoorPeriod": 0.5,
   "Presets": [
     {
       "Marbles": [
