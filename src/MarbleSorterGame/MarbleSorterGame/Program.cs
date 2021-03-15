@@ -4,7 +4,8 @@ namespace MarbleSorterGame
     {
         public static void Main(string[] args)
         {
-            MarbleSorterGame msg = new MarbleSorterGame();
+            var bundle = new AssetBundleLoader("assets/");
+            MarbleSorterGame msg = new MarbleSorterGame(bundle);
             msg.Run();
         }
     }

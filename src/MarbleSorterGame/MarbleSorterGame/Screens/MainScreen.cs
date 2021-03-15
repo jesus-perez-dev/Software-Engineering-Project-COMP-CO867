@@ -39,7 +39,7 @@ namespace MarbleSorterGame.Screens
             }
         }
         
-        public MainScreen(RenderWindow window, AssetBundleLoader bundle, uint screenWidth, uint screenHeight)
+        public MainScreen(RenderWindow window, IAssetBundle bundle, uint screenWidth, uint screenHeight)
         {
             _font = bundle.Font;
             _window = window;
