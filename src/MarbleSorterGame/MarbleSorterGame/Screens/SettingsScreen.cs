@@ -17,7 +17,7 @@ namespace MarbleSorterGame
 
         }
         
-        public void Update(RenderWindow window, Font font)
+        public void Update()
         {
             
         }
@@ -27,7 +27,7 @@ namespace MarbleSorterGame
         /// </summary>
         /// <param name="window"></param>
         /// <param name="font"></param>
-        public void Draw(RenderWindow window, Font font)
+        public void Draw(RenderWindow window)
         {
             //default sizes
             Vector2f buttonSize = new Vector2f(window.Size.X / 7, window.Size.Y / 11);
