@@ -6,7 +6,7 @@ using SFML.Window;
 using SFML.Audio;
 using SFML.System;
 
-namespace MarbleSorterGame.Screens
+namespace MarbleSorterGame
 {
     /// <summary>
     /// Abstract class for the game loop. This is the general structure of how the game needs to be implemented.
