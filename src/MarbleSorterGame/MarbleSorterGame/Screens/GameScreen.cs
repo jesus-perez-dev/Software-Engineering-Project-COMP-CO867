@@ -1,12 +1,13 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using MarbleSorterGame.GameEntities;
 using MarbleSorterGame.Utilities;
 using SFML.Graphics;
 using SFML.System;
 using SFML.Window;
 
-namespace MarbleSorterGame
+namespace MarbleSorterGame.Screens
 {
     /// <summary>
     /// The game itself

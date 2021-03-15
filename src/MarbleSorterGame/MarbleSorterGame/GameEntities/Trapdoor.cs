@@ -2,7 +2,7 @@
 using SFML.Graphics;
 using SFML.System;
 
-namespace MarbleSorterGame
+namespace MarbleSorterGame.GameEntities
 {
     public class Trapdoor : GameEntity
     {

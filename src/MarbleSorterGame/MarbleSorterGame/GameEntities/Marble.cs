@@ -1,4 +1,5 @@
 ﻿using System;
+using MarbleSorterGame.GameEntities;
 using MarbleSorterGame.Utilities;
 using SFML.Audio;
 using SFML.Graphics;

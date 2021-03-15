@@ -1,10 +1,11 @@
 using System;
 using System.Runtime.CompilerServices;
+using MarbleSorterGame.GameEntities;
 using MarbleSorterGame.Utilities;
 using SFML.Graphics;
 using SFML.System;
 
-namespace MarbleSorterGame
+namespace MarbleSorterGame.Screens
 {
     /// <summary>
     /// The main page where users can go to the setting screen or the game
