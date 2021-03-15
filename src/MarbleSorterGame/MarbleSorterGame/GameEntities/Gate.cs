@@ -9,9 +9,9 @@ namespace MarbleSorterGame.GameEntities
         public bool IsFullyOpen => _gate.Position.Y <= _minGateY;
         public bool IsFullyClosed => _gate.Position.Y >= _maxGateY;
         
-        // Assuming 60 FPS: Tick = 16.6ms per frame
-        // Game ticks in 5 seconds = 5000 / 16.6 = 300 game ticks
-        private static int StepTicks = 100;
+        private float _gatePeriod = 30f; // Default: Take 30 seconds to open
+        
+        private float Step => Size.Y / GameLoop.FPS / _gatePeriod;
 
         /// How much to in/decrement gate Y-position per-step
         private float _step;
@@ -23,9 +23,9 @@ namespace MarbleSorterGame.GameEntities
         public void SetState(bool opening)
         {
             if (opening)
-                _step = - (Size.Y / StepTicks);
+                _step = Step * -1;
             else
-                _step = (Size.Y / StepTicks);
+                _step = Step;
         }
 
         public Gate(Vector2f position, Vector2f size) : base(position, size)
@@ -34,9 +34,7 @@ namespace MarbleSorterGame.GameEntities
             _gate.FillColor = SFML.Graphics.Color.Black;
             _gate.Position = position;
             
-            // Assuming 60 FPS: Tick = 16.6ms per frame
-            // Game ticks in 5 seconds = 5000 / 16.6 = 300 game ticks
-            _step = size.Y / StepTicks;
+            _step = size.Y / Step;
             _minGateY = position.Y - size.Y;
             _maxGateY = position.Y;
         }
@@ -56,6 +54,7 @@ namespace MarbleSorterGame.GameEntities
 
         public override void Load(IAssetBundle bundle)
         {
+            _gatePeriod = bundle.GameConfiguration.GatePeriod;
         }
     }
 }
