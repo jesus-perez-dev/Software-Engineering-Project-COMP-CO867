@@ -9,15 +9,23 @@ namespace MarbleSorterGame
         private const float _OPEN_MAX_ANGLE = 90f;
         private const float _CLOSE_MAX_ANGLE = 0f;
         private const float _DROP_ANGLE = 45f;
-
+        // At 60fps, 5 seconds = 300 game ticks
+        private const float _ROTATE_STEP_TICKS = 300;
+        private float _rotateStep;
+        
         private RectangleShape _trapdoor;
         private RectangleShape _indicateConveyorDrop;
-        private bool _dropPossible;
-
-        public bool Moving { get; protected set; }
-
-        public bool OpenStatus { get; private set; }
-        public float RotationAngle { get; set; }
+        
+        public bool IsOpen => RotationAngle > _DROP_ANGLE && RotationAngle <= _OPEN_MAX_ANGLE + 1f;
+        public float RotationAngle => _trapdoor.Rotation;
+        
+        public void SetState(bool opening)
+        {
+            if (opening)
+                _rotateStep = (_OPEN_MAX_ANGLE / _ROTATE_STEP_TICKS);
+            else
+                _rotateStep = - (_OPEN_MAX_ANGLE / _ROTATE_STEP_TICKS);
+        }
 
         /// <summary>
         /// Rotatable part of the conveyer belt that drops marbles onto buckets below
@@ -33,99 +41,23 @@ namespace MarbleSorterGame
             _indicateConveyorDrop.Size = Size;
             _indicateConveyorDrop.FillColor = new SFML.Graphics.Color(181, 181, 181);
             _indicateConveyorDrop.Position = position;
-
-            RotationAngle = 0f;
-            OpenStatus = false;
-            _dropPossible = false;
-            Moving = false;
         }
 
-        /// <summary>
-        /// Rotates trapdoor at an angle
-        /// </summary>
-        /// <param name="angleChange"></param>
-        public void Rotate(float angleChange)
+        public void Update()
         {
-            RotationAngle += angleChange;
-            _trapdoor.Rotation = RotationAngle;
-        }
-
-        public void Open(float angleChange)
-        {
-            if (Moving) return;
-            Moving = true;
-
-            System.Timers.Timer timer = new System.Timers.Timer();
-            timer.Interval = 100;
-            timer.Enabled = true;
-            timer.Elapsed += (Object source, System.Timers.ElapsedEventArgs e) =>
-            {
-                if (RotationAngle >= _OPEN_MAX_ANGLE)
-                {
-                    timer.Stop();
-                    timer.Dispose();
-
-                    OpenStatus = true;
-                    Moving = false;
-                } else
-                {
-                    Rotate(angleChange);
-                    checkDropPossible();
-                }
-            };
-        }
-
-        public void Close(float angleChange)
-        {
-            if (Moving) return;
-            Moving = true;
-
-            System.Timers.Timer timer = new System.Timers.Timer();
-            timer.Interval = 100;
-            timer.Enabled = true;
-            timer.Elapsed += (Object source, System.Timers.ElapsedEventArgs e) =>
-            {
-                if (RotationAngle <= _CLOSE_MAX_ANGLE)
-                {
-                    timer.Stop();
-                    timer.Dispose();
-
-                    OpenStatus = false;
-                    Moving = false;
-                } else
-                {
-                    Rotate(-angleChange);
-                    checkDropPossible();
-                }
-            };
-        }
-        private void checkDropPossible()
-        {
-            if (RotationAngle > _DROP_ANGLE && RotationAngle <= _OPEN_MAX_ANGLE + 1f)
-            {
-                _dropPossible = true;
-            } else
-            {
-                _dropPossible = false;
-            }
-        }
-
-        /// <summary>
-        /// Opens the trapdoor if already closed, and closes trapdoor if already open
-        /// Open/close describe state of whether marble can 'roll' over trapdoor or not
-        /// </summary>
-        public void Toggle()
-        {
-            OpenStatus = !OpenStatus;
+            float newRotation = Math.Min(Math.Max(_CLOSE_MAX_ANGLE, RotationAngle + _rotateStep), _OPEN_MAX_ANGLE);
+            _trapdoor.Rotation = newRotation;
         }
 
         public override void Render(RenderWindow window)
         {
+            //base.Render(window);
+            if (_trapdoor == null)
+                return;
+            
             window.Draw(_trapdoor);
-            if (_dropPossible)
-            {
+            if (IsOpen)
                 window.Draw(_indicateConveyorDrop);
-            }
         }
 
         public override void Load(IAssetBundle bundle)
