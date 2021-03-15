@@ -1,32 +1,56 @@
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using MarbleSorterGame.Utilities;
 using SFML.Graphics;
 using SFML.System;
+using SFML.Window;
 
 namespace MarbleSorterGame
 {
     /// <summary>
     /// The game itself
     /// </summary>
-    public class GameScreen
+    public class GameScreen : IDisposable
     {
-        private Drawable[] _drawables = { };
-        private GameEntity[] _entities = { };
+        private Vector2f MarbleFallVelocity = default;
+        private Vector2f MarbleRollVelocity = default;
+        
+        private Drawable[] _drawables;
+        private GameEntity[] _entities;
 
-        private EventHandler<SFML.Window.MouseButtonEventArgs> _game_mouseClickEvent;
-        private EventHandler<SFML.Window.MouseMoveEventArgs> _game_mouseMoveEvent;
-        private EventHandler<SFML.Window.KeyEventArgs> _game_keyEvent;
+        private IIODriver _driver;
 
-        private Marble marble1;
-        private Marble marble2;
-        private Marble marble3;
+        private Gate _gateEntrance;
+        private Conveyor _conveyor;
+        private Marble[] _marbles;
+        private Trapdoor[] _trapDoors;
+        private Bucket[] _buckets;
+        
+        private RenderWindow _window;
+        
+        // UI Buttons
+        private Button _buttonStart;
+        private Button _buttonReset;
+        private Button _buttonExit;
         
         // TODO: Pass a game configuration structure in here instead of width/height uints
-        public GameScreen(RenderWindow window, AssetBundleLoader bundle, uint screenWidth, uint screenHeight)
+        public GameScreen(RenderWindow window, AssetBundleLoader bundle, uint screenWidth, uint screenHeight, IIODriver driver)
         {
+            _driver = driver;
+            
             Font font = bundle.Font;
             Sizer sizer = new Sizer(screenWidth, screenHeight);
+
+            // Stick marble roll velocity to resolution size
+            // 300 ticks = 5 seconds
+            MarbleRollVelocity = new Vector2f((float)screenWidth / 800, 0);
+            MarbleFallVelocity = new Vector2f(0, (float)screenHeight / 300);
+
+            _window = window;
+            _window.MouseButtonPressed += GameMouseClickEventHandler;
+            _window.KeyPressed += GameKeyEventHandler;
+            _window.MouseMoved += GameMouseMoveEventHandler;
             
             //================= Background widgets ====================//
             // Menu bar background (slight gray recantgle behind buttons)
@@ -38,11 +62,7 @@ namespace MarbleSorterGame
             };
 
             //================= Buttons ====================//
-            Button buttonStart;
-            Button buttonReset;
-            Button buttonExit;
-
-            buttonStart = new Button(
+            _buttonStart = new Button(
                 "Start Simulation",
                 0.4f,
                 font,
@@ -50,7 +70,7 @@ namespace MarbleSorterGame
                 sizer.Percent(13, 5)
             );
 
-            buttonReset = new Button(
+            _buttonReset = new Button(
                 "Reset Game",
                 0.4f,
                 font,
@@ -58,7 +78,7 @@ namespace MarbleSorterGame
                 sizer.Percent(13, 5)
                 );
 
-            buttonExit = new Button(
+            _buttonExit = new Button(
                 "Exit Game",
                 0.4f,
                 font,
@@ -83,66 +103,35 @@ namespace MarbleSorterGame
                 SFML.Graphics.Color.Black,
                 font);
 
-
             //================= Game Entities ====================//
-
-            Vector2f trapdoorSize = sizer.Percent(8, 1);
-            Vector2f gateEntranceSize = sizer.Percent(1, 9);
-            Vector2f signalSize = sizer.Percent(3, 8);
-            Vector2f sensorSize = new Vector2f(20, 20);
-
-            Vector2f helperPopupSize = new Vector2f(70, 15);
-
-            Conveyor conveyor1 = new Conveyor(
+            
+            _conveyor = new Conveyor(
                 sizer.Percent(0, 60),
                 sizer.Percent(100, 1),
                 new Vector2f(1, 0)
                 );
 
-            Trapdoor trapdoor1 = new Trapdoor(
-                sizer.Percent(27, 60),
-                trapdoorSize
-                );
-            trapdoor1.HelperPopup = new Button("TRAPDOOR1", 10, font, new Vector2f(1000, 1000), helperPopupSize);
+            Vector2f trapdoorSize = new Vector2f(MarbleSorterGame.WINDOW_WIDTH/15, _conveyor.Size.Y); //sizer.Percent(8, 1);
+            Vector2f gateEntranceSize = sizer.Percent(1, 9);
+            Vector2f signalSize = sizer.Percent(3, 8);
+            Vector2f sensorSize = new Vector2f(20, 20);
 
-            Trapdoor trapdoor2 = new Trapdoor(
-                sizer.Percent(51, 60),
-                trapdoorSize
-                );
-
-            Trapdoor trapdoor3 = new Trapdoor(
-                sizer.Percent(76, 60),
-                trapdoorSize
-                );
-
-            Bucket bucket1 = new Bucket(
-                sizer.Percent(25, 80),
-                sizer.Percent(10, 20),
-                Color.Red,
-                Weight.Large,
-                20
-                );
-
-            Bucket bucket2 = new Bucket(
-                sizer.Percent(50, 80),
-                sizer.Percent(10, 20),
-                Color.Red,
-                Weight.Large,
-                20
-                );
-
-            Bucket bucket3 = new Bucket(
-                sizer.Percent(75, 80),
-                sizer.Percent(10, 20),
-                Color.Red,
-                Weight.Large,
-                20
-                );
+            Vector2f helperPopupSize = new Vector2f(70, 15);
+            
+            // TODO: Populate this list based on game configuration
+            _trapDoors = new[]
+            {
+                new Trapdoor( sizer.Percent(27, 60), trapdoorSize ), // Left-most
+                new Trapdoor( sizer.Percent(51, 60), trapdoorSize ), 
+                new Trapdoor( sizer.Percent(76, 60), trapdoorSize ) // Right-most
+            };
 
             Gate gateEntrance = new Gate(
                 sizer.Percent(13, 52),
                 gateEntranceSize
                 );
+
+            _gateEntrance = gateEntrance;
 
             PressureSensor sensorPressureStart = new PressureSensor(
                 sizer.Percent(3, 55),
@@ -215,7 +204,7 @@ namespace MarbleSorterGame
                 );
 
             SignalLight trapdoorOpen1 = new SignalLight(
-                new Vector2f(trapdoor1.Position.X, trapdoor1.Position.Y - 60),
+                new Vector2f(_trapDoors[0].Position.X, _trapDoors[0].Position.Y - 60),
                 signalSize
                 );
 
@@ -225,17 +214,17 @@ namespace MarbleSorterGame
                 );
 
             SignalLight trapdoorOpen2 = new SignalLight(
-                new Vector2f(trapdoor2.Position.X, trapdoor2.Position.Y - 60),
+                new Vector2f(_trapDoors[1].Position.X, _trapDoors[1].Position.Y - 60),
                 signalSize
                 );
 
             SignalLight trapdoorClosed2 = new SignalLight(
-                new Vector2f(trapdoor2.Position.X + signalSize.X, trapdoorOpen2.Position.Y),
+                new Vector2f(_trapDoors[1].Position.X + signalSize.X, _trapDoors[1].Position.Y),
                 signalSize
                 );
 
             SignalLight trapdoorOpen3 = new SignalLight(
-                new Vector2f(trapdoor3.Position.X, trapdoor3.Position.Y - 60),
+                new Vector2f(_trapDoors[2].Position.X, _trapDoors[2].Position.Y - 60),
                 signalSize
                 );
 
@@ -243,24 +232,44 @@ namespace MarbleSorterGame
                 new Vector2f(trapdoorOpen3.Position.X + signalSize.X, trapdoorOpen3.Position.Y),
                 signalSize
                 );
+            
+            // TODO: Populate list based on file configuration
+            _marbles = new[]
+            {
+                new Marble(sizer, new Vector2f(40, _conveyor.Position.Y), Color.Red, Weight.Large),
+                new Marble(sizer, new Vector2f(40, _conveyor.Position.Y), Color.Blue, Weight.Medium),
+                new Marble(sizer, new Vector2f(40, _conveyor.Position.Y), Color.Green, Weight.Small),
+            };
 
-            marble1 = new Marble(sizer.Percent(15, 57), new Vector2f(40, 40), Color.Red, Weight.Large);
-            marble2 = new Marble(sizer.Percent(10, 57), new Vector2f(40, 40), Color.Blue, Weight.Large);
-            marble3 = new Marble(sizer.Percent(5, 57), new Vector2f(40, 40), Color.Green, Weight.Large);
-
+            _buckets = new[]
+            {
+                new Bucket(sizer.Percent(27, 100), sizer.Percent(10, 20), Color.Red, Weight.Small, 20),
+                new Bucket(sizer.Percent(51,100), sizer.Percent(10, 20), Color.Green, Weight.Medium, 20),
+                new Bucket(sizer.Percent(76,100), sizer.Percent(10, 20), Color.Blue, Weight.Large, 20),
+            };
+            
+            // Adjust bucket positions to be at very bottom of screen
+            foreach (var bucket in _buckets)
+            {
+                bucket.Position -= new Vector2f(0, bucket.Size.Y);
+            }
+            
+            // Set marble initialal positions based on screen dimensions
+            Vector2f offset = new Vector2f(0,0);
+            foreach (var marble in _marbles.Reverse())
+            {
+                //marble.Position = sizer.Percent(0, 0);
+                marble.Position = new Vector2f(marble.Position.X, _conveyor.Position.Y - marble.Size.Y);
+                marble.Position -= offset;
+                offset = new Vector2f(offset.X + marble.Size.X, 0);
+            }
+            
             _entities = new GameEntity[]
             {
-                buttonStart,
-                buttonReset,
-                buttonExit,
-                conveyor1,
-                trapdoor1,
-                trapdoor2,
-                trapdoor3,
-                bucket1,
-                bucket2,
-                bucket3,
-                gateEntrance,
+                _buttonStart,
+                _buttonReset,
+                _buttonExit,
+                _conveyor,
                 sensorColorStart,
                 sensorPressureStart,
                 signalColor1,
@@ -281,10 +290,14 @@ namespace MarbleSorterGame
                 trapdoorOpen3,
                 trapdoorClosed3,
                 signalMotion1,
-                marble1,
-                marble2,
-                marble3
             };
+
+            _entities = _entities.ToList()
+                .Concat(_marbles)
+                .Concat(_trapDoors)
+                .Concat(_buckets)
+                .Concat(new [] { gateEntrance })
+                .ToArray();
 
             foreach (GameEntity entity in _entities)
             {
@@ -297,85 +310,110 @@ namespace MarbleSorterGame
                 instructions,
                 infobar
             };
+        }
 
-            //============ Mouse buttons event handlers ============
-            _game_mouseClickEvent = (Object sender, SFML.Window.MouseButtonEventArgs mouse) =>
+        public void GameMouseMoveEventHandler(object? sender, SFML.Window.MouseMoveEventArgs mouse)
+        {
+            // TODO: Implement on-hover logic for game entities
+        }
+
+        public void GameMouseClickEventHandler(object? sender, MouseButtonEventArgs mouse)
+        {
+            if (_buttonStart.IsPressed(mouse.X, mouse.Y))
             {
-                if (buttonStart.IsPressed(mouse.X, mouse.Y))
-                {
-                    // foreach(GameEntity entity in _entities)
-                    // {
-                    //     if (entity is Marble)
-                    //     {
-                    //         Marble marble = (Marble)entity;
-                    //         marble.Move();
-                    //         marble.Rotate(2f);
-                    //     }
-                    // }
-                }
-                else if (buttonReset.IsPressed(mouse.X, mouse.Y))
-                {
-                }
-                else if (buttonExit.IsPressed(mouse.X, mouse.Y))
-                {
-                    window.Close();
-                }
-            };
-
-            _game_mouseMoveEvent = (Object sender, SFML.Window.MouseMoveEventArgs mouse) =>
+                // TODO: Start the simulation (?)
+            }
+            else if (_buttonReset.IsPressed(mouse.X, mouse.Y))
             {
-                var mousePosition = new Vector2f(mouse.X, mouse.Y);
-
-                // Console.WriteLine(mouse);
-                foreach (GameEntity entity in _entities)
-                {
-                    if (entity.MouseHovered(mousePosition))
-                    {
-                        entity.RenderHelperPopup(window, mousePosition);
-                    }
-                }
-
-            };
-
-            //============ Keyboard buttons event handlers ============
-            _game_keyEvent = (Object sender, SFML.Window.KeyEventArgs key) =>
+                // TODO: Reset the game
+            }
+            else if (_buttonExit.IsPressed(mouse.X, mouse.Y))
             {
-                if (key.Code == SFML.Window.Keyboard.Key.R)
-                {
-                    gateEntrance.Open(2f);
-                    trapdoor1.Open(2f);
-                }
-                else if (key.Code == SFML.Window.Keyboard.Key.C)
-                {
-                    gateEntrance.Close(2f);
-                    trapdoor1.Close(2f);
-                }
-            };
+                Dispose();
+                _window.Close();
+            }
+        }
 
-            window.MouseButtonPressed += _game_mouseClickEvent;
-            window.KeyPressed += _game_keyEvent;
-            window.MouseMoved += _game_mouseMoveEvent;
-
+        public void GameKeyEventHandler(object? sender, KeyEventArgs key)
+        {
+            if (_driver is KeyboardIODriver kbdriver)
+            {
+                kbdriver.UpdateByKey(key);
+            }
         }
         
-        public void Update(RenderWindow window, Font font)
+        public void Update()
         {
+            _gateEntrance.SetState(_driver.Gate);
+            _trapDoors[0].SetState(_driver.TrapDoor1);
+            _trapDoors[1].SetState(_driver.TrapDoor2);
+            _trapDoors[2].SetState(_driver.TrapDoor3);
+
+            foreach (var trapdoor in _trapDoors)
+            {
+                trapdoor.Update();
+            }
+
+            foreach (var marble in _marbles)
+            {
+                // By default, marble should roll right
+                marble.Velocity = MarbleRollVelocity;
+                
+                // If marble is touching gate and gate is closed, do not move
+                if (_gateEntrance.Overlaps(marble) && !_gateEntrance.IsFullyOpen)
+                    marble.Velocity = new Vector2f(0f, 0);
+                
+                // If marble has started falling, keep it falling
+                if (marble.Position.Y > _conveyor.Position.Y)
+                    marble.Velocity = MarbleFallVelocity;
+            }
             
-            marble1.Move(0.005f,0);
-            marble1.Rotate(0.01f);
+            // If marbles are touching/overlapping each other, the marble farthest to left should stop moving
+            // NOTE: This assumes marble order is placed from left-to-right!
+            for (int i = 0; i < _marbles.Length - 1; i++)
+            {
+                if (_marbles[i].Overlaps(_marbles[i + 1]))
+                {
+                    _marbles[i].Velocity = new Vector2f(0f, _marbles[i].Velocity.Y);
+                }
+            }
             
-            marble2.Move(0.005f,0);
-            marble2.Rotate(0.01f);
+            // If marble is overtop a trap-door, and the trap door is open, switch velocity to falling
+            foreach (var marble in _marbles)
+            {
+                foreach (var trapdoor in _trapDoors)
+                {
+                    if (marble.InsideHorizontal(trapdoor) && trapdoor.IsOpen)
+                    {
+                        marble.Velocity = MarbleFallVelocity;
+                    }
+                }
+            }
+
+            // Now actually update marble coordinates
+            foreach (var m in _marbles)
+            {
+                m.Update();
+            }
             
-            marble3.Move(0.005f,0);
-            marble3.Rotate(0.01f);
-            // String infoText = String.Format(
-            //     "Conveyor speed: {0}\n" +
-            //     "Marbles ouput total: {1}\n" +
-            //     "Marbles passed: {2}\n" +
-            //     "#Correctly dropped Marbles: {3}\n" +
-            //     "#Incorrectly dropped Marbles: {4}\n",
-            //     "", "", "", "", "");
+            // When the marble is complete inside the bucket, insert marble and teleport it offscreen
+            foreach (var marble in _marbles)
+            {
+                foreach (var bucket in _buckets)
+                {
+                    if (bucket.Inside(marble))
+                    {
+                        // Set marble position offscreen and update bucket counters
+                        marble.Position = new Vector2f(50000, 50000);
+                        bool success = bucket.InsertMarble(marble);
+                    }
+                }
+            }
+
+            _gateEntrance.Update();
+            
+            // Update IIODriver instance
+            _driver.Update();
         }
         
         /// <summary>
@@ -383,7 +421,7 @@ namespace MarbleSorterGame
         /// </summary>
         /// <param name="window"></param>
         /// <param name="font"></param>
-        public void Draw(RenderWindow window, Font font)
+        public void Draw(RenderWindow window)
         {
             foreach (var drawable in _drawables)
             {
@@ -394,6 +432,13 @@ namespace MarbleSorterGame
             {
                 entity.Render(window);
             }
+        }
+
+        public void Dispose()
+        {
+            _window.MouseButtonPressed -= GameMouseClickEventHandler;
+            _window.KeyPressed -= GameKeyEventHandler;
+            _window.MouseMoved -= GameMouseMoveEventHandler;
         }
     }
 }

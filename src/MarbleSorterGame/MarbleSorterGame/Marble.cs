@@ -1,4 +1,5 @@
 ﻿using System;
+using MarbleSorterGame.Utilities;
 using SFML.Audio;
 using SFML.Graphics;
 using SFML.System;
@@ -8,112 +9,82 @@ namespace MarbleSorterGame
 {
     public class Marble : GameEntity
     {
-        private Sprite _marble;
-        // private IntRect _marbleShape;
-        private Texture _texture;
+        private Sprite _sprite;
 
-        public float Radius;
-        public Color Color;
-        public Weight Weight;
-
-        public float RotationAngle { get; set; }
+        public float Radius { get; }
+        public Color Color { get; }
+        public Weight Weight { get; }
         public Vector2f Velocity { get; set; }
 
-        /// <summary>
         /// Marble that rolls across the conveyer, contains data about color and weight that needs to be dropped in the right buckets
-        /// </summary>
-        /// <param name="color">Color of marble</param>
-        /// <param name="weight">Weight of marble</param>
-        public Marble(Vector2f position, Vector2f size, Color color, Weight weight) : base(position, size)
+        public Marble(Sizer sizer, Vector2f position, Color color, Weight weight)//: base(position, size)
         {
-            this.Color = color;
-            this.Weight = weight;
-            this.RotationAngle = 0f;
+            Color = color;
+            Weight = weight;
 
-            // _marbleShape = new IntRect();
-            // _marbleShape.Size = Size;
-            // _marbleShape.Position = Position;
+            Vector2f size = new Vector2f(0, 0);
 
-            _marble = new Sprite(_texture);
-            _marble.Position = position;
-            // _marble.TextureRect = _marbleShape;
+            if (weight == Weight.Large)
+                size = new Vector2f(MarbleSorterGame.WINDOW_WIDTH/20, MarbleSorterGame.WINDOW_WIDTH/20); //sizer.Percent(5 ,5);
+
+            if (weight == Weight.Medium)
+                size = new Vector2f(MarbleSorterGame.WINDOW_WIDTH/30, MarbleSorterGame.WINDOW_WIDTH/30); //sizer.Percent(4.5f, 4.5f);
+            
+            if (weight == Weight.Small)
+                size = new Vector2f(MarbleSorterGame.WINDOW_WIDTH/40,MarbleSorterGame.WINDOW_WIDTH/40); //sizer.Percent(3.5f, 3.5f);
+
+            Position = position;
+            Radius = size.X / 2;
+            Size = size;
         }
 
-        /// <summary>
-        /// Rotates the marble at a given angle
-        /// </summary>
-        /// <param name="angleChange"></param>
-        public void Rotate(float angleChange)
-        {
-            this.RotationAngle += angleChange;
-            _marble.Rotation = this.RotationAngle;
-        }
-
-        /// <summary>
-        /// Adds a new velocity vector on top of the exist marble velocity vector
-        /// </summary>
-        /// <param name="velocityChange"></param>
-        public void VelocityAdd(Vector2f velocityChange)
-        {
-            this.Velocity = new Vector2f(this.Velocity.X + velocityChange.X, this.Velocity.Y + velocityChange.Y);
-        }
-
-        /// <summary>
-        /// Moves marble in direction of current marble velocity vector
-        /// </summary>
-        public void Move()
+        /// Increment position by velocity and rotate accordingly
+        public void Update()
         {
             Position = new Vector2f(Position.X + Velocity.X, Position.Y + Velocity.Y);
-        }
-        
-        /// <summary>
-        /// Moves marble in direction of current marble velocity vector
-        /// </summary>
-        public void Move(float directionX, float directionY)
-        {
-            _marble.Position = new Vector2f( _marble.Position.X + directionX, _marble.Position.Y + directionY);
+            _sprite.Position = new Vector2f(Position.X + Size.X/2, Position.Y + Size.Y/2);
+            _sprite.Rotation += Velocity.X;
         }
 
-        /// <summary>
         /// Draws marble onto render target RenderWindow
-        /// </summary>
-        /// <param name="window">RenderWindow for marble to be drawn onto</param>
         public override void Render(RenderWindow window)
         {
-            window.Draw(_marble);
+            //base.Render(window);
+            window.Draw(_sprite);
         }
 
-        /// <summary>
         /// Extracts marble texture from bundle from chosen color and scales it correctly to marble dimension
-        /// </summary>
-        /// <param name="bundle"></param>
         public override void Load(IAssetBundle bundle)
         {
-            switch (this.Color)
+            Texture texture = null;
+            
+            switch (Color)
             {
                 case Color.Red:
-                    _texture = bundle.MarbleRedTexture;
+                    texture = bundle.MarbleRedTexture;
                     break;
-
                 case Color.Blue:
-                    _texture = bundle.MarbleBlueTexture;
+                    texture = bundle.MarbleBlueTexture;
                     break;
-
                 case Color.Green:
-                    _texture = bundle.MarbleGreenTexture;
+                    texture = bundle.MarbleGreenTexture;
                     break;
+                default:
+                    throw new ArgumentException("Undefined texture for marble color: " + Color);
             }
-
-            _marble.Texture = _texture;
-
+            
             //_marble.TextureRect = new IntRect(0, 0, 100, 100);
-            _texture.Smooth = true;
+            texture.Smooth = false;
+
+            _sprite = new Sprite(texture);
+            _sprite.Position = Position;
 
             //center marble origin
-            _marble.Origin = new Vector2f(_marble.Texture.Size.X / 2, _marble.Texture.Size.Y / 2);
+            _sprite.Origin = new Vector2f(_sprite.Texture.Size.X / 2, _sprite.Texture.Size.Y / 2);
+            //EntityRectOrigin = _sprite.Origin;
 
             //scale texture to correct dimensions
-            _marble.Scale = ScaleEntity(_texture);
+            _sprite.Scale = ScaleEntity(texture);
         }
     }
 }
