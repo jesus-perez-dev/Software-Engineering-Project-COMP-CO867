@@ -13,7 +13,8 @@ namespace MarbleSorterGame
     /// </summary>
     public abstract class GameLoop
     {
-        public const int FPS = 60;
+        public static int FPS = 60;
+        public static int MS_PER_TICK = 1000/FPS;
         
         // Update resolution from config file
         public static uint WINDOW_WIDTH;
