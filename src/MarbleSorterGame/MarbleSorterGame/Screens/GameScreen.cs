@@ -14,9 +14,6 @@ namespace MarbleSorterGame.Screens
     /// </summary>
     public class GameScreen : IDisposable
     {
-        private Vector2f MarbleFallVelocity = default;
-        private Vector2f MarbleRollVelocity = default;
-        
         private Drawable[] _drawables;
         private GameEntity[] _entities;
 
@@ -42,11 +39,6 @@ namespace MarbleSorterGame.Screens
             
             Font font = bundle.Font;
             Sizer sizer = new Sizer(screenWidth, screenHeight);
-
-            // Stick marble roll velocity to resolution size
-            // 300 ticks = 5 seconds
-            MarbleRollVelocity = new Vector2f((float)screenWidth / 800, 0);
-            MarbleFallVelocity = new Vector2f(0, (float)screenHeight / 300);
 
             _window = window;
             _window.MouseButtonPressed += GameMouseClickEventHandler;
@@ -358,15 +350,15 @@ namespace MarbleSorterGame.Screens
             foreach (var marble in _marbles)
             {
                 // By default, marble should roll right
-                marble.Velocity = MarbleRollVelocity;
+                marble.SetState(MarbleState.Rolling);
                 
                 // If marble is touching gate and gate is closed, do not move
                 if (_gateEntrance.Overlaps(marble) && !_gateEntrance.IsFullyOpen)
-                    marble.Velocity = new Vector2f(0f, 0);
+                    marble.SetState(MarbleState.Still);
                 
                 // If marble has started falling, keep it falling
                 if (marble.Position.Y > _conveyor.Position.Y)
-                    marble.Velocity = MarbleFallVelocity;
+                    marble.SetState(MarbleState.Falling);
             }
             
             // If marbles are touching/overlapping each other, the marble farthest to left should stop moving
@@ -375,7 +367,7 @@ namespace MarbleSorterGame.Screens
             {
                 if (_marbles[i].Overlaps(_marbles[i + 1]))
                 {
-                    _marbles[i].Velocity = new Vector2f(0f, _marbles[i].Velocity.Y);
+                    _marbles[i].SetState(MarbleState.Still);
                 }
             }
             
@@ -386,7 +378,7 @@ namespace MarbleSorterGame.Screens
                 {
                     if (marble.InsideHorizontal(trapdoor) && trapdoor.IsOpen)
                     {
-                        marble.Velocity = MarbleFallVelocity;
+                        marble.SetState(MarbleState.Falling);
                     }
                 }
             }
