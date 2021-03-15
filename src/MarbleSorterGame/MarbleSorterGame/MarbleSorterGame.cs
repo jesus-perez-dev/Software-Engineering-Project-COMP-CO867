@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using SFML.Graphics;
 using SFML.System;
 
-namespace MarbleSorterGame
+namespace MarbleSorterGame.Screens
 {
     /// <summary>
     /// The implementation of the abstract game loop 
