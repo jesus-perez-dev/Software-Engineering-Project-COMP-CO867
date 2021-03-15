@@ -10,8 +10,11 @@ namespace MarbleSorterGame.GameEntities
         private const float _CLOSE_MAX_ANGLE = 0f;
         private const float _DROP_ANGLE = 45f;
         // At 60fps, 5 seconds = 300 game ticks
-        private const float _ROTATE_STEP_TICKS = 300;
         private float _rotateStep;
+
+        private float _trapDoorPeriod = 30f; // Default: 30 seconds to rotate
+
+        private float RotateStep => _OPEN_MAX_ANGLE / GameLoop.FPS / _trapDoorPeriod;
         
         private RectangleShape _trapdoor;
         private RectangleShape _indicateConveyorDrop;
@@ -22,9 +25,9 @@ namespace MarbleSorterGame.GameEntities
         public void SetState(bool opening)
         {
             if (opening)
-                _rotateStep = (_OPEN_MAX_ANGLE / _ROTATE_STEP_TICKS);
+                _rotateStep = RotateStep;
             else
-                _rotateStep = - (_OPEN_MAX_ANGLE / _ROTATE_STEP_TICKS);
+                _rotateStep = RotateStep * -1;
         }
 
         /// <summary>
@@ -62,6 +65,7 @@ namespace MarbleSorterGame.GameEntities
 
         public override void Load(IAssetBundle bundle)
         {
+            _trapDoorPeriod = bundle.GameConfiguration.TrapDoorPeriod;
         }
     }
 }
