@@ -1,9 +1,10 @@
 using System;
 using System.Collections.Generic;
+using MarbleSorterGame.Screens;
 using SFML.Graphics;
 using SFML.System;
 
-namespace MarbleSorterGame.Screens
+namespace MarbleSorterGame
 {
     /// <summary>
     /// The implementation of the abstract game loop 

@@ -3,7 +3,7 @@ using MarbleSorterGame.Utilities;
 using SFML.Graphics;
 using SFML.System;
 
-namespace MarbleSorterGame
+namespace MarbleSorterGame.Screens
 {
     /// <summary>
     /// The settings screen
