@@ -8,6 +8,7 @@ namespace MarbleSorterGame
     {
         public Button HelperPopup;
         private RectangleShape _rect;
+
         public string HelperText {
             get => HelperPopup.LabelText;
             set => HelperPopup.LabelText = value;
@@ -35,36 +36,30 @@ namespace MarbleSorterGame
 
         public FloatRect GlobalBounds => _rect.GetGlobalBounds();
 
+        protected GameEntity() : this(default(Vector2f), default(Vector2f))
+        {
+        }
+
         public GameEntity(Vector2f position, Vector2f size)
         {
             _rect = new RectangleShape
             {
                 Position = position,
                 Size = size,
+                FillColor = SFML.Graphics.Color.Yellow,
+                OutlineColor = SFML.Graphics.Color.Yellow,
+                OutlineThickness = 1
             };
         }
-
-        /// <summary>
-        /// Sets new position of gameentity based on current position and new position vector
-        /// </summary>
-        /// <param name="position">vector describing change in position</param>
-        public void UpdatePosition(Vector2f position)
-        {
-            this.Position = new Vector2f(this.Position.X + position.X, this.Position.Y + position.Y);
-        }
-
 
         public Vector2f CenterOrigin(Texture texture)
         {
             FloatRect bounds = this.GlobalBounds;
 
-            return (
-                new Vector2f(
-                        bounds.Left + texture.Size.X / 2f,
-                        bounds.Top + texture.Size.Y / 2f
-                    )
-                );
-
+            return new Vector2f(
+                bounds.Left + texture.Size.X / 2f,
+                bounds.Top + texture.Size.Y / 2f
+            );
         }
 
         /// <summary>
@@ -79,14 +74,17 @@ namespace MarbleSorterGame
             return scaleRatio;
         }
 
-        /// <summary>
         /// Checks to see whether colliding entity intersects with game entity
-        /// </summary>
-        /// <param name="entity"></param>
-        /// <returns></returns>
         public bool Overlaps(GameEntity entity)
         {
             return _rect.GetGlobalBounds().Intersects(entity.GlobalBounds);
+        }
+        
+        /// Checks whether entity X coordinate fits completely inside this entity
+        public bool InsideHorizontal(GameEntity entity)
+        {
+            return entity.Position.X < Position.X &&
+                entity.Position.X + entity.Size.X > Position.X + Size.X;
         }
 
         /// <summary>
@@ -130,7 +128,15 @@ namespace MarbleSorterGame
                 );
         }
 
-        public abstract void Render(RenderWindow window);
+        public virtual void Render(RenderWindow window)
+        {
+            window.Draw(_rect);
+        }
         public abstract void Load(IAssetBundle bundle);
+
+        public override string ToString()
+        {
+            return $"Position = {Position}, Size = {Size}";
+        }
     }
 }

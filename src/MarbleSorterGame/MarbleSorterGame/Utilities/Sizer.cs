@@ -22,10 +22,12 @@ namespace MarbleSorterGame.Utilities
         /// </summary>
         public Vector2f Percent(float xScreenPercent, float yScreenPercent)
         {
+            float xValue = (xScreenPercent == 100f) ? 1 : (xScreenPercent / 100.0f);
+            float yValue = (yScreenPercent == 100f) ? 1 : (yScreenPercent / 100.0f);
             return new Vector2f()
             {
-                X = (int)((xScreenPercent / 100.0f) * _screenWidth),
-                Y = (int)((yScreenPercent / 100.0f) * _screenHeight),
+                X = (int)(xValue * _screenWidth),
+                Y = (int)(yValue * _screenHeight),
             };
         }
     }

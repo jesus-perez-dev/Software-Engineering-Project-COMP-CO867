@@ -1,4 +1,6 @@
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 using SFML.Graphics;
 using SFML.Window;
 using SFML.Audio;
@@ -40,10 +42,11 @@ namespace MarbleSorterGame
         /// <param name="windowClearColor"></param>
         protected GameLoop(uint windowWidth, uint windowHeight, string windowTitle, SFML.Graphics.Color windowClearColor)
         {
-            this.WindowClearColor = windowClearColor;
-            this.Window = new RenderWindow(new VideoMode(windowWidth, windowHeight), windowTitle);
+            WindowClearColor = windowClearColor;
+            Window = new RenderWindow(new VideoMode(windowWidth, windowHeight), windowTitle);
             
             Window.Closed += Window_Closed;
+            Window.Resized += Window_Resized;
         }
 
         /// <summary>
@@ -53,29 +56,11 @@ namespace MarbleSorterGame
         /// </summary>
         public void Run()
         {
-            LoadContent();
-            Initialize();
-
-            double current;
-            double elapsed;
-            double previous = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-            double lag = 0d;
-
             while (Window.IsOpen)
             {
-                current = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-                elapsed = current - previous;
-                previous = current;
-                lag += elapsed;
-
                 Window.DispatchEvents();
-                
-                while (lag >= FPS / 1000d)
-                {
-                    Update();
-                    lag -= FPS / 1000d;
-                }
-
+                Thread.Sleep(1000 / FPS);
+                Update();
                 Window.Clear(WindowClearColor);
                 Draw();
                 Window.Display();
@@ -85,8 +70,6 @@ namespace MarbleSorterGame
         /// <summary>
         /// Abstract method for inheritors to implement
         /// </summary>
-        public abstract void LoadContent();
-        public abstract void Initialize();
         public abstract void Update();
         public abstract void Draw();
 
@@ -98,6 +81,11 @@ namespace MarbleSorterGame
         private void Window_Closed(object sender, EventArgs e)
         {
             Window.Close();
+        }
+        
+        private void Window_Resized(object sender, SizeEventArgs e)
+        {
+            Window.SetView(new View(new FloatRect(0, 0, e.Width, e.Height)));
         }
     }
 }
