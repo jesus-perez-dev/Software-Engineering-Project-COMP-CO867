@@ -20,7 +20,7 @@ namespace MarbleSorterGame
 
         public MarbleSorterGame(IAssetBundle bundle) : base(bundle.GameConfiguration.ScreenWidth, bundle.GameConfiguration.ScreenHeight, WINDOW_TITLE, SFML.Graphics.Color.White)
         {
-            _gameScreen = new GameScreen(Window, bundle, WINDOW_WIDTH, WINDOW_HEIGHT, new KeyboardIODriver());
+            _gameScreen = new GameScreen(Window, bundle, WINDOW_WIDTH, WINDOW_HEIGHT, new KeyboardIODriver(), 0);
             _mainScreen = new MainScreen(Window, bundle, WINDOW_WIDTH, WINDOW_HEIGHT);
             _settingsScreen = new SettingsScreen(Window, bundle, WINDOW_WIDTH, WINDOW_HEIGHT);
         }
