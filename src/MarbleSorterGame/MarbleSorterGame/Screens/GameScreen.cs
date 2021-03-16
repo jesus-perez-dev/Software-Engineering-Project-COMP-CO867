@@ -20,11 +20,15 @@ namespace MarbleSorterGame.Screens
 
         private IIODriver _driver;
 
+        private Font _font;
+
         private Gate _gateEntrance;
         private Conveyor _conveyor;
         private Marble[] _marbles;
         private Trapdoor[] _trapDoors;
         private Bucket[] _buckets;
+        private Label _legend;
+        private Dictionary<String, String> _legendData;
         
         private RenderWindow _window;
         
@@ -32,13 +36,16 @@ namespace MarbleSorterGame.Screens
         private Button _buttonStart;
         private Button _buttonReset;
         private Button _buttonExit;
+
+        //legend helper text
+        private GameEntity _hoveredEntity;
         
         // TODO: Pass a game configuration structure in here instead of width/height uints
         public GameScreen(RenderWindow window, IAssetBundle bundle, uint screenWidth, uint screenHeight, IIODriver driver, int presetIndex)
         {
             _driver = driver;
             
-            Font font = bundle.Font;
+            _font = bundle.Font;
             Sizer sizer = new Sizer(screenWidth, screenHeight);
 
             _window = window;
@@ -66,7 +73,7 @@ namespace MarbleSorterGame.Screens
             _buttonStart = new Button(
                 "Start Simulation",
                 0.4f,
-                font,
+                _font,
                 sizer.Percent(60, 3),
                 sizer.Percent(13, 5)
             );
@@ -74,7 +81,7 @@ namespace MarbleSorterGame.Screens
             _buttonReset = new Button(
                 "Reset Game",
                 0.4f,
-                font,
+                _font,
                 sizer.Percent(75, 3),
                 sizer.Percent(13, 5)
                 );
@@ -82,7 +89,7 @@ namespace MarbleSorterGame.Screens
             _buttonExit = new Button(
                 "Exit Game",
                 0.4f,
-                font,
+                _font,
                 sizer.Percent(90, 3),
                 sizer.Percent(13, 5)
             );
@@ -95,14 +102,36 @@ namespace MarbleSorterGame.Screens
                 sizer.Percent(30, 3),
                 10,
                 SFML.Graphics.Color.Black,
-                font);
+                _font);
 
             Label infobar = new Label(
                 instructionsText,
                 sizer.Percent(30, 3),
                 10,
                 SFML.Graphics.Color.Black,
-                font);
+                _font);
+
+            _legend = new Label(
+                String.Empty,
+                sizer.Percent(75, 9),
+                12,
+                SFML.Graphics.Color.Black,
+                _font
+                );
+            _legendData = new Dictionary<string, string>()
+            {
+                { "Game Data", String.Empty },
+                { "Marbles output Total", String.Empty},
+                { "Marbles Passed through" , String.Empty},
+                { "Marbles Correctly Dropped" , String.Empty },
+                { "Marbles Incorrectly Dropped", String.Empty },
+                { "PLC Devices I/O", String.Empty },
+                { "Conveyor State", String.Empty },
+                { "Trapdoor 1 State", String.Empty },
+                { "Trapdoor 2 State", String.Empty },
+                { "Trapdoor 3 State", String.Empty },
+                { "Entrance Gate State", String.Empty },
+            };
 
             //================= Game Entities ====================//
             
@@ -308,10 +337,11 @@ namespace MarbleSorterGame.Screens
                 menuBarBackground,
                 legendBackground,
                 instructions,
-                infobar
+                infobar,
+                _legend
             };
 
-            //helper popup text
+            //infotext sample data
             _trapDoors[0].InfoText = "Trapdoor 1 \n %Q0.0 Bool";
             _trapDoors[1].InfoText = "Trapdoor 2 \n %Q0.1 Bool";
             _trapDoors[2].InfoText = "Trapdoor 3 \n %Q0.2 Bool";
@@ -338,6 +368,7 @@ namespace MarbleSorterGame.Screens
             {
                 if (entity.MouseHovered(mousePosition))
                 {
+                    _hoveredEntity = entity;
                 }
             }
         }
@@ -436,10 +467,34 @@ namespace MarbleSorterGame.Screens
                 }
             }
 
+            // Update entrace gate position
             _gateEntrance.Update();
             
             // Update IIODriver instance
             _driver.Update();
+
+            // Update legend text
+            _legendData["Game Data"] = "";
+            _legendData["Marbles output Total"] = "";
+            _legendData["Marbles Passed through"] = "";
+            _legendData["Marbles Correctly Dropped"] = "";
+            _legendData["Marbles Incorrectly Dropped"] = "";
+            _legendData["PLC Devices I/O"] = "";
+            _legendData["Conveyor State"] = "";
+            _legendData["Trapdoor 1 State"] = "";
+            _legendData["Trapdoor 2 State"] = "";
+            _legendData["Trapdoor 3 State"] = "";
+            _legendData["Entrance Gate State"] = "";
+
+            var legendBuilder = new System.Text.StringBuilder();
+
+            foreach (var stat in _legendData)
+            {
+                legendBuilder.AppendLine(
+                        String.Format("{0,-30}: {1}", stat.Key, stat.Value)
+                    );
+            }
+            _legend.Text = legendBuilder.ToString();
         }
         
         /// <summary>

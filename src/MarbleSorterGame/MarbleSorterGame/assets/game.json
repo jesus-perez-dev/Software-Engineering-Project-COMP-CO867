@@ -1,6 +1,6 @@
 {
-  "ScreenWidth": 1920,
-  "ScreenHeight": 1080,
+  "ScreenWidth": 1024,
+  "ScreenHeight": 768,
   "MarblePeriod": 9.0,
   "GatePeriod": 0.5,
   "TrapDoorPeriod": 0.5,
