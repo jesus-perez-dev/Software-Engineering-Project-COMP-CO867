@@ -337,6 +337,7 @@ namespace MarbleSorterGame.Screens
         public void Update()
         {
             _gateEntrance.SetState(_driver.Gate);
+
             _trapDoors[0].SetState(_driver.TrapDoor1);
             _trapDoors[1].SetState(_driver.TrapDoor2);
             _trapDoors[2].SetState(_driver.TrapDoor3);
@@ -356,7 +357,7 @@ namespace MarbleSorterGame.Screens
                     marble.SetState(MarbleState.Still);
                 
                 // If marble has started falling, keep it falling
-                if (marble.Position.Y > _conveyor.Position.Y)
+                if (marble.Position.Y + marble.Size.Y > _conveyor.Position.Y)
                     marble.SetState(MarbleState.Falling);
             }
             
