@@ -1,7 +1,9 @@
 ﻿using System;
+using MarbleSorterGame.Enums;
 using SFML.Audio;
 using SFML.Graphics;
 using SFML.System;
+using Color = MarbleSorterGame.Enums.Color;
 
 namespace MarbleSorterGame.GameEntities
 {
@@ -31,16 +33,16 @@ namespace MarbleSorterGame.GameEntities
             _bucket = new Sprite();
             Size =  new Vector2f(MarbleSorterGame.WINDOW_WIDTH/19, MarbleSorterGame.WINDOW_HEIGHT/10); // Note: Largest marble cannot be larger than this
             _bucket.Position = Position - new Vector2f(0, Size.Y);
-            
+
             _requiredColorLabel = new CircleShape()
             {
                 FillColor = requiredColor?.ToSfmlColor() ?? SFML.Graphics.Color.White,
                 OutlineColor = SFML.Graphics.Color.Black,
                 OutlineThickness = (requiredColor == null) ? 0 : 3,
-                Position = new Vector2f(Position.X + Size.X/2, Position.Y - Size.Y/2),
-                Radius = Size.X/8
+                Position = new Vector2f(Position.X + Size.X / 2, Position.Y - Size.Y / 2),
+                Radius = Size.X / 8
             };
-            
+
             _requiredColorLabel.Origin = new Vector2f(_requiredColorLabel.Radius, _requiredColorLabel.Radius);
         }
 

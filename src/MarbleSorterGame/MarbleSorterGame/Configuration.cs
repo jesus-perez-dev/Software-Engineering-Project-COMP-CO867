@@ -4,6 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using MarbleSorterGame.Enums;
+using Color = SFML.Graphics.Color;
 
 /* Example Configuration JSON:
 {
@@ -33,7 +35,7 @@ namespace MarbleSorterGame
 {
     public class MarbleConfig
     {
-        public Color Color { get; set; }
+        public Enums.Color Color { get; set; }
         public Weight Weight { get; set; }
         
         public override string ToString() => $"MarbleConfig: Color = {Color}, Weight = {Weight}";
@@ -42,7 +44,7 @@ namespace MarbleSorterGame
     public class BucketConfig
     {
         public int Capacity { get; set; }
-        public Color? Color { get; set; }
+        public Enums.Color? Color { get; set; }
         public Weight? Weight { get; set; }
         
         public override string ToString() => $"BucketConfig: Capacity = {Capacity}, Color = {Color}, Weight = {Weight}";

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using MarbleSorterGame.Enums;
 using MarbleSorterGame.Screens;
 using SFML.Graphics;
 using SFML.System;
