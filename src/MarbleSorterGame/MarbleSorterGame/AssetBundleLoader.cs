@@ -10,8 +10,7 @@ namespace MarbleSorterGame
     /// </summary>
     public class AssetBundleLoader : IAssetBundle
     {
-        private String assetDirectoryPath;
-        
+        private String _assetDirectoryPath;
         public Sound BucketDrop { get; set; }
         public Sound BucketDropSuccess { get; set; }
         public Sound BucketDropFail { get; set; }
@@ -29,25 +28,24 @@ namespace MarbleSorterGame
 
         public AssetBundleLoader(String assetDirectoryPath)
         {
-            this.assetDirectoryPath = assetDirectoryPath;
+            _assetDirectoryPath = assetDirectoryPath;
 
             try
             {
-                GameConfiguration = ConfigurationLoader.Load(this.assetDirectoryPath + "game.json");
-                Font = new Font(assetDirectoryPath + "OpenSans-Regular.ttf");
+                GameConfiguration = ConfigurationLoader.Load(assetDirectoryPath + "Config/game.json");
+                Font = new Font(assetDirectoryPath + "Fonts/DejaVuSansMono.ttf");
+                BucketTexture = new Texture(assetDirectoryPath + "Images/bucket3.png");
+                BucketDropSuccess = new Sound(new SoundBuffer(assetDirectoryPath + "Sounds/bucketDropSuccess.ogg"));
+                BucketDropFail = new Sound(new SoundBuffer(assetDirectoryPath + "Sounds/bucketDropFail.ogg"));
 
-                BucketTexture = new Texture(this.assetDirectoryPath + "bucket3.png");
-                BucketDropSuccess = new Sound(new SoundBuffer(this.assetDirectoryPath + "bucketDropSuccess.ogg"));
-                BucketDropFail = new Sound(new SoundBuffer(this.assetDirectoryPath + "bucketDropFail.ogg"));
+                SensorTexture = new Texture(assetDirectoryPath + "Images/sensor.png");
+                SensorSignalOffTexture = new Texture(assetDirectoryPath + "Images/sensorSignalOff1.png");
+                SensorSignalOnTexture = new Texture(assetDirectoryPath + "Images/sensorSignalOn1.png");
+                SensorActivate = new Sound(new SoundBuffer(assetDirectoryPath + "Sounds/sensorActivate.ogg"));
 
-                SensorTexture = new Texture(this.assetDirectoryPath + "sensor.png");
-                SensorSignalOffTexture = new Texture(this.assetDirectoryPath + "sensorSignalOff1.png");
-                SensorSignalOnTexture = new Texture(this.assetDirectoryPath + "sensorSignalOn1.png");
-                SensorActivate = new Sound(new SoundBuffer(this.assetDirectoryPath + "sensorActivate.ogg"));
-
-                MarbleRedTexture = new Texture(this.assetDirectoryPath + "marbleRed.png");
-                MarbleGreenTexture = new Texture(this.assetDirectoryPath + "marbleGreen.png");
-                MarbleBlueTexture = new Texture(this.assetDirectoryPath + "marbleBlue.png");
+                MarbleRedTexture = new Texture(assetDirectoryPath + "Images/marbleRed.png");
+                MarbleGreenTexture = new Texture(assetDirectoryPath + "Images/marbleGreen.png");
+                MarbleBlueTexture = new Texture(assetDirectoryPath + "Images/marbleBlue.png");
 
             }
             catch (SFML.System.LoadingFailedException e)

@@ -52,7 +52,7 @@ namespace MarbleSorterGame
         public bool GateClosed { set; }
 
         /// Output: Whether conveyor is moving or not
-        public bool Conveyor { set; }
+        public bool Conveyor { get; set; }
 
         /// Input: Sensor to determine if marble is on conveyor (any segment past gate)
         public bool MotionSensor { set; }
