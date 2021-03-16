@@ -4,6 +4,8 @@
   "MarblePeriod": 9.0,
   "GatePeriod": 0.5,
   "TrapDoorPeriod": 0.5,
+  "Driver": "Keyboard",
+  "DriverOptions": null,
   "Presets": [
     {
       "Marbles": [
