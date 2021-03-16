@@ -14,6 +14,10 @@ using Color = SFML.Graphics.Color;
   "MarblePeriod": 5.0,
   "GatePeriod": 5.0,
   "TrapDoorPeriod": 5.0,
+  "Driver": "Simulation",
+  "DriverOptions": {
+    "SimulationName": "demo-simulation"
+  },
   "Presets": [
     {
       "Marbles": [
@@ -33,6 +37,19 @@ using Color = SFML.Graphics.Color;
 
 namespace MarbleSorterGame
 {
+
+    public enum DriverType
+    {
+        Keyboard,
+        Simulation
+    }
+    
+    public class SimulationDriverOptions
+    {
+        public static string SimulationName { get; set; }
+        public override string ToString() => $"SimulationDriverOptions: SimulationName = {SimulationName}";
+    }
+    
     public class MarbleConfig
     {
         public Enums.Color Color { get; set; }
@@ -66,6 +83,11 @@ namespace MarbleSorterGame
         // Time it takes for a trap door to (or close) completely from the opposite state 
         public float TrapDoorPeriod { get; set; }
 
+        // The kind of IIODriver implementation to use for game entity IO
+        public DriverType Driver { get; set; }
+
+        // Additional driver-specific options. Currently only SimulationDriverOptions are available
+        public SimulationDriverOptions? DriverOptions { get; set; }
         public override string ToString() => string.Join("\n", new[]
         {
             $"ScreenWidth: {ScreenWidth}",
@@ -73,6 +95,8 @@ namespace MarbleSorterGame
             $"MarblePeriod: {MarblePeriod}",
             $"GatePeriod: {GatePeriod}",
             $"TrapDoorPeriod: {TrapDoorPeriod}",
+            $"Driver: {Driver}",
+            $"DriverOptions: {DriverOptions}",
             $"Presets:",
             string.Join("\n",Presets.Select((p,i) => $"#{i}:\n{p}"))
         });
