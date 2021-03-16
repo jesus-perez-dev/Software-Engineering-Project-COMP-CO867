@@ -13,6 +13,10 @@
         <Assets Include="assets/**" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\..\S7PLCSIM-Library\S7PLCSIM-Library\S7PLCSIM-Library.csproj" />
+    </ItemGroup>
+
     <Target Name="PostBuild" AfterTargets="AfterBuild">
         <Copy SourceFiles="@(Assets)" DestinationFolder="$(OutDir)\assets\" SkipUnchangedFiles="true" />
     </Target>
