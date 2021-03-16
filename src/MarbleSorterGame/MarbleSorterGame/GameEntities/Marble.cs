@@ -1,10 +1,14 @@
 ﻿using System;
+using MarbleSorterGame.Enums;
 using MarbleSorterGame.GameEntities;
 using MarbleSorterGame.Utilities;
 using SFML.Audio;
 using SFML.Graphics;
 using SFML.System;
 using SFML.Window;
+using Color = MarbleSorterGame.Enums.Color;
+
+//using Color = SFML.Graphics.Color;
 
 namespace MarbleSorterGame
 {

@@ -1,6 +1,7 @@
 ﻿using SFML.Graphics;
 using SFML.System;
 using System;
+using MarbleSorterGame.Enums;
 
 namespace MarbleSorterGame.GameEntities
 {

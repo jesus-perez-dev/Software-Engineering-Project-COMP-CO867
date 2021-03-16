@@ -1,6 +1,4 @@
-﻿using System.Diagnostics;
-
-namespace MarbleSorterGame
+﻿namespace MarbleSorterGame.Enums
 {
     public enum Color
     {
