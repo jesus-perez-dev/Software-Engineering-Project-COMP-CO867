@@ -1,20 +1,28 @@
 ﻿using System;
+using MarbleSorterGame.Enums;
+using MarbleSorterGame.GameEntities;
 using MarbleSorterGame.Utilities;
 using SFML.Audio;
 using SFML.Graphics;
 using SFML.System;
 using SFML.Window;
+using Color = MarbleSorterGame.Enums.Color;
+
+//using Color = SFML.Graphics.Color;
 
 namespace MarbleSorterGame
 {
     public class Marble : GameEntity
     {
         private Sprite _sprite;
-
         public float Radius { get; }
         public Color Color { get; }
         public Weight Weight { get; }
-        public Vector2f Velocity { get; set; }
+        
+        private Vector2f _velocity { get; set; }
+
+        private float _marblePeriod = 30f;
+        private float Step => GameLoop.WINDOW_WIDTH / _marblePeriod / GameLoop.FPS;
 
         /// Marble that rolls across the conveyer, contains data about color and weight that needs to be dropped in the right buckets
         public Marble(Sizer sizer, Vector2f position, Color color, Weight weight)//: base(position, size)
@@ -32,18 +40,28 @@ namespace MarbleSorterGame
             
             if (weight == Weight.Small)
                 size = new Vector2f(MarbleSorterGame.WINDOW_WIDTH/40,MarbleSorterGame.WINDOW_WIDTH/40); //sizer.Percent(3.5f, 3.5f);
-
+            
             Position = position;
             Radius = size.X / 2;
             Size = size;
         }
 
+        public void SetState(MarbleState state)
+        {
+            if (state == MarbleState.Still)
+                _velocity = new Vector2f(0,0);
+            if (state == MarbleState.Rolling)
+                _velocity = new Vector2f(Step,0);
+            if (state == MarbleState.Falling)
+                _velocity = new Vector2f(0,Step);
+        }
+
         /// Increment position by velocity and rotate accordingly
         public void Update()
         {
-            Position = new Vector2f(Position.X + Velocity.X, Position.Y + Velocity.Y);
+            Position = new Vector2f(Position.X + _velocity.X, Position.Y + _velocity.Y);
             _sprite.Position = new Vector2f(Position.X + Size.X/2, Position.Y + Size.Y/2);
-            _sprite.Rotation += Velocity.X;
+            _sprite.Rotation += _velocity.X;
         }
 
         /// Draws marble onto render target RenderWindow
@@ -56,8 +74,9 @@ namespace MarbleSorterGame
         /// Extracts marble texture from bundle from chosen color and scales it correctly to marble dimension
         public override void Load(IAssetBundle bundle)
         {
+            _marblePeriod = bundle.GameConfiguration.MarblePeriod;
+                
             Texture texture = null;
-            
             switch (Color)
             {
                 case Color.Red:

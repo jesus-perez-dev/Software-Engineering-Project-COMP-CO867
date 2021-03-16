@@ -1,7 +1,7 @@
 ﻿using SFML.System;
 using SFML.Graphics;
 
-namespace UtilityCentering
+namespace MarbleSorterGame.Utilities
 {
     /// <summary>
     /// sets transformable origin of shape/text to its rectangular center

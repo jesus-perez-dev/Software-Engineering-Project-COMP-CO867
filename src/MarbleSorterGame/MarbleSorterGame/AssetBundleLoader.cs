@@ -33,7 +33,7 @@ namespace MarbleSorterGame
 
             try
             {
-                GameConfiguration = ConfigurationLoader.Load(this.assetDirectoryPath + "presets.json");
+                GameConfiguration = ConfigurationLoader.Load(this.assetDirectoryPath + "game.json");
                 Font = new Font(assetDirectoryPath + "OpenSans-Regular.ttf");
 
                 BucketTexture = new Texture(this.assetDirectoryPath + "bucket3.png");

@@ -2,7 +2,7 @@
 using SFML.System;
 using System;
 
-namespace MarbleSorterGame
+namespace MarbleSorterGame.GameEntities
 {
     /// <summary>
     /// Sensor that detects color of marble rolling past it
