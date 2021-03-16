@@ -61,6 +61,13 @@ namespace MarbleSorterGame
                 FillColor = new SFML.Graphics.Color(89, 105, 115) // dark-blue-gray ish color
             };
 
+            RectangleShape legendBackground = new RectangleShape
+            {
+                Position = sizer.Percent(70f, 6.5f),
+                Size = sizer.Percent(29.5f, 40f),
+                FillColor = new SFML.Graphics.Color(89, 105, 115) // dark-blue-gray ish color
+            };
+
             //================= Buttons ====================//
             _buttonStart = new Button(
                 "Start Simulation",
@@ -115,7 +122,6 @@ namespace MarbleSorterGame
             Vector2f gateEntranceSize = sizer.Percent(1, 9);
             Vector2f signalSize = sizer.Percent(3, 8);
             Vector2f sensorSize = new Vector2f(20, 20);
-
             Vector2f helperPopupSize = new Vector2f(70, 15);
             
             // TODO: Populate this list based on game configuration
@@ -307,14 +313,40 @@ namespace MarbleSorterGame
             _drawables = new Drawable[]
             {
                 menuBarBackground,
+                legendBackground,
                 instructions,
                 infobar
             };
+
+            //helper popup text
+            _trapDoors[0].InfoText = "Trapdoor 1 \n %Q0.0 Bool";
+            _trapDoors[1].InfoText = "Trapdoor 2 \n %Q0.1 Bool";
+            _trapDoors[2].InfoText = "Trapdoor 3 \n %Q0.2 Bool";
+            sensorColorStart.InfoText = "Color Sensor \n %Q0.2 Bool";
+            sensorPressureStart.InfoText = "Pressure Sensor \n %Q0.2 Bool";
+            sensorMotionEnd.InfoText = "Motion Sensor \n %Q0.2 Bool";
+
+            sensorColorStart.InfoText = "Color Sensor \n %Q0.2 Bool";
+            _buckets[0].InfoText = "Bucket 1 \n %I1.0 Bool";
+            _buckets[1].InfoText = "Bucket 2 \n %I1.0 Bool";
+            _buckets[2].InfoText = "Bucket 3 \n %I1.0 Bool";
         }
 
+        /// <summary>
+        /// Mouse movement event handler to detect 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="mouse"></param>
         public void GameMouseMoveEventHandler(object? sender, SFML.Window.MouseMoveEventArgs mouse)
         {
-            // TODO: Implement on-hover logic for game entities
+            var mousePosition = new Vector2f(mouse.X, mouse.Y);
+
+            foreach(GameEntity entity in _entities)
+            {
+                if (entity.MouseHovered(mousePosition))
+                {
+                }
+            }
         }
 
         public void GameMouseClickEventHandler(object? sender, MouseButtonEventArgs mouse)

@@ -6,14 +6,9 @@ namespace MarbleSorterGame
 {
     public abstract class GameEntity
     {
-        public Button HelperPopup;
         private RectangleShape _rect;
 
-        public string HelperText {
-            get => HelperPopup.LabelText;
-            set => HelperPopup.LabelText = value;
-        }
-
+        public String InfoText;
         public string Name { get; set; }
 
         /// <summary>
@@ -109,17 +104,6 @@ namespace MarbleSorterGame
             return true;
         }
 
-        public void RenderHelperPopup(RenderWindow window, Vector2f mousePosition)
-        {
-            if (HelperPopup is null) return;
-
-            HelperPopup.Position = mousePosition;
-            HelperPopup.Render(window);
-
-            // Console.WriteLine(HelperPopup.Position);
-            // Console.WriteLine(HelperPopup.Size);
-        }
-
         public bool MouseHovered(Vector2f mousePosition)
         {
             return (
@@ -136,7 +120,7 @@ namespace MarbleSorterGame
 
         public override string ToString()
         {
-            return $"Position = {Position}, Size = {Size}";
+            return InfoText;
         }
     }
 }
