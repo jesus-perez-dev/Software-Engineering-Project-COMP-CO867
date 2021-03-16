@@ -32,6 +32,16 @@ namespace MarbleSorterGame.Screens
         private GameEntities.Sensor[] _sensors;
         private Label _legend;
 
+        public enum GameState
+        {
+            Lose,
+            Win,
+            Progress
+        }
+        private GameState _gameState;
+        private Button _winPopup;
+        private Button _losePopup;
+
         private int _marblesTotal;
         private int _marblesRemaining;
 
@@ -53,8 +63,10 @@ namespace MarbleSorterGame.Screens
             _font = bundle.Font;
             Sizer sizer = new Sizer(screenWidth, screenHeight);
 
+            _legendData = new Dictionary<string, string>() { };
             _marblesTotal = bundle.GameConfiguration.Presets[presetIndex].Marbles.Count;
             _marblesRemaining = _marblesTotal;
+            _gameState = GameState.Progress;
 
             //================= Event Handlers ====================//
             _window.MouseButtonPressed += GameMouseClickEventHandler;
@@ -76,6 +88,26 @@ namespace MarbleSorterGame.Screens
                 Size = sizer.Percent(30.5f, 40f),
                 FillColor = new SFML.Graphics.Color(89, 105, 115) // dark-blue-gray ish color
             };
+
+            _winPopup = new Button
+            (
+                "YOU WIN!",
+                20f,
+                _font,
+                sizer.Percent(50f, 6.5f),
+                sizer.Percent(15f, 10f)
+            );
+            _winPopup.FillColor =  new SFML.Graphics.Color(102, 255, 51); // green
+
+            _losePopup = new Button
+            (
+                "YOU LOSE!",
+                20f,
+                _font,
+                sizer.Percent(50f, 6.5f),
+                sizer.Percent(15f, 10f)
+            );
+            _losePopup.FillColor = new SFML.Graphics.Color(255, 80, 80); // red
 
             //================= Buttons ====================//
             _buttonStart = new Button(
@@ -119,7 +151,6 @@ namespace MarbleSorterGame.Screens
                 SFML.Graphics.Color.Black,
                 _font
                 );
-            _legendData = new Dictionary<string, string>() { };
 
             //================= Game Entities ====================//
             
@@ -297,6 +328,10 @@ namespace MarbleSorterGame.Screens
                 _buttonStart,
                 _buttonReset,
                 _buttonExit,
+                /**
+                _winPopup,
+                _losePopup,
+                */
                 _conveyor,
                 sensorColorStart,
                 sensorPressureStart,
@@ -508,9 +543,11 @@ namespace MarbleSorterGame.Screens
             //check game win state
             if (_marblesRemaining == 0 && marblesIncorrectDrop == 0)
             {
+                _gameState = GameState.Win;
             }
             else if (marblesIncorrectDrop > 0)
             {
+                _gameState = GameState.Lose;
             }
 
             _legendData["Game Data"] = "";

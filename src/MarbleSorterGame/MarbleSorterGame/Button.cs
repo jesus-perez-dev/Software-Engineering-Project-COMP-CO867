@@ -11,6 +11,11 @@ public class Button : GameEntity
     private RectangleShape _button;
     private Text _text;
 
+	public SFML.Graphics.Color FillColor
+    {
+		get => _button.FillColor;
+		set => _button.FillColor = value;
+    }
 	public String LabelText
     {
 		get => _text.DisplayedString;
