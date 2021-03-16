@@ -11,11 +11,11 @@ namespace MarbleSorterGame
     public class MarbleSorterGame : GameLoop
     {
         public static string WINDOW_TITLE = "PLC Training Simulator - Marble Sorter Game";
-        //public static uint WINDOW_WIDTH = 1280;
-        //public static uint WINDOW_HEIGHT = 720;
+        public static uint WINDOW_WIDTH = 1280;
+        public static uint WINDOW_HEIGHT = 720;
 
-        public static uint WINDOW_WIDTH = 1920;
-        public static uint WINDOW_HEIGHT = 1080;
+        //public static uint WINDOW_WIDTH = 1920;
+        //public static uint WINDOW_HEIGHT = 1080;
         
         private GameScreen _gameScreen;
         private SettingsScreen _settingsScreen;

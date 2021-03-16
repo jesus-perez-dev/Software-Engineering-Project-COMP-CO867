@@ -40,13 +40,17 @@ public class Button : GameEntity
 		_button.Position = position;
 	}
 
-	/// <summary>
-	/// checks whether button has been pressed with mouse coordinates
-	/// </summary>
-	/// <param name="X">Mouse pressed x-coordinate</param>
-	/// <param name="Y">Mouse pressed y-coordinate</param>
-	/// <returns></returns>
-	public bool IsPressed(int X, int Y)
+    public Button()
+    {
+    }
+
+    /// <summary>
+    /// checks whether button has been pressed with mouse coordinates
+    /// </summary>
+    /// <param name="X">Mouse pressed x-coordinate</param>
+    /// <param name="Y">Mouse pressed y-coordinate</param>
+    /// <returns></returns>
+    public bool IsPressed(int X, int Y)
     {
 		FloatRect buttonBounds = _button.GetGlobalBounds();
 		return (
