@@ -20,6 +20,12 @@ namespace MarbleSorterGame.Screens
 
         private IIODriver _driver;
 
+        // Sensors
+        private MotionSensor _motionSensorConveyor;
+        private MotionSensor _motionSensorBucket;
+        private ColorSensor _colorSensor;
+        private PressureSensor _pressureSensor;
+
         private Gate _gateEntrance;
         private Conveyor _conveyor;
         private Marble[] _marbles;
@@ -105,9 +111,8 @@ namespace MarbleSorterGame.Screens
                 new Vector2f(1, 0)
                 );
 
-            Vector2f gateEntranceSize = sizer.Percent(1, 9);
+            Vector2f gateEntranceSize = sizer.Percent(0.5f, 9);
             Vector2f signalSize = sizer.Percent(3, 8);
-            Vector2f sensorSize = new Vector2f(20, 20);
 
             _marbles = bundle.GameConfiguration.Presets[presetIndex].Marbles
                 .Select(mc => new Marble(sizer, new Vector2f(40, _conveyor.Position.Y), mc.Color, mc.Weight))
@@ -149,42 +154,17 @@ namespace MarbleSorterGame.Screens
                 bucket.Position -= new Vector2f(0, bucket.Size.Y);
             }
             
-            Gate gateEntrance = new Gate(
-                sizer.Percent(13, 52),
-                gateEntranceSize
-                );
+            _gateEntrance = new Gate( sizer.Percent(13, 52), gateEntranceSize );
+            
+            Vector2f sensorSize = new Vector2f(MarbleSorterGame.WINDOW_WIDTH/40, MarbleSorterGame.WINDOW_WIDTH/40); // Size half of the largest marble size
+            Vector2f gateSensorPosition = _gateEntrance.Position - new Vector2f(sensorSize.X, -1 * (_gateEntrance.Size.Y - sensorSize.Y - _conveyor.Size.Y));
+            _pressureSensor = new PressureSensor(gateSensorPosition, sensorSize);
+            _colorSensor = new ColorSensor(gateSensorPosition, sensorSize) ;
+            _motionSensorConveyor = new MotionSensor(gateSensorPosition, sensorSize);
 
-            _gateEntrance = gateEntrance;
-
-            PressureSensor sensorPressureStart = new PressureSensor(
-                sizer.Percent(3, 55),
-                sensorSize
-                );
-
-            ColorSensor sensorColorStart = new ColorSensor(
-                sizer.Percent(6, 55),
-                sensorSize
-                ) ;
-
-            MotionSensor sensorMotionEnd = new MotionSensor(
-                sizer.Percent(94, 55),
-                sensorSize
-                );
-
-            MotionSensor sensorMotionBucket1 = new MotionSensor(
-                sizer.Percent(25, 100),
-                sizer.Percent(0, 0)
-                );
-
-            MotionSensor sensorMotionBucket2 = new MotionSensor(
-                sizer.Percent(45, 100),
-                sizer.Percent(0, 0)
-                );
-
-            MotionSensor sensorMotionBucket3 = new MotionSensor(
-                sizer.Percent(65, 100),
-                sizer.Percent(0, 0)
-                );
+            // Position half-way between conveyer and top of buckets
+            Vector2f motionSensorPosition = new Vector2f(MarbleSorterGame.WINDOW_WIDTH - sensorSize.X, _buckets[0].Position.Y - sensorSize.Y);
+            _motionSensorBucket = new MotionSensor(motionSensorPosition, sensorSize );
 
             SignalLight signalColor1 = new SignalLight(
                 sizer.Percent(30, 20),
@@ -262,15 +242,13 @@ namespace MarbleSorterGame.Screens
                 _buttonReset,
                 _buttonExit,
                 _conveyor,
-                sensorColorStart,
-                sensorPressureStart,
+                _pressureSensor,
+                _colorSensor,
                 signalColor1,
                 signalColor2,
                 signalPressure1,
-                sensorMotionEnd,
-                sensorMotionBucket1,
-                sensorMotionBucket2,
-                sensorMotionBucket3,
+                _motionSensorBucket,
+                _motionSensorConveyor,
                 gateOpen,
                 gateClosed,
                 // conveyerOn,
@@ -288,7 +266,7 @@ namespace MarbleSorterGame.Screens
                 .Concat(_marbles)
                 .Concat(_trapDoors)
                 .Concat(_buckets)
-                .Concat(new [] { gateEntrance })
+                .Concat(new [] { _gateEntrance })
                 .ToArray();
 
             foreach (GameEntity entity in _entities)
@@ -345,6 +323,42 @@ namespace MarbleSorterGame.Screens
             _trapDoors[0].SetState(_driver.TrapDoor1);
             _trapDoors[1].SetState(_driver.TrapDoor2);
             _trapDoors[2].SetState(_driver.TrapDoor3);
+            _gateEntrance.SetState(_driver.Gate);
+            
+            //////////////////////////////////////////////////////////// 
+            /////// BEGIN: TODO FIXME HACK
+
+            // This is code that gets the sensors working for the demo presentation
+            // It simply checks if a marble overlaps the sensor, if yes, write the value to the driver
+            // In the final version this should be re-architected, perhaps using a Sensor.Update(Marble, IIODriver) methods?
+
+            _driver.ConveyorMotionSensor = false;
+            _driver.BucketMotionSensor = false;
+            _driver.ColorSensor = 0;
+            _driver.PressureSensor = 0;
+            foreach (var marble in _marbles)
+            {
+                // Write color of overlapping marble
+                if (_colorSensor.Overlaps(marble))
+                    _driver.ColorSensor = (byte) marble.Color;
+                
+                // Write pressure of overlapping marble
+                if (_pressureSensor.Overlaps(marble))
+                    _driver.PressureSensor = (byte) marble.Weight;
+                
+                // If marble position is past the gate and its X-value is on the conveyer belt (not falling)
+                // write to the conveyer motion sensor
+                bool marbleOnConveyor = marble.Position.Y == _conveyor.Position.Y - marble.Size.Y; // TODO: This should be its own method
+                bool marblePastGate = marble.Position.X > _gateEntrance.Position.X; // TODO: Should we use radius or size here?
+                _driver.ConveyorMotionSensor |= marbleOnConveyor && marblePastGate;
+
+                // If a straight horizontal line drawn from the marble across the screen touches the bucket motion sensor, fire-off the sensor
+                bool marbleVerticalMatches = _motionSensorBucket.OverlapsVertical(marble);
+                _driver.BucketMotionSensor |= marbleVerticalMatches;
+            }
+            
+            //////// END: TODO FIXME HACK
+            //////////////////////////////////////////////////////////// 
 
             foreach (var trapdoor in _trapDoors)
             {

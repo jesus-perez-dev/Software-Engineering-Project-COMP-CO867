@@ -2,9 +2,10 @@
 {
     public enum Color
     {
-        Red,
-        Green,
-        Blue
+        // 0 = no marble in front
+        Red = 1,
+        Green = 2,
+        Blue = 3
     }
 
     public static class ColorExtensions

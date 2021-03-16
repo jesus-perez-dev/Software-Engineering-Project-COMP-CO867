@@ -25,7 +25,7 @@ namespace MarbleSorterGame
         public bool TrapDoor3 { get; }
 
         /// Input: Motion Sensor Detecting Falling Marble - Marble has fallen in into bucket 1 (toggles on and off)
-        public bool BucketSensor { set; }
+        public bool BucketMotionSensor { get; set; }
 
         /// Output: Whether gate is moving toward "Open" state
         public bool Gate { get; set; }
@@ -40,13 +40,13 @@ namespace MarbleSorterGame
         public bool Conveyor { set; }
 
         /// Input: Sensor to determine if marble is on conveyor (any segment past gate)
-        public bool MotionSensor { set; }
+        public bool ConveyorMotionSensor { set; get; }
 
         /// Input: Sensor to determine if marble is heavy or not
-        public bool WeightSensor { set; }
+        public byte PressureSensor { get; set; }
 
         /// Input: Sensor to determine the colour of the marble
-        public byte ColorSensor { set; }
+        public byte ColorSensor { get; set; }
 
         public void Update();
     }
