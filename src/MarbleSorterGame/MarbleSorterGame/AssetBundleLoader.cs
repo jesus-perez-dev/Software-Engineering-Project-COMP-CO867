@@ -42,7 +42,7 @@ namespace MarbleSorterGame
 
                 SensorTexture = new Texture(this.assetDirectoryPath + "sensor.png");
                 SensorSignalOffTexture = new Texture(this.assetDirectoryPath + "sensorSignalOff1.png");
-                SensorSignalOnTexture = new Texture(this.assetDirectoryPath + "sensorSignalOn1.png");
+                SensorSignalOnTexture = new Texture(this.assetDirectoryPath + "sensorSignalOnYellow.png");
                 SensorActivate = new Sound(new SoundBuffer(this.assetDirectoryPath + "sensorActivate.ogg"));
 
                 MarbleRedTexture = new Texture(this.assetDirectoryPath + "marbleRed.png");
