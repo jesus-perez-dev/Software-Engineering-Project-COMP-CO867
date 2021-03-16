@@ -15,23 +15,28 @@ namespace MarbleSorterGame.Screens
     /// </summary>
     public class GameScreen : IDisposable
     {
-        private Drawable[] _drawables;
-        private GameEntity[] _entities;
+        
+        private RenderWindow _window;
+        private Font _font;
 
         private IIODriver _driver;
 
-        private Font _font;
+        private Drawable[] _drawables;
+        private GameEntity[] _entities;
 
         private Gate _gateEntrance;
         private Conveyor _conveyor;
         private Marble[] _marbles;
         private Trapdoor[] _trapDoors;
         private Bucket[] _buckets;
+        private GameEntities.Sensor[] _sensors;
         private Label _legend;
+
+        private int _marblesTotal;
+        private int _marblesRemaining;
+
         private Dictionary<String, String> _legendData;
-        
-        private RenderWindow _window;
-        
+
         // UI Buttons
         private Button _buttonStart;
         private Button _buttonReset;
@@ -44,15 +49,18 @@ namespace MarbleSorterGame.Screens
         public GameScreen(RenderWindow window, IAssetBundle bundle, uint screenWidth, uint screenHeight, IIODriver driver, int presetIndex)
         {
             _driver = driver;
-            
+            _window = window;
             _font = bundle.Font;
             Sizer sizer = new Sizer(screenWidth, screenHeight);
 
-            _window = window;
+            _marblesTotal = bundle.GameConfiguration.Presets[presetIndex].Marbles.Count;
+            _marblesRemaining = _marblesTotal;
+
+            //================= Event Handlers ====================//
             _window.MouseButtonPressed += GameMouseClickEventHandler;
             _window.KeyPressed += GameKeyEventHandler;
             _window.MouseMoved += GameMouseMoveEventHandler;
-            
+
             //================= Background widgets ====================//
             // Menu bar background (slight gray recantgle behind buttons)
             RectangleShape menuBarBackground = new RectangleShape
@@ -64,8 +72,8 @@ namespace MarbleSorterGame.Screens
 
             RectangleShape legendBackground = new RectangleShape
             {
-                Position = sizer.Percent(70f, 6.5f),
-                Size = sizer.Percent(29.5f, 40f),
+                Position = sizer.Percent(69f, 6.5f),
+                Size = sizer.Percent(30.5f, 40f),
                 FillColor = new SFML.Graphics.Color(89, 105, 115) // dark-blue-gray ish color
             };
 
@@ -99,22 +107,15 @@ namespace MarbleSorterGame.Screens
 
             Label instructions = new Label(
                 instructionsText,
-                sizer.Percent(30, 3),
-                10,
-                SFML.Graphics.Color.Black,
-                _font);
-
-            Label infobar = new Label(
-                instructionsText,
-                sizer.Percent(30, 3),
-                10,
+                sizer.Percent(29.5f, 3),
+                14,
                 SFML.Graphics.Color.Black,
                 _font);
 
             _legend = new Label(
                 String.Empty,
-                sizer.Percent(75, 9),
-                12,
+                sizer.Percent(70, 9),
+                14,
                 SFML.Graphics.Color.Black,
                 _font
                 );
@@ -208,6 +209,18 @@ namespace MarbleSorterGame.Screens
                 sizer.Percent(65, 100),
                 sizer.Percent(0, 0)
                 );
+
+            _sensors = new GameEntities.Sensor[]
+            {
+                sensorColorStart,
+                sensorPressureStart,
+                sensorMotionEnd,
+                /**
+                sensorMotionBucket1,
+                sensorMotionBucket2,
+                sensorMotionBucket3
+                */
+            };
 
             SignalLight signalColor1 = new SignalLight(
                 sizer.Percent(30, 20),
@@ -324,11 +337,10 @@ namespace MarbleSorterGame.Screens
                 menuBarBackground,
                 legendBackground,
                 instructions,
-                infobar,
                 _legend
             };
 
-            //infotext sample data
+            //gameentity addresses infotext
             _trapDoors[0].InfoText = "Trapdoor 1 \n %Q0.0 Bool";
             _trapDoors[1].InfoText = "Trapdoor 2 \n %Q0.1 Bool";
             _trapDoors[2].InfoText = "Trapdoor 3 \n %Q0.2 Bool";
@@ -461,11 +473,50 @@ namespace MarbleSorterGame.Screens
             _driver.Update();
 
             // Update legend text
+            _marblesRemaining = (_marblesTotal - _buckets.Select(b => b.TotalMarbles).Sum());
+            int marblesCorrectDrop = _buckets.Select(b => b.TotalCorrect).Sum();
+            int marblesIncorrectDrop = _buckets.Select(b => b.TotalIncorrect).Sum();
+
+            //check if marble that passed through all trapdoors was supposed to be in a bucket
+            foreach (var marble in _marbles)
+            {
+                if (marble.Position.X - marble.Radius > _window.Size.X)
+                {
+                    bool marbleSkipped = false;
+
+                    foreach(var bucket in _buckets)
+                    {
+                        if (bucket.ValidateMarble(marble))
+                        {
+                            marbleSkipped = true;
+                        }
+                    }
+
+                    if (marbleSkipped)
+                    {
+                        marblesCorrectDrop++;
+                    } else
+                    {
+                        marblesIncorrectDrop++;
+                    }
+
+                    _marblesRemaining--;
+                }
+
+            }
+
+            //check game win state
+            if (_marblesRemaining == 0 && marblesIncorrectDrop == 0)
+            {
+            }
+            else if (marblesIncorrectDrop > 0)
+            {
+            }
+
             _legendData["Game Data"] = "";
-            _legendData["Marbles Output Total"] = "";
-            _legendData["Marbles Passed through"] = "";
-            _legendData["Marbles Correctly Dropped"] = "";
-            _legendData["Marbles Incorrectly Dropped"] = "";
+            _legendData["Marbles Remaining Total"] = _marblesRemaining.ToString();
+            _legendData["Marbles Correctly Dropped"] = marblesCorrectDrop.ToString();
+            _legendData["Marbles Incorrectly Dropped"] = marblesIncorrectDrop.ToString();
             _legendData["PLC Devices I/O"] = "";
             _legendData["Conveyor State"] = _driver.Conveyor.ToString();
             _legendData["Trapdoor 1 Opening"] = _driver.TrapDoor1.ToString();
