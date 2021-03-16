@@ -118,20 +118,7 @@ namespace MarbleSorterGame.Screens
                 SFML.Graphics.Color.Black,
                 _font
                 );
-            _legendData = new Dictionary<string, string>()
-            {
-                { "Game Data", String.Empty },
-                { "Marbles output Total", String.Empty},
-                { "Marbles Passed through" , String.Empty},
-                { "Marbles Correctly Dropped" , String.Empty },
-                { "Marbles Incorrectly Dropped", String.Empty },
-                { "PLC Devices I/O", String.Empty },
-                { "Conveyor State", String.Empty },
-                { "Trapdoor 1 State", String.Empty },
-                { "Trapdoor 2 State", String.Empty },
-                { "Trapdoor 3 State", String.Empty },
-                { "Entrance Gate State", String.Empty },
-            };
+            _legendData = new Dictionary<string, string>() { };
 
             //================= Game Entities ====================//
             
@@ -366,7 +353,7 @@ namespace MarbleSorterGame.Screens
 
             foreach(GameEntity entity in _entities)
             {
-                if (entity.MouseHovered(mousePosition))
+                if (entity.MouseHovered(mousePosition) && entity.InfoText != null)
                 {
                     _hoveredEntity = entity;
                 }
@@ -475,18 +462,23 @@ namespace MarbleSorterGame.Screens
 
             // Update legend text
             _legendData["Game Data"] = "";
-            _legendData["Marbles output Total"] = "";
+            _legendData["Marbles Output Total"] = "";
             _legendData["Marbles Passed through"] = "";
             _legendData["Marbles Correctly Dropped"] = "";
             _legendData["Marbles Incorrectly Dropped"] = "";
             _legendData["PLC Devices I/O"] = "";
-            _legendData["Conveyor State"] = "";
-            _legendData["Trapdoor 1 State"] = "";
-            _legendData["Trapdoor 2 State"] = "";
-            _legendData["Trapdoor 3 State"] = "";
-            _legendData["Entrance Gate State"] = "";
+            _legendData["Conveyor State"] = _driver.Conveyor.ToString();
+            _legendData["Trapdoor 1 Opening"] = _driver.TrapDoor1.ToString();
+            _legendData["Trapdoor 2 Opening"] = _driver.TrapDoor2.ToString();
+            _legendData["Trapdoor 3 Opening"] = _driver.TrapDoor3.ToString();
+            _legendData["Entrance Gate Opening"] = _driver.Gate.ToString();
 
             var legendBuilder = new System.Text.StringBuilder();
+
+            if (_hoveredEntity != null)
+            {
+                legendBuilder.AppendLine(_hoveredEntity.InfoText);
+            }
 
             foreach (var stat in _legendData)
             {
