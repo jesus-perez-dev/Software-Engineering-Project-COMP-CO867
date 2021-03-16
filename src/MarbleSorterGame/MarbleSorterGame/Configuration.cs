@@ -46,7 +46,7 @@ namespace MarbleSorterGame
     
     public class SimulationDriverOptions
     {
-        public static string SimulationName { get; set; }
+        public string SimulationName { get; set; }
         public override string ToString() => $"SimulationDriverOptions: SimulationName = {SimulationName}";
     }
     
