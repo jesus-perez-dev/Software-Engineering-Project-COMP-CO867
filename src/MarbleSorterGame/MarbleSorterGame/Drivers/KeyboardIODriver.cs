@@ -4,20 +4,15 @@ namespace MarbleSorterGame
 {
     public class KeyboardIODriver : IIODriver
     {
-        public bool TrapDoor1 { get; set; }
+        public bool TrapDoor1 { get; set;  }
         public bool TrapDoor1Open { get; set; }
-        public bool TrapDoor1Closed { get; set; }
-        public bool TrapDoor2 { get; set; }
+        public bool TrapDoor2 { get; set;  }
         public bool TrapDoor2Open { get; set; }
-        public bool TrapDoor2Closed { get; set; }
-        public bool TrapDoor3 { get; set; }
+        public bool TrapDoor3 { get; set;  }
         public bool TrapDoor3Open { get; set; }
-        public bool TrapDoor3Closed { get; set; }
-        public bool BucketSensor1 { get; set; }
-        public bool BucketSensor2 { get; set; }
-        public bool BucketSensor3 { get; set; }
+        public bool BucketSensor { get; set; }
         public bool Gate { get; set; }
-        public bool GateOpened { get; set; }
+        public bool GateOpen { get; set; }
         public bool GateClosed { get; set; }
         public bool Conveyor { get; set; }
         public bool MotionSensor { get; set; }
@@ -54,18 +49,11 @@ namespace MarbleSorterGame
             {
                 $"TrapDoor1 {TrapDoor1}",
                 $"TrapDoor1Open {TrapDoor1Open}",
-                $"TrapDoor1Closed {TrapDoor1Closed}",
                 $"TrapDoor2 {TrapDoor2}",
                 $"TrapDoor2Open {TrapDoor2Open}",
-                $"TrapDoor2Closed {TrapDoor2Closed}",
                 $"TrapDoor3 {TrapDoor3}",
                 $"TrapDoor3Open {TrapDoor3Open}",
-                $"TrapDoor3Closed {TrapDoor3Closed}",
-                $"BucketSensor1 {BucketSensor1}",
-                $"BucketSensor2 {BucketSensor2}",
-                $"BucketSensor3 {BucketSensor3}",
                 $"Gate {Gate}",
-                $"GateOpened {GateOpened}",
                 $"GateClosed {GateClosed}",
                 $"Conveyor {Conveyor}",
                 $"MotionSensor {MotionSensor}",
