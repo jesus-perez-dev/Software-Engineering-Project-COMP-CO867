@@ -163,19 +163,17 @@ namespace MarbleSorterGame
             _client.QAddress.Add(QKeys.Gate, 0, 3, EPrimitiveDataType.Bool);
             _client.QAddress.Add(QKeys.Conveyor, 0, 4, EPrimitiveDataType.Bool);
 
-            _client.PowerOn();
+            //_client.PowerOn();
         }
-
-        public void Start()
+        
+        public void SetRunState(bool run)
         {
-            _client.Run();
+            if (run)
+                _client.Run();
+            else
+                _client.Stop();
         }
-
-        public void Stop()
-        {
-            _client.Stop();
-        }
-
+        
         public void Update()
         {
             // Write simulation outputs
