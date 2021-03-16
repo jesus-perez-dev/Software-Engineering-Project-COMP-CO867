@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using MarbleSorterGame.Enums;
+using MarbleSorterGame.Screens;
 using SFML.Graphics;
 using SFML.System;
 
@@ -11,21 +13,15 @@ namespace MarbleSorterGame
     public class MarbleSorterGame : GameLoop
     {
         public static string WINDOW_TITLE = "PLC Training Simulator - Marble Sorter Game";
-        //public static uint WINDOW_WIDTH = 1280;
-        //public static uint WINDOW_HEIGHT = 720;
-
-        public static uint WINDOW_WIDTH = 1920;
-        public static uint WINDOW_HEIGHT = 1080;
         
         private GameScreen _gameScreen;
         private SettingsScreen _settingsScreen;
         private MainScreen _mainScreen;
         public static Menu ActiveMenu { get; set; }
 
-        public MarbleSorterGame() : base(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE, SFML.Graphics.Color.White)
+        public MarbleSorterGame(IAssetBundle bundle) : base(bundle.GameConfiguration.ScreenWidth, bundle.GameConfiguration.ScreenHeight, WINDOW_TITLE, SFML.Graphics.Color.White)
         {
-            var bundle = new AssetBundleLoader("assets/");
-            _gameScreen = new GameScreen(Window, bundle, WINDOW_WIDTH, WINDOW_HEIGHT, new KeyboardIODriver());
+            _gameScreen = new GameScreen(Window, bundle, WINDOW_WIDTH, WINDOW_HEIGHT, new KeyboardIODriver(), 0);
             _mainScreen = new MainScreen(Window, bundle, WINDOW_WIDTH, WINDOW_HEIGHT);
             _settingsScreen = new SettingsScreen(Window, bundle, WINDOW_WIDTH, WINDOW_HEIGHT);
         }

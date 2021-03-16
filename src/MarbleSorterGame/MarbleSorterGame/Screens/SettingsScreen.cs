@@ -3,14 +3,14 @@ using MarbleSorterGame.Utilities;
 using SFML.Graphics;
 using SFML.System;
 
-namespace MarbleSorterGame
+namespace MarbleSorterGame.Screens
 {
     /// <summary>
     /// The settings screen
     /// </summary>
     public class SettingsScreen
     {
-        public SettingsScreen(RenderWindow window, AssetBundleLoader bundle, uint screenWidth, uint screenHeight)
+        public SettingsScreen(RenderWindow window, IAssetBundle bundle, uint screenWidth, uint screenHeight)
         {
             Font font = bundle.Font;
             Sizer sizer = new Sizer(screenWidth, screenHeight);

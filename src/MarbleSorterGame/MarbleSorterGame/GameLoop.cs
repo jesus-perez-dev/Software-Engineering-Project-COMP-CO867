@@ -13,7 +13,12 @@ namespace MarbleSorterGame
     /// </summary>
     public abstract class GameLoop
     {
-        public const int FPS = 60;
+        public static int FPS = 60;
+        public static int MS_PER_TICK = 1000/FPS;
+        
+        // Update resolution from config file
+        public static uint WINDOW_WIDTH;
+        public static uint WINDOW_HEIGHT;
         
         /// <summary>
         /// Display window for the game
@@ -42,8 +47,11 @@ namespace MarbleSorterGame
         /// <param name="windowClearColor"></param>
         protected GameLoop(uint windowWidth, uint windowHeight, string windowTitle, SFML.Graphics.Color windowClearColor)
         {
+            WINDOW_WIDTH = windowWidth;
+            WINDOW_HEIGHT = windowHeight;
+            
             WindowClearColor = windowClearColor;
-            Window = new RenderWindow(new VideoMode(windowWidth, windowHeight), windowTitle);
+            Window = new RenderWindow(new VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), windowTitle);
             
             Window.Closed += Window_Closed;
             Window.Resized += Window_Resized;
