@@ -11,60 +11,58 @@ namespace MarbleSorterGame.GameEntities
         //private Sound _dropSound;
         private Sound _failSound;
         private Sound _successSound;
-        private Color _requiredColor;
-        private Weight _requiredWeight;
+        private Color? _requiredColor;
+        private Weight? _requiredWeight;
 
         private Text _capacityLabel;
-        private RectangleShape _requiredColorLabel;
+        private Text _requiredSizeLabel;
+        private CircleShape _requiredColorLabel;
 
         public int Capacity;
         public int Accepted;
 
         /// Bucket that holds dropped marbles, containing requirements for color, weight and capacity
-        public Bucket(Vector2f position, Vector2f size, Color requiredColor, Weight requiredWeight, int capacity) :  base (position, size)
+        public Bucket(Vector2f position, Vector2f size, Color? requiredColor, Weight? requiredWeight, int capacity) :  base (position, size)
         {
             _requiredColor = requiredColor;
             _requiredWeight = requiredWeight;
             Capacity = capacity;
-
-            _bucket = new Sprite();
-
-            Vector2f bucketSize = requiredWeight switch
-            {
-                Weight.Large => new Vector2f(250, 250),
-                Weight.Medium => new Vector2f(200, 200),
-                Weight.Small => new Vector2f(150, 150)
-            };
             
-            Size = bucketSize;
+            _bucket = new Sprite();
+            Size =  new Vector2f(MarbleSorterGame.WINDOW_WIDTH/19, MarbleSorterGame.WINDOW_HEIGHT/10); // Note: Largest marble cannot be larger than this
             _bucket.Position = Position - new Vector2f(0, Size.Y);
             
-            _requiredColorLabel = new RectangleShape()
+            _requiredColorLabel = new CircleShape()
             {
-                FillColor = requiredColor.ToSfmlColor(),
+                FillColor = requiredColor?.ToSfmlColor() ?? SFML.Graphics.Color.White,
+                OutlineColor = SFML.Graphics.Color.Black,
+                OutlineThickness = (requiredColor == null) ? 0 : 3,
                 Position = new Vector2f(Position.X + Size.X/2, Position.Y - Size.Y/2),
-                Size = new Vector2f(40, 40)
+                Radius = Size.X/8
             };
             
-            _requiredColorLabel.Origin = new Vector2f(_requiredColorLabel.Size.X / 2, _requiredColorLabel.Size.Y / 2);
+            _requiredColorLabel.Origin = new Vector2f(_requiredColorLabel.Radius, _requiredColorLabel.Radius);
         }
 
         /// Insert marble into the bucket, return true/false depening on whether marble meets its requirements
         public bool InsertMarble(Marble m)
         {
-            if (m.Color == _requiredColor && m.Weight == _requiredWeight && Accepted < Capacity)
+            bool marbleOk = (_requiredColor == null || m.Color == _requiredColor)  &&
+                            (_requiredColor == null || m.Weight == _requiredWeight) &&
+                            Accepted < Capacity;
+
+            if (marbleOk)
             {
                 Accepted++;
                 _successSound.Play();
-                _capacityLabel.DisplayedString = $"{Accepted}/{Capacity}";
-                return true;
             }
             else
             {
-                _capacityLabel.DisplayedString = $"{Accepted}/{Capacity}";
                 _failSound.Play();
-                return false;
             }
+
+            _capacityLabel.DisplayedString = $"{Accepted}/{Capacity}";
+            return marbleOk;
         }
 
         /// Draws the bucket onto render target RenderWindow
@@ -76,17 +74,21 @@ namespace MarbleSorterGame.GameEntities
             
             window.Draw(_bucket);
             window.Draw(_requiredColorLabel);
+            window.Draw(_requiredSizeLabel);
             window.Draw(_capacityLabel);
         }
         
         /// Extracts bucket assets, such as texture and sound, from bundle
         public override void Load(IAssetBundle bundle)
         {
-            _capacityLabel = new Text("", bundle.Font);
+            _capacityLabel = new Text($"0/{Capacity}", bundle.Font);
             // TODO: Find a better place for this
-            _capacityLabel.Position = Position + new Vector2f(Size.X/2, 10);
-            _capacityLabel.DisplayedString = $"0/{Capacity}";
+            _capacityLabel.Position = Position + new Vector2f(-1 * _capacityLabel.GetGlobalBounds().Width, (Size.Y/3f));
             _capacityLabel.FillColor = SFML.Graphics.Color.Black;
+            
+            _requiredSizeLabel = new Text(_requiredWeight?.ToGameLabel() ?? "", bundle.Font);
+            _requiredSizeLabel.Position = Position + new Vector2f((-1) *_capacityLabel.GetGlobalBounds().Width, (Size.Y/3f) + _capacityLabel.GetGlobalBounds().Height + 5);
+            _requiredSizeLabel.FillColor = SFML.Graphics.Color.Black;
             
             // _dropSound = bundle.BucketDrop;
             _successSound = bundle.BucketDropSuccess;
