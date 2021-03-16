@@ -17,6 +17,12 @@
       <ProjectReference Include="..\..\S7PLCSIM-Library\S7PLCSIM-Library\S7PLCSIM-Library.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Reference Include="Siemens.Simatic.Simulation.Runtime.Api.x64, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+        <HintPath>..\..\S7PLCSIM-Library\S7PLCSIM-Library\Siemens.Simatic.Simulation.Runtime.Api.x64.dll</HintPath>
+      </Reference>
+    </ItemGroup>
+
     <Target Name="PostBuild" AfterTargets="AfterBuild">
         <Copy SourceFiles="@(Assets)" DestinationFolder="$(OutDir)\assets\" SkipUnchangedFiles="true" />
     </Target>
