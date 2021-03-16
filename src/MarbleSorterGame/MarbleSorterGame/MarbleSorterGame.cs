@@ -21,7 +21,14 @@ namespace MarbleSorterGame
 
         public MarbleSorterGame(IAssetBundle bundle) : base(bundle.GameConfiguration.ScreenWidth, bundle.GameConfiguration.ScreenHeight, WINDOW_TITLE, SFML.Graphics.Color.White)
         {
-            _gameScreen = new GameScreen(Window, bundle, WINDOW_WIDTH, WINDOW_HEIGHT, new KeyboardIODriver(), 0);
+            IIODriver driver = bundle.GameConfiguration.Driver switch
+            {
+                DriverType.Keyboard => new KeyboardIODriver(),
+                DriverType.Simulation => new S7IODriver(),
+                _ => throw new ArgumentException($"Unknown IO driver: {bundle.GameConfiguration.Driver}")
+            };
+            
+            _gameScreen = new GameScreen(Window, bundle, WINDOW_WIDTH, WINDOW_HEIGHT, driver, 0);
             _mainScreen = new MainScreen(Window, bundle, WINDOW_WIDTH, WINDOW_HEIGHT);
             _settingsScreen = new SettingsScreen(Window, bundle, WINDOW_WIDTH, WINDOW_HEIGHT);
         }
