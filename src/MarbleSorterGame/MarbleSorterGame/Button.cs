@@ -1,9 +1,9 @@
 ﻿using System;
 using MarbleSorterGame;
+using MarbleSorterGame.GameEntities;
 using MarbleSorterGame.Utilities;
 using SFML.Graphics;
 using SFML.System;
-using UtilityCentering;
 using Color = SFML.Graphics.Color;
 
 public class Button : GameEntity
@@ -39,10 +39,6 @@ public class Button : GameEntity
 		_button.Origin = _button.CenterOrigin(); //set transform origins of text/button to its center 
 		_button.Position = position;
 	}
-
-    public Button()
-    {
-    }
 
     /// <summary>
     /// checks whether button has been pressed with mouse coordinates

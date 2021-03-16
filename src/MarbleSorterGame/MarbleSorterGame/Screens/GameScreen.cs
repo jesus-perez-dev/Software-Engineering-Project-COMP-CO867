@@ -1,21 +1,20 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using MarbleSorterGame.Enums;
+using MarbleSorterGame.GameEntities;
 using MarbleSorterGame.Utilities;
 using SFML.Graphics;
 using SFML.System;
 using SFML.Window;
 
-namespace MarbleSorterGame
+namespace MarbleSorterGame.Screens
 {
     /// <summary>
     /// The game itself
     /// </summary>
     public class GameScreen : IDisposable
     {
-        private Vector2f MarbleFallVelocity = default;
-        private Vector2f MarbleRollVelocity = default;
-        
         private Drawable[] _drawables;
         private GameEntity[] _entities;
 
@@ -35,17 +34,12 @@ namespace MarbleSorterGame
         private Button _buttonExit;
         
         // TODO: Pass a game configuration structure in here instead of width/height uints
-        public GameScreen(RenderWindow window, AssetBundleLoader bundle, uint screenWidth, uint screenHeight, IIODriver driver)
+        public GameScreen(RenderWindow window, IAssetBundle bundle, uint screenWidth, uint screenHeight, IIODriver driver, int presetIndex)
         {
             _driver = driver;
             
             Font font = bundle.Font;
             Sizer sizer = new Sizer(screenWidth, screenHeight);
-
-            // Stick marble roll velocity to resolution size
-            // 300 ticks = 5 seconds
-            MarbleRollVelocity = new Vector2f((float)screenWidth / 800, 0);
-            MarbleFallVelocity = new Vector2f(0, (float)screenHeight / 300);
 
             _window = window;
             _window.MouseButtonPressed += GameMouseClickEventHandler;
@@ -118,20 +112,50 @@ namespace MarbleSorterGame
                 new Vector2f(1, 0)
                 );
 
-            Vector2f trapdoorSize = new Vector2f(MarbleSorterGame.WINDOW_WIDTH/15, _conveyor.Size.Y); //sizer.Percent(8, 1);
             Vector2f gateEntranceSize = sizer.Percent(1, 9);
             Vector2f signalSize = sizer.Percent(3, 8);
             Vector2f sensorSize = new Vector2f(20, 20);
-            Vector2f helperPopupSize = new Vector2f(70, 15);
-            
-            // TODO: Populate this list based on game configuration
-            _trapDoors = new[]
-            {
-                new Trapdoor( sizer.Percent(27, 60), trapdoorSize ), // Left-most
-                new Trapdoor( sizer.Percent(51, 60), trapdoorSize ), 
-                new Trapdoor( sizer.Percent(76, 60), trapdoorSize ) // Right-most
-            };
 
+            _marbles = bundle.GameConfiguration.Presets[presetIndex].Marbles
+                .Select(mc => new Marble(sizer, new Vector2f(40, _conveyor.Position.Y), mc.Color, mc.Weight))
+                .Reverse()
+                .ToArray();
+            
+            // Set marble initialal positions based on screen dimensions
+            Vector2f offset = new Vector2f(0,0);
+            foreach (var marble in _marbles.Reverse())
+            {
+                //marble.Position = sizer.Percent(0, 0);
+                marble.Position = new Vector2f(marble.Position.X, _conveyor.Position.Y - marble.Size.Y);
+                marble.Position -= offset;
+                offset = new Vector2f(offset.X + marble.Size.X, 0);
+            }
+
+            int bucketCount = bundle.GameConfiguration.Presets[presetIndex].Buckets.Count;
+            float bucketHorizontalSpaceIncrement = 100.0f / (bucketCount + 2);
+            _buckets = bundle.GameConfiguration.Presets[presetIndex].Buckets
+                .Select((bc, i) => new Bucket(
+                    sizer.Percent(bucketHorizontalSpaceIncrement * (i + 1), 100),
+                    sizer.Percent(10, 20),
+                    bc.Color,
+                    bc.Weight,
+                    bc.Capacity
+                ))
+                .ToArray();
+            
+            _trapDoors = _buckets
+                .Select((b, i) =>
+                    new Trapdoor(
+                        sizer.Percent(bucketHorizontalSpaceIncrement * (i + 1), 60), 
+                        new Vector2f(b.Size.X, _conveyor.Size.Y)))
+                .ToArray();
+            
+            // Adjust bucket positions to be at very bottom of screen
+            foreach (var bucket in _buckets)
+            {
+                bucket.Position -= new Vector2f(0, bucket.Size.Y);
+            }
+            
             Gate gateEntrance = new Gate(
                 sizer.Percent(13, 52),
                 gateEntranceSize
@@ -238,37 +262,6 @@ namespace MarbleSorterGame
                 new Vector2f(trapdoorOpen3.Position.X + signalSize.X, trapdoorOpen3.Position.Y),
                 signalSize
                 );
-            
-            // TODO: Populate list based on file configuration
-            _marbles = new[]
-            {
-                new Marble(sizer, new Vector2f(40, _conveyor.Position.Y), Color.Red, Weight.Large),
-                new Marble(sizer, new Vector2f(40, _conveyor.Position.Y), Color.Blue, Weight.Medium),
-                new Marble(sizer, new Vector2f(40, _conveyor.Position.Y), Color.Green, Weight.Small),
-            };
-
-            _buckets = new[]
-            {
-                new Bucket(sizer.Percent(27, 100), sizer.Percent(10, 20), Color.Red, Weight.Small, 20),
-                new Bucket(sizer.Percent(51,100), sizer.Percent(10, 20), Color.Green, Weight.Medium, 20),
-                new Bucket(sizer.Percent(76,100), sizer.Percent(10, 20), Color.Blue, Weight.Large, 20),
-            };
-            
-            // Adjust bucket positions to be at very bottom of screen
-            foreach (var bucket in _buckets)
-            {
-                bucket.Position -= new Vector2f(0, bucket.Size.Y);
-            }
-            
-            // Set marble initialal positions based on screen dimensions
-            Vector2f offset = new Vector2f(0,0);
-            foreach (var marble in _marbles.Reverse())
-            {
-                //marble.Position = sizer.Percent(0, 0);
-                marble.Position = new Vector2f(marble.Position.X, _conveyor.Position.Y - marble.Size.Y);
-                marble.Position -= offset;
-                offset = new Vector2f(offset.X + marble.Size.X, 0);
-            }
             
             _entities = new GameEntity[]
             {
@@ -377,6 +370,7 @@ namespace MarbleSorterGame
         public void Update()
         {
             _gateEntrance.SetState(_driver.Gate);
+
             _trapDoors[0].SetState(_driver.TrapDoor1);
             _trapDoors[1].SetState(_driver.TrapDoor2);
             _trapDoors[2].SetState(_driver.TrapDoor3);
@@ -389,15 +383,15 @@ namespace MarbleSorterGame
             foreach (var marble in _marbles)
             {
                 // By default, marble should roll right
-                marble.Velocity = MarbleRollVelocity;
+                marble.SetState(MarbleState.Rolling);
                 
                 // If marble is touching gate and gate is closed, do not move
                 if (_gateEntrance.Overlaps(marble) && !_gateEntrance.IsFullyOpen)
-                    marble.Velocity = new Vector2f(0f, 0);
+                    marble.SetState(MarbleState.Still);
                 
                 // If marble has started falling, keep it falling
-                if (marble.Position.Y > _conveyor.Position.Y)
-                    marble.Velocity = MarbleFallVelocity;
+                if (marble.Position.Y + marble.Size.Y > _conveyor.Position.Y)
+                    marble.SetState(MarbleState.Falling);
             }
             
             // If marbles are touching/overlapping each other, the marble farthest to left should stop moving
@@ -406,7 +400,7 @@ namespace MarbleSorterGame
             {
                 if (_marbles[i].Overlaps(_marbles[i + 1]))
                 {
-                    _marbles[i].Velocity = new Vector2f(0f, _marbles[i].Velocity.Y);
+                    _marbles[i].SetState(MarbleState.Still);
                 }
             }
             
@@ -417,7 +411,7 @@ namespace MarbleSorterGame
                 {
                     if (marble.InsideHorizontal(trapdoor) && trapdoor.IsOpen)
                     {
-                        marble.Velocity = MarbleFallVelocity;
+                        marble.SetState(MarbleState.Falling);
                     }
                 }
             }

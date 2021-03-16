@@ -1,8 +1,9 @@
 ﻿using SFML.System;
 using SFML.Graphics;
 using System;
+using MarbleSorterGame.GameEntities;
 
-namespace MarbleSorterGame
+namespace MarbleSorterGame.GameEntities
 {
     public abstract class GameEntity
     {
