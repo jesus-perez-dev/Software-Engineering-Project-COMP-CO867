@@ -19,10 +19,10 @@ namespace MarbleSorterGame
             public const string TrapDoor1Open = "TrapDoor1Open";
             public const string TrapDoor2Open = "TrapDoor2Open";
             public const string TrapDoor3Open = "TrapDoor3Open";
-            public const string BucketSensor = "BucketSensor";
+            public const string BucketMotionSensor = "BucketMotionSensor";
             public const string GateOpen = "GateOpen";
             public const string GateClosed = "GateClosed";
-            public const string MotionSensor = "MotionSensor";
+            public const string ConveyorMotionSensor = "ConveyorMotionSensor";
             public const string WeightSensor = "WeightSensor";
             public const string ColorSensor = "ColorSensor";
         }
@@ -77,12 +77,12 @@ namespace MarbleSorterGame
             set => _trapDoor3Open.Bool = value;
         }
 
-        private SDataValue _bucketSensor;
+        private SDataValue _bucketMotionSensor;
 
-        public bool BucketSensor
+        public bool BucketMotionSensor
         {
-            get => _bucketSensor.Bool;
-            set => _bucketSensor.Bool = value;
+            get => _bucketMotionSensor.Bool;
+            set => _bucketMotionSensor.Bool = value;
         }
 
         private SDataValue _gate;
@@ -117,20 +117,20 @@ namespace MarbleSorterGame
             set => _conveyor.Bool = value;
         }
 
-        private SDataValue _motionSensor;
+        private SDataValue _conveyorMotionSensor;
 
-        public bool MotionSensor
+        public bool ConveyorMotionSensor
         {
-            get => _motionSensor.Bool;
-            set => _motionSensor.Bool = value;
+            get => _conveyorMotionSensor.Bool;
+            set => _conveyorMotionSensor.Bool = value;
         }
 
         private SDataValue _weightSensor;
 
-        public bool WeightSensor
+        public byte PressureSensor
         {
-            get => _weightSensor.Bool;
-            set => _weightSensor.Bool = value;
+            get => _weightSensor.UInt8;
+            set => _weightSensor.UInt8 = value;
         }
 
         private SDataValue _colorSensor;
@@ -149,12 +149,12 @@ namespace MarbleSorterGame
             _client.IAddress.Add(IKeys.TrapDoor1Open, 0, 0, EPrimitiveDataType.Bool);
             _client.IAddress.Add(IKeys.TrapDoor2Open, 0, 1, EPrimitiveDataType.Bool);
             _client.IAddress.Add(IKeys.TrapDoor3Open, 0, 2, EPrimitiveDataType.Bool);
-            _client.IAddress.Add(IKeys.BucketSensor, 1, 0, EPrimitiveDataType.Bool);
+            _client.IAddress.Add(IKeys.BucketMotionSensor, 1, 0, EPrimitiveDataType.Bool);
             _client.IAddress.Add(IKeys.GateOpen, 2, 0, EPrimitiveDataType.Bool);
             _client.IAddress.Add(IKeys.GateClosed, 2, 1, EPrimitiveDataType.Bool);
-            _client.IAddress.Add(IKeys.MotionSensor, 3, 0, EPrimitiveDataType.Bool);
-            _client.IAddress.Add(IKeys.WeightSensor, 3, 1, EPrimitiveDataType.Bool);
-            _client.IAddress.Add(IKeys.ColorSensor, 3, 2, EPrimitiveDataType.UInt8, 2);
+            _client.IAddress.Add(IKeys.ConveyorMotionSensor, 3, 0, EPrimitiveDataType.Bool);
+            _client.IAddress.Add(IKeys.WeightSensor, 3, 1, EPrimitiveDataType.UInt8, 2);
+            _client.IAddress.Add(IKeys.ColorSensor, 3, 3, EPrimitiveDataType.UInt8, 2);
 
             // Outputs from the simulation (game *Reads* these values)
             _client.QAddress.Add(QKeys.TrapDoor1, 0, 0, EPrimitiveDataType.Bool);
@@ -180,10 +180,10 @@ namespace MarbleSorterGame
             _client.IAddress[IKeys.TrapDoor1Open].Write(_trapDoor1Open);
             _client.IAddress[IKeys.TrapDoor2Open].Write(_trapDoor2);
             _client.IAddress[IKeys.TrapDoor3Open].Write(_trapDoor3);
-            _client.IAddress[IKeys.BucketSensor].Write(_bucketSensor);
+            _client.IAddress[IKeys.BucketMotionSensor].Write(_bucketMotionSensor);
             _client.IAddress[IKeys.GateOpen].Write(_gateOpen);
             _client.IAddress[IKeys.GateClosed].Write(_gateClosed);
-            _client.IAddress[IKeys.MotionSensor].Write(_motionSensor);
+            _client.IAddress[IKeys.ConveyorMotionSensor].Write(_conveyorMotionSensor);
             _client.IAddress[IKeys.WeightSensor].Write(_weightSensor);
             _client.IAddress[IKeys.ColorSensor].Write(_colorSensor);
 
