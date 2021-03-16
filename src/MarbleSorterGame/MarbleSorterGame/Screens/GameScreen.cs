@@ -169,34 +169,34 @@ namespace MarbleSorterGame
                 );
 
             SignalLight signalColor2 = new SignalLight(
-                new Vector2f(signalColor1.Position.X + signalSize.X, signalColor1.Position.Y),
+                new Vector2f(signalColor1.Position.X + signalSize.X + 10, signalColor1.Position.Y),
                 signalSize
                 );
 
             SignalLight signalPressure1 = new SignalLight(
-                new Vector2f(signalColor1.Position.X + 100, signalColor1.Position.Y),
+                new Vector2f(signalColor2.Position.X + signalSize.X + 10, signalColor1.Position.Y),
                 signalSize
                 );
 
-            SignalLight signalMotion1 = new SignalLight(
-                sizer.Percent(95, 50),
-                signalSize
-                );
+            // SignalLight signalMotion1 = new SignalLight(
+            //     sizer.Percent(95, 50),
+            //     signalSize
+            //     );
 
             SignalLight gateOpen = new SignalLight(
-                sizer.Percent(10, 40),
+                sizer.Percent(10, 74),
                 signalSize
                 );
             
             SignalLight gateClosed = new SignalLight(
-                new Vector2f(gateOpen.Position.X + signalSize.X, gateOpen.Position.Y),
+                new Vector2f(gateOpen.Position.X + signalSize.X + 10, gateOpen.Position.Y),
                 signalSize
                 );
 
-            SignalLight conveyerOn = new SignalLight(
-                sizer.Percent(5, 75),
-                signalSize
-                );
+            // SignalLight conveyerOn = new SignalLight(
+            //     sizer.Percent(5, 75),
+            //     signalSize
+            //     );
 
             SignalLight bucketDropped = new SignalLight(
                 sizer.Percent(95, 90),
@@ -204,32 +204,32 @@ namespace MarbleSorterGame
                 );
 
             SignalLight trapdoorOpen1 = new SignalLight(
-                new Vector2f(_trapDoors[0].Position.X, _trapDoors[0].Position.Y - 60),
+                new Vector2f(_trapDoors[0].Position.X, _trapDoors[0].Position.Y + 150),
                 signalSize
                 );
 
             SignalLight trapdoorClosed1 = new SignalLight(
-                new Vector2f (trapdoorOpen1.Position.X + signalSize.X, trapdoorOpen1.Position.Y),
+                new Vector2f (trapdoorOpen1.Position.X + signalSize.X + 10, trapdoorOpen1.Position.Y),
                 signalSize
                 );
 
             SignalLight trapdoorOpen2 = new SignalLight(
-                new Vector2f(_trapDoors[1].Position.X, _trapDoors[1].Position.Y - 60),
+                new Vector2f(_trapDoors[1].Position.X + 100, _trapDoors[1].Position.Y + 150),
                 signalSize
                 );
 
             SignalLight trapdoorClosed2 = new SignalLight(
-                new Vector2f(_trapDoors[1].Position.X + signalSize.X, _trapDoors[1].Position.Y),
+                new Vector2f(trapdoorOpen2.Position.X + signalSize.X + 10, trapdoorOpen2.Position.Y),
                 signalSize
                 );
 
             SignalLight trapdoorOpen3 = new SignalLight(
-                new Vector2f(_trapDoors[2].Position.X, _trapDoors[2].Position.Y - 60),
+                new Vector2f(_trapDoors[2].Position.X + 200, _trapDoors[2].Position.Y + 150),
                 signalSize
                 );
 
             SignalLight trapdoorClosed3 = new SignalLight(
-                new Vector2f(trapdoorOpen3.Position.X + signalSize.X, trapdoorOpen3.Position.Y),
+                new Vector2f(trapdoorOpen3.Position.X + signalSize.X + 10, trapdoorOpen3.Position.Y),
                 signalSize
                 );
             
@@ -281,7 +281,7 @@ namespace MarbleSorterGame
                 sensorMotionBucket3,
                 gateOpen,
                 gateClosed,
-                conveyerOn,
+                // conveyerOn,
                 bucketDropped,
                 trapdoorOpen1,
                 trapdoorClosed1,
@@ -289,7 +289,7 @@ namespace MarbleSorterGame
                 trapdoorClosed2,
                 trapdoorOpen3,
                 trapdoorClosed3,
-                signalMotion1,
+                // signalMotion1,
             };
 
             _entities = _entities.ToList()
@@ -353,7 +353,7 @@ namespace MarbleSorterGame
             {
                 trapdoor.Update();
             }
-
+            
             foreach (var marble in _marbles)
             {
                 // By default, marble should roll right
