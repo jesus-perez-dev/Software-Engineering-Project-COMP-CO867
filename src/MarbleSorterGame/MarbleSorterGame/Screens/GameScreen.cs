@@ -199,7 +199,7 @@ namespace MarbleSorterGame
             //     );
 
             SignalLight bucketDropped = new SignalLight(
-                sizer.Percent(95, 90),
+                sizer.Percent(115, 100),
                 signalSize
                 );
 
