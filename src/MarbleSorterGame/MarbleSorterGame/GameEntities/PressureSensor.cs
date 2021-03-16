@@ -1,8 +1,9 @@
 ﻿using SFML.Graphics;
 using SFML.System;
 using System;
+using MarbleSorterGame.Enums;
 
-namespace MarbleSorterGame
+namespace MarbleSorterGame.GameEntities
 {
     /// <summary>
     /// Sensor that detects weight of marble that passes through it

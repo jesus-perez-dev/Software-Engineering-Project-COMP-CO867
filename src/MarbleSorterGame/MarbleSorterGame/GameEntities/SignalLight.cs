@@ -2,7 +2,7 @@
 using SFML.System;
 using System;
 
-namespace MarbleSorterGame
+namespace MarbleSorterGame.GameEntities
 {
     public class SignalLight : GameEntity
     {

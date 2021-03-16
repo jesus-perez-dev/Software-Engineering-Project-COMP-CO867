@@ -1,10 +1,12 @@
 using System;
 using System.Runtime.CompilerServices;
+using MarbleSorterGame.Enums;
+using MarbleSorterGame.GameEntities;
 using MarbleSorterGame.Utilities;
 using SFML.Graphics;
 using SFML.System;
 
-namespace MarbleSorterGame
+namespace MarbleSorterGame.Screens
 {
     /// <summary>
     /// The main page where users can go to the setting screen or the game
@@ -38,7 +40,7 @@ namespace MarbleSorterGame
             }
         }
         
-        public MainScreen(RenderWindow window, AssetBundleLoader bundle, uint screenWidth, uint screenHeight)
+        public MainScreen(RenderWindow window, IAssetBundle bundle, uint screenWidth, uint screenHeight)
         {
             _font = bundle.Font;
             _window = window;
