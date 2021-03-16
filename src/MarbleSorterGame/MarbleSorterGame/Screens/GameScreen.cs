@@ -313,7 +313,11 @@ namespace MarbleSorterGame.Screens
         {
             if (_buttonStart.IsPressed(mouse.X, mouse.Y))
             {
-                // TODO: Start the simulation (?)
+                // TODO: Toggle the simulation (?)
+                if (_driver is S7IODriver s7driver)
+                {
+                    s7driver.SetRunState(true);
+                }
             }
             else if (_buttonReset.IsPressed(mouse.X, mouse.Y))
             {
