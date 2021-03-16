@@ -24,7 +24,7 @@ namespace MarbleSorterGame
             IIODriver driver = bundle.GameConfiguration.Driver switch
             {
                 DriverType.Keyboard => new KeyboardIODriver(),
-                DriverType.Simulation => new S7IODriver(),
+                DriverType.Simulation => new S7IODriver(bundle.GameConfiguration.DriverOptions),
                 _ => throw new ArgumentException($"Unknown IO driver: {bundle.GameConfiguration.Driver}")
             };
             
