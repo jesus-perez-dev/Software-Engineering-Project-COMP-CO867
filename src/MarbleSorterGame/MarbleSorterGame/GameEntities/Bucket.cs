@@ -19,11 +19,9 @@ namespace MarbleSorterGame.GameEntities
         private Text _capacityLabel;
         private Text _requiredSizeLabel;
         private CircleShape _requiredColorLabel;
-        public int TotalMarbles => TotalCorrect + TotalIncorrect;
-        public int TotalCorrect;
-        public int TotalIncorrect;
-        public int Capacity;
 
+        public int Capacity;
+        public int Accepted;
 
         /// Bucket that holds dropped marbles, containing requirements for color, weight and capacity
         public Bucket(Vector2f position, Vector2f size, Color? requiredColor, Weight? requiredWeight, int capacity) :  base (position, size)
@@ -46,36 +44,27 @@ namespace MarbleSorterGame.GameEntities
             };
 
             _requiredColorLabel.Origin = new Vector2f(_requiredColorLabel.Radius, _requiredColorLabel.Radius);
-
-            TotalCorrect = 0;
-            TotalIncorrect = 0;
         }
 
         /// Insert marble into the bucket, return true/false depening on whether marble meets its requirements
         public bool InsertMarble(Marble m)
         {
-            bool marbleOk = ValidateMarble(m);
+            bool marbleOk = (_requiredColor == null || m.Color == _requiredColor)  &&
+                            (_requiredColor == null || m.Weight == _requiredWeight) &&
+                            Accepted < Capacity;
 
             if (marbleOk)
             {
-                TotalCorrect++;
+                Accepted++;
                 _successSound.Play();
             }
             else
             {
-                TotalIncorrect++;
                 _failSound.Play();
             }
 
-            _capacityLabel.DisplayedString = $"{TotalMarbles}/{Capacity}";
+            _capacityLabel.DisplayedString = $"{Accepted}/{Capacity}";
             return marbleOk;
-        }
-
-        public bool ValidateMarble(Marble m)
-        {
-            return (_requiredColor == null || m.Color == _requiredColor)  &&
-                    (_requiredWeight == null || m.Weight == _requiredWeight) &&
-                    TotalMarbles < Capacity;
         }
 
         /// Draws the bucket onto render target RenderWindow
