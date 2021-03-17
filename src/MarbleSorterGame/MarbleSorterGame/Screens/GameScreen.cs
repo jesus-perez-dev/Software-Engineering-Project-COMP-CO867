@@ -166,7 +166,7 @@ namespace MarbleSorterGame.Screens
                 new Vector2f(1, 0)
                 );
 
-            Vector2f gateEntranceSize = sizer.Percent(1, 9);
+            Vector2f gateEntranceSize = sizer.Percent(0.5f, 9);
             Vector2f signalSize = sizer.Percent(3, 8);
 
             _marbles = bundle.GameConfiguration.Presets[presetIndex].Marbles
@@ -215,7 +215,7 @@ namespace MarbleSorterGame.Screens
             Vector2f gateSensorPosition = _gateEntrance.Position - new Vector2f(sensorSize.X, -1 * (_gateEntrance.Size.Y - sensorSize.Y - _conveyor.Size.Y));
             _pressureSensor = new PressureSensor(gateSensorPosition, sensorSize);
             _colorSensor = new ColorSensor(gateSensorPosition, sensorSize);
-            _motionSensorConveyor = new MotionSensor(gateSensorPosition, sensorSize);
+            _motionSensorConveyor = new MotionSensor(new Vector2f(MarbleSorterGame.WINDOW_WIDTH - sensorSize.X, gateSensorPosition.Y), sensorSize);
 
             Gate gateEntrance = new Gate(
                 sizer.Percent(13, 52),
@@ -335,11 +335,14 @@ namespace MarbleSorterGame.Screens
                 _conveyor,
                 _pressureSensor,
                 _colorSensor,
+                /*
                 signalColor1,
                 signalColor2,
                 signalPressure1,
+                */
                 _motionSensorBucket,
                 _motionSensorConveyor,
+                /*
                 gateOpen,
                 gateClosed,
                 // conveyerOn,
@@ -350,6 +353,7 @@ namespace MarbleSorterGame.Screens
                 trapdoorClosed2,
                 trapdoorOpen3,
                 trapdoorClosed3,
+                */
                 // signalMotion1,
             };
 
