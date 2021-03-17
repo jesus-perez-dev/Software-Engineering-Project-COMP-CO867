@@ -60,7 +60,7 @@ namespace MarbleSorterGame.Screens
 
         //legend helper text
         private GameEntity _hoveredEntity;
-        
+
         // TODO: Pass a game configuration structure in here instead of width/height uints
         public GameScreen(RenderWindow window, IAssetBundle bundle, uint screenWidth, uint screenHeight, IIODriver driver, int presetIndex)
         {
@@ -103,7 +103,7 @@ namespace MarbleSorterGame.Screens
                 sizer.Percent(50f, 6.5f),
                 sizer.Percent(15f, 10f)
             );
-            _winPopup.FillColor =  new SFML.Graphics.Color(102, 255, 51); // green
+            _winPopup.FillColor = new SFML.Graphics.Color(102, 255, 51); // green
 
             _losePopup = new Button
             (
@@ -159,7 +159,7 @@ namespace MarbleSorterGame.Screens
                 );
 
             //================= Game Entities ====================//
-            
+
             _conveyor = new Conveyor(
                 sizer.Percent(0, 60),
                 sizer.Percent(100, 1),
@@ -173,9 +173,9 @@ namespace MarbleSorterGame.Screens
                 .Select(mc => new Marble(sizer, new Vector2f(40, _conveyor.Position.Y), mc.Color, mc.Weight))
                 .Reverse()
                 .ToArray();
-            
+
             // Set marble initialal positions based on screen dimensions
-            Vector2f offset = new Vector2f(0,0);
+            Vector2f offset = new Vector2f(0, 0);
             foreach (var marble in _marbles.Reverse())
             {
                 //marble.Position = sizer.Percent(0, 0);
@@ -195,30 +195,28 @@ namespace MarbleSorterGame.Screens
                     bc.Capacity
                 ))
                 .ToArray();
-            
+
             _trapDoors = _buckets
                 .Select((b, i) =>
                     new Trapdoor(
-                        sizer.Percent(bucketHorizontalSpaceIncrement * (i + 1), 60), 
+                        sizer.Percent(bucketHorizontalSpaceIncrement * (i + 1), 60),
                         new Vector2f(b.Size.X, _conveyor.Size.Y)))
                 .ToArray();
-            
+
             // Adjust bucket positions to be at very bottom of screen
             foreach (var bucket in _buckets)
             {
                 bucket.Position -= new Vector2f(0, bucket.Size.Y);
             }
-            
-            _gateEntrance = new Gate( sizer.Percent(13, 52), gateEntranceSize );
-            
-            Vector2f sensorSize = new Vector2f(MarbleSorterGame.WINDOW_WIDTH/40, MarbleSorterGame.WINDOW_WIDTH/40); // Size half of the largest marble size
+
+            _gateEntrance = new Gate(sizer.Percent(13, 52), gateEntranceSize);
+
+            Vector2f sensorSize = new Vector2f(MarbleSorterGame.WINDOW_WIDTH / 40, MarbleSorterGame.WINDOW_WIDTH / 40); // Size half of the largest marble size
             Vector2f gateSensorPosition = _gateEntrance.Position - new Vector2f(sensorSize.X, -1 * (_gateEntrance.Size.Y - sensorSize.Y - _conveyor.Size.Y));
             _pressureSensor = new PressureSensor(gateSensorPosition, sensorSize);
-            _colorSensor = new ColorSensor(gateSensorPosition, sensorSize) ;
+            _colorSensor = new ColorSensor(gateSensorPosition, sensorSize);
             _motionSensorConveyor = new MotionSensor(gateSensorPosition, sensorSize);
-                bucket.Position -= new Vector2f(0, bucket.Size.Y);
-            }
-            
+
             Gate gateEntrance = new Gate(
                 sizer.Percent(13, 52),
                 gateEntranceSize
@@ -234,7 +232,7 @@ namespace MarbleSorterGame.Screens
             ColorSensor sensorColorStart = new ColorSensor(
                 sizer.Percent(6, 55),
                 sensorSize
-                ) ;
+                );
 
             MotionSensor sensorMotionEnd = new MotionSensor(
                 sizer.Percent(94, 55),
@@ -243,7 +241,7 @@ namespace MarbleSorterGame.Screens
 
             // Position half-way between conveyer and top of buckets
             Vector2f motionSensorPosition = new Vector2f(MarbleSorterGame.WINDOW_WIDTH - sensorSize.X, _buckets[0].Position.Y - sensorSize.Y);
-            _motionSensorBucket = new MotionSensor(motionSensorPosition, sensorSize );
+            _motionSensorBucket = new MotionSensor(motionSensorPosition, sensorSize);
 
             MotionSensor sensorMotionBucket2 = new MotionSensor(
                 sizer.Percent(45, 100),
@@ -279,7 +277,7 @@ namespace MarbleSorterGame.Screens
                 sizer.Percent(10, 74),
                 signalSize
                 );
-            
+
             SignalLight gateClosed = new SignalLight(
                 new Vector2f(gateOpen.Position.X + signalSize.X + 10, gateOpen.Position.Y),
                 signalSize
@@ -301,7 +299,7 @@ namespace MarbleSorterGame.Screens
                 );
 
             SignalLight trapdoorClosed1 = new SignalLight(
-                new Vector2f (trapdoorOpen1.Position.X + signalSize.X + 10, trapdoorOpen1.Position.Y),
+                new Vector2f(trapdoorOpen1.Position.X + signalSize.X + 10, trapdoorOpen1.Position.Y),
                 signalSize
                 );
 
@@ -324,7 +322,7 @@ namespace MarbleSorterGame.Screens
                 new Vector2f(trapdoorOpen3.Position.X + signalSize.X + 10, trapdoorOpen3.Position.Y),
                 signalSize
                 );
-            
+
             _entities = new GameEntity[]
             {
                 _buttonStart,
@@ -359,14 +357,14 @@ namespace MarbleSorterGame.Screens
                 .Concat(_marbles)
                 .Concat(_trapDoors)
                 .Concat(_buckets)
-                .Concat(new [] { _gateEntrance })
+                .Concat(new[] { _gateEntrance })
                 .ToArray();
 
             foreach (GameEntity entity in _entities)
             {
                 entity.Load(bundle);
             }
-            
+
             _drawables = new Drawable[]
             {
                 menuBarBackground,
