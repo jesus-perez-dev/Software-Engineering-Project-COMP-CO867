@@ -16,6 +16,5 @@ namespace MarbleSorterGame.GameEntities
         {
             //_sensorSprite.Position = position;
         }
-
     }
 }

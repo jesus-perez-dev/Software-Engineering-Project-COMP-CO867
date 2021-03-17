@@ -6,47 +6,32 @@ namespace MarbleSorterGame
     /// </summary>
     public interface IIODriver
     {
-        /// Output: Direction of Motor - Whether trap door 1 is moving toward "Open" state
-        public bool TrapDoor1 { get; }
-
         /// Input: Sensor to determine if trap door 1 has completely opened
         public bool TrapDoor1Open { set; }
-
-        /// Input: Sensor to determine if trap door 1 has completely closed
-        public bool TrapDoor1Closed { set; }
-
-        /// Output: Direction of Motor - Whether trap door 2 is moving toward "Open" state
-        public bool TrapDoor2 { get; }
+        
+        /// Output: 1 opens trap door, 0 closes trap door. Automatically closes
+        public bool TrapDoor1 { get; }
 
         /// Input: Sensor to determine if trap door 2 has completely opened
         public bool TrapDoor2Open { set; }
-
-        /// Input: Sensor to determine if trap door 2 has completely closed
-        public bool TrapDoor2Closed { set; }
-
-        /// Output: Direction of Motor - Whether trap door 3 is moving toward "Open" state
-        public bool TrapDoor3 { get; }
+        
+        /// Output: 1 opens trap door, 0 closes trap door. Automatically closes
+        public bool TrapDoor2 { get; }
 
         /// Input: Sensor to determine if trap door 3 has completely opened
         public bool TrapDoor3Open { set; }
-
-        /// Input: Sensor to determine if trap door 3 has completely closed
-        public bool TrapDoor3Closed { set; }
+        
+        /// Output: 1 opens trap door, 0 closes trap door. Automatically closes
+        public bool TrapDoor3 { get; }
 
         /// Input: Motion Sensor Detecting Falling Marble - Marble has fallen in into bucket 1 (toggles on and off)
-        public bool BucketSensor1 { set; }
-
-        /// Input: Motion Sensor Detecting Falling Marble - Marble has fallen in into bucket 2 (toggles on and off)
-        public bool BucketSensor2 { set; }
-
-        /// Input: Motion Sensor Detecting Falling Marble - Marble has fallen in into bucket 3 (toggles on and off)
-        public bool BucketSensor3 { set; }
+        public bool BucketMotionSensor { get; set; }
 
         /// Output: Whether gate is moving toward "Open" state
         public bool Gate { get; set; }
 
         /// Input: Sensor to determine if gate has completely opened
-        public bool GateOpened { set; }
+        public bool GateOpen { set; }
 
         /// Input: Sensor to determine if gate has completely closed
         public bool GateClosed { set; }
@@ -55,13 +40,13 @@ namespace MarbleSorterGame
         public bool Conveyor { get; set; }
 
         /// Input: Sensor to determine if marble is on conveyor (any segment past gate)
-        public bool MotionSensor { set; }
+        public bool ConveyorMotionSensor { set; get; }
 
         /// Input: Sensor to determine if marble is heavy or not
-        public bool WeightSensor { set; }
+        public byte PressureSensor { get; set; }
 
         /// Input: Sensor to determine the colour of the marble
-        public byte ColorSensor { set; }
+        public byte ColorSensor { get; set; }
 
         public void Update();
     }

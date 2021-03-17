@@ -75,6 +75,18 @@ namespace MarbleSorterGame.GameEntities
         {
             return _rect.GetGlobalBounds().Intersects(entity.GlobalBounds);
         }
+
+        /// Check to see if entity at any X position intersects this entities Y position (IE a horizontal straight line touches both)
+        public bool OverlapsVertical(GameEntity entity)
+        {
+            float top = GlobalBounds.Top;
+            float bottom = GlobalBounds.Top + GlobalBounds.Height;
+
+            float eTop = entity.GlobalBounds.Top;
+            float eBottom = entity.GlobalBounds.Top + entity.GlobalBounds.Height;
+
+            return (bottom > eTop && top < eBottom);
+        }
         
         /// Checks whether entity X coordinate fits completely inside this entity
         public bool InsideHorizontal(GameEntity entity)
