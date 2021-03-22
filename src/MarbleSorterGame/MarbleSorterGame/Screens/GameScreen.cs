@@ -282,14 +282,49 @@ namespace MarbleSorterGame.Screens
             };
         }
 
-        public void GameMouseMoveEventHandler(object? sender, SFML.Window.MouseMoveEventArgs mouse)
+        private void GameMouseMoveEventHandler(object? sender, MouseMoveEventArgs mouse)
         {
-            // TODO: Implement on-hover logic for game entities
+            var notAllowed = new Cursor(Cursor.CursorType.NotAllowed);
+            var hand = new Cursor(Cursor.CursorType.Hand);
+
+            if (_buttonStart.MouseInButton(mouse.X, mouse.Y))
+            {
+                _buttonStart.hovered = true;
+                _buttonReset.hovered = false;
+                _buttonExit.hovered = false;
+
+                _window.SetMouseCursor(_buttonStart.disabled ? notAllowed : hand);
+            } 
+            else if (_buttonReset.MouseInButton(mouse.X, mouse.Y))
+            {
+                _buttonStart.hovered = false;
+                _buttonReset.hovered = true;
+                _buttonExit.hovered = false;
+
+                _window.SetMouseCursor(_buttonReset.disabled ? notAllowed : hand);
+            }
+            else if (_buttonExit.MouseInButton(mouse.X, mouse.Y))
+            {
+                _buttonStart.hovered = false;
+                _buttonReset.hovered = false;
+                _buttonExit.hovered = true;
+
+                _window.SetMouseCursor(_buttonExit.disabled ? notAllowed : hand);
+            }
+            else
+            {
+                _buttonStart.hovered = false;
+                _buttonReset.hovered = false;
+                _buttonExit.hovered = false;
+                
+                var arrow = new Cursor(Cursor.CursorType.Arrow);
+                _window.SetMouseCursor(arrow);
+            }
         }
 
-        public void GameMouseClickEventHandler(object? sender, MouseButtonEventArgs mouse)
+        private void GameMouseClickEventHandler(object? sender, MouseButtonEventArgs mouse)
         {
-            if (_buttonStart.IsPressed(mouse.X, mouse.Y))
+            if (_buttonStart.MouseInButton(mouse.X, mouse.Y) && !_buttonStart.disabled)
             {
                 // TODO: Toggle the simulation (?)
                 if (_driver is S7IODriver s7driver)
@@ -297,18 +332,18 @@ namespace MarbleSorterGame.Screens
                     s7driver.SetRunState(true);
                 }
             }
-            else if (_buttonReset.IsPressed(mouse.X, mouse.Y))
+            else if (_buttonReset.MouseInButton(mouse.X, mouse.Y) && !_buttonReset.disabled)
             {
                 // TODO: Reset the game
             }
-            else if (_buttonExit.IsPressed(mouse.X, mouse.Y))
+            else if (_buttonExit.MouseInButton(mouse.X, mouse.Y))
             {
                 Dispose();
                 _window.Close();
             }
         }
 
-        public void GameKeyEventHandler(object? sender, KeyEventArgs key)
+        private void GameKeyEventHandler(object? sender, KeyEventArgs key)
         {
             if (_driver is KeyboardIODriver kbdriver)
             {
