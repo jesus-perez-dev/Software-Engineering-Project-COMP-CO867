@@ -35,7 +35,6 @@ namespace MarbleSorterGame
 
         /// <summary>
         /// Update any data for the game
-        /// todo: copy draw method and have each of the screen classes handle data changes (eg, marbles moving)
         /// </summary>
         public override void Update()
         {
