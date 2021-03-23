@@ -26,7 +26,6 @@ namespace MarbleSorterGame.Screens
         private ColorSensor _colorSensor;
         private PressureSensor _pressureSensor;
 
-        private Gate _firstGate;
         private Gate _gateEntrance;
         private Conveyor _conveyor;
         private Marble[] _marbles;
@@ -155,7 +154,6 @@ namespace MarbleSorterGame.Screens
                 bucket.Position -= new Vector2f(0, bucket.Size.Y);
             }
             
-            _firstGate = new Gate( sizer.Percent(7, 52), gateEntranceSize );
             _gateEntrance = new Gate( sizer.Percent(13, 52), gateEntranceSize );
             
             Vector2f sensorSize = new Vector2f(MarbleSorterGame.WINDOW_WIDTH/40, MarbleSorterGame.WINDOW_WIDTH/40); // Size half of the largest marble size
@@ -268,7 +266,7 @@ namespace MarbleSorterGame.Screens
                 .Concat(_marbles)
                 .Concat(_trapDoors)
                 .Concat(_buckets)
-                .Concat(new [] { _firstGate, _gateEntrance })
+                .Concat(new [] { _gateEntrance })
                 .ToArray();
 
             foreach (GameEntity entity in _entities)
@@ -320,7 +318,6 @@ namespace MarbleSorterGame.Screens
         
         public void Update()
         {
-            _firstGate.SetState(!_driver.Gate);
             _gateEntrance.SetState(_driver.Gate);
 
             _trapDoors[0].SetState(_driver.TrapDoor1);
@@ -371,11 +368,7 @@ namespace MarbleSorterGame.Screens
             {
                 // By default, marble should roll right
                 marble.SetState(MarbleState.Rolling);
-                
-                // // If marble is touching gate and gate is closed, do not move
-                // if (_firstGate.Overlaps(marble) && !_firstGate.IsFullyOpen)
-                //     marble.SetState(MarbleState.Still);
-                
+
                 // If marble is touching gate and gate is closed, do not move
                 // Marble can clip through if more than half of marble is past gate
                 if (!_gateEntrance.IsFullyOpen && _gateEntrance.Overlaps(marble) 
@@ -431,7 +424,6 @@ namespace MarbleSorterGame.Screens
                 }
             }
 
-            _firstGate.Update();
             _gateEntrance.Update();
             
             // Update IIODriver instance
