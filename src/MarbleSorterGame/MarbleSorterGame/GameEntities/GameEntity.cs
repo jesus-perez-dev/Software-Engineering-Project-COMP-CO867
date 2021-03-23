@@ -8,23 +8,22 @@ namespace MarbleSorterGame.GameEntities
     public abstract class GameEntity
     {
         private RectangleShape _rect;
-
+        
         public String InfoText;
         public string Name { get; set; }
-
-        /// <summary>
+        
+        /// Bounding box of the game entity
+        public RectangleShape Box => _rect;
+        
         /// Position of the game entity
-        /// </summary>
-        public Vector2f Position
+        public virtual Vector2f Position
         {
             get => _rect.Position;
             set => _rect.Position = value;
         }
 
-        /// <summary>
         /// Size of the game entity
-        /// </summary>
-        public Vector2f Size
+        public virtual Vector2f Size
         {
             get => _rect.Size;
             set => _rect.Size = value;
@@ -42,10 +41,17 @@ namespace MarbleSorterGame.GameEntities
             {
                 Position = position,
                 Size = size,
-                FillColor = SFML.Graphics.Color.Yellow,
-                OutlineColor = SFML.Graphics.Color.Yellow,
-                OutlineThickness = 1
+                //FillColor = Color.Yellow,
+                //OutlineColor = Color.Yellow,
+                //OutlineThickness = 1
             };
+        }
+
+        /// Return a new scale value appropriate for fitting "sprite" inside of box "size"
+        protected static Vector2f RescaleSprite(Vector2f size, Sprite sprite)
+        {
+            // Actual size of a sprite is: sprite.Scale * sprite.Texture.Size. To set the size of the sprite, we need to adjust the scale
+            return new Vector2f(size.X / sprite.Texture.Size.X, size.Y / sprite.Texture.Size.Y);
         }
 
         public Vector2f CenterOrigin(Texture texture)
