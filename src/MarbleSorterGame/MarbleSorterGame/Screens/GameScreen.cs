@@ -26,6 +26,7 @@ namespace MarbleSorterGame.Screens
         private ColorSensor _colorSensor;
         private PressureSensor _pressureSensor;
 
+        private Gate _firstGate;
         private Gate _gateEntrance;
         private Conveyor _conveyor;
         private Marble[] _marbles;
@@ -154,6 +155,7 @@ namespace MarbleSorterGame.Screens
                 bucket.Position -= new Vector2f(0, bucket.Size.Y);
             }
             
+            _firstGate = new Gate( sizer.Percent(7, 52), gateEntranceSize );
             _gateEntrance = new Gate( sizer.Percent(13, 52), gateEntranceSize );
             
             Vector2f sensorSize = new Vector2f(MarbleSorterGame.WINDOW_WIDTH/40, MarbleSorterGame.WINDOW_WIDTH/40); // Size half of the largest marble size
@@ -266,7 +268,7 @@ namespace MarbleSorterGame.Screens
                 .Concat(_marbles)
                 .Concat(_trapDoors)
                 .Concat(_buckets)
-                .Concat(new [] { _gateEntrance })
+                .Concat(new [] { _firstGate, _gateEntrance })
                 .ToArray();
 
             foreach (GameEntity entity in _entities)
@@ -318,12 +320,12 @@ namespace MarbleSorterGame.Screens
         
         public void Update()
         {
+            _firstGate.SetState(!_driver.Gate);
             _gateEntrance.SetState(_driver.Gate);
 
             _trapDoors[0].SetState(_driver.TrapDoor1);
             _trapDoors[1].SetState(_driver.TrapDoor2);
             _trapDoors[2].SetState(_driver.TrapDoor3);
-            _gateEntrance.SetState(_driver.Gate);
             
             //////////////////////////////////////////////////////////// 
             /////// BEGIN: TODO FIXME HACK
@@ -370,9 +372,17 @@ namespace MarbleSorterGame.Screens
                 // By default, marble should roll right
                 marble.SetState(MarbleState.Rolling);
                 
+                // // If marble is touching gate and gate is closed, do not move
+                // if (_firstGate.Overlaps(marble) && !_firstGate.IsFullyOpen)
+                //     marble.SetState(MarbleState.Still);
+                
                 // If marble is touching gate and gate is closed, do not move
-                if (_gateEntrance.Overlaps(marble) && !_gateEntrance.IsFullyOpen)
+                // Marble can clip through if more than half of marble is past gate
+                if (!_gateEntrance.IsFullyOpen && _gateEntrance.Overlaps(marble) 
+                                               && marble.Position.X + marble.Size.X/2 < _gateEntrance.Position.X)
+                {
                     marble.SetState(MarbleState.Still);
+                }
                 
                 // If marble has started falling, keep it falling
                 if (marble.Position.Y + marble.Size.Y > _conveyor.Position.Y)
@@ -383,7 +393,7 @@ namespace MarbleSorterGame.Screens
             // NOTE: This assumes marble order is placed from left-to-right!
             for (int i = 0; i < _marbles.Length - 1; i++)
             {
-                if (_marbles[i].Overlaps(_marbles[i + 1]))
+                if (_marbles[i].MarbleOverlaps(_marbles[i + 1]))
                 {
                     _marbles[i].SetState(MarbleState.Still);
                 }
@@ -421,6 +431,7 @@ namespace MarbleSorterGame.Screens
                 }
             }
 
+            _firstGate.Update();
             _gateEntrance.Update();
             
             // Update IIODriver instance
