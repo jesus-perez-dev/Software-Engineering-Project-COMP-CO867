@@ -3,6 +3,7 @@ using MarbleSorterGame;
 using MarbleSorterGame.Utilities;
 using SFML.Graphics;
 using SFML.System;
+using SFML.Window;
 
 namespace MarbleSorterGame.GameEntities
 {
@@ -11,19 +12,29 @@ namespace MarbleSorterGame.GameEntities
 		private RectangleShape _button;
 		private Text _text;
 
+		public bool Hovered { get; set; }
+		public bool Disabled { get; set; }
+		
+		public Color FillColor
+		{
+			get => _button.FillColor;
+			set => _button.FillColor = value;
+		}
+
 		public String LabelText
 		{
 			get => _text.DisplayedString;
 			set => _text.DisplayedString = value;
 		}
-
+		
 		/// <summary>
-		/// full constructor of Button class, with all parameters
+		/// Full constructor of Button class, with all parameters
 		/// </summary>
-		/// <param name="position">vector coordinate of center of button</param>
-		/// <param name="size">vector size of button</param>
-		/// <param name="label">string label on button</param>
-		/// <param name="font">font of button label</param>
+		/// <param name="displayText">String label on button</param>
+		/// <param name="fontScale">Size of the font</param>
+		/// <param name="font">Font of button label</param>
+		/// <param name="position">Vector coordinate of center of button</param>
+		/// <param name="size">Vector size of button</param>
 		public Button(string displayText, float fontScale, Font font, Vector2f position, Vector2f size) :
 			base(position, size)
 		{
@@ -38,6 +49,9 @@ namespace MarbleSorterGame.GameEntities
 			_button.OutlineThickness = 1f;
 			_button.Origin = _button.CenterOrigin(); //set transform origins of text/button to its center 
 			_button.Position = position;
+
+			Hovered = false;
+			Disabled = false;
 		}
 
 		/// <summary>
@@ -46,7 +60,7 @@ namespace MarbleSorterGame.GameEntities
 		/// <param name="X">Mouse pressed x-coordinate</param>
 		/// <param name="Y">Mouse pressed y-coordinate</param>
 		/// <returns></returns>
-		public bool IsPressed(int X, int Y)
+		public bool MouseInButton(int X, int Y)
 		{
 			FloatRect buttonBounds = _button.GetGlobalBounds();
 			return (
@@ -58,6 +72,22 @@ namespace MarbleSorterGame.GameEntities
 
 		public override void Render(RenderWindow window)
 		{
+			if (Disabled)
+			{
+				_button.FillColor = new Color(200,200,200);
+				_text.FillColor = Color.White;
+			}
+			else if (Hovered)
+			{
+				_button.FillColor = new Color(50, 50, 50);
+				_text.FillColor = Color.White;
+			}
+			else
+			{
+				_button.FillColor = new Color(150, 150, 150);
+				_text.FillColor = Color.Black;
+			}
+
 			window.Draw(_button);
 			window.Draw(_text);
 		}
