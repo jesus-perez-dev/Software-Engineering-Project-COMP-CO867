@@ -19,6 +19,7 @@ namespace MarbleSorterGame
         // Update resolution from config file
         public static uint WINDOW_WIDTH;
         public static uint WINDOW_HEIGHT;
+        public static RectangleShape WINDOW_RECT;
         
         /// <summary>
         /// Display window for the game
@@ -49,7 +50,8 @@ namespace MarbleSorterGame
         {
             WINDOW_WIDTH = windowWidth;
             WINDOW_HEIGHT = windowHeight;
-            
+            WINDOW_RECT = new RectangleShape {Size = new Vector2f(WINDOW_WIDTH, WINDOW_HEIGHT)};
+
             WindowClearColor = windowClearColor;
             Window = new RenderWindow(new VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), windowTitle);
             
