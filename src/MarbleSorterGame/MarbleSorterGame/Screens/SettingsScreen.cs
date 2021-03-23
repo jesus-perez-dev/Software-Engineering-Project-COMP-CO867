@@ -13,8 +13,6 @@ namespace MarbleSorterGame.Screens
         public SettingsScreen(RenderWindow window, IAssetBundle bundle, uint screenWidth, uint screenHeight)
         {
             Font font = bundle.Font;
-            Sizer sizer = new Sizer(screenWidth, screenHeight);
-
         }
         
         public void Update()

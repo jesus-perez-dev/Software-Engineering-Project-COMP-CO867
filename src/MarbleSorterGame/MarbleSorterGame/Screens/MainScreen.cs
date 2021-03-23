@@ -46,14 +46,14 @@ namespace MarbleSorterGame.Screens
             _window = window;
             _window.MouseButtonPressed += MenuMousePressed;
             
-            Sizer sizer = new Sizer(screenWidth, screenHeight);
-            _menuTitle = new Label("Marble Sorter Game", sizer.Percent(50, 30), 50, SFML.Graphics.Color.Black, _font);
-            _copyright = new Label("Copyright 2021 - Mohawk College", sizer.Percent(80, 95), 15, SFML.Graphics.Color.Black, _font);
+            var screen = GameLoop.WINDOW_RECT;
+            _menuTitle = new Label("Marble Sorter Game", screen.Percent(50, 30), 50, SFML.Graphics.Color.Black, _font);
+            _copyright = new Label("Copyright 2021 - Mohawk College", screen.Percent(80, 95), 15, SFML.Graphics.Color.Black, _font);
 
-            Vector2f buttonSize = sizer.Percent(15f, 10f); // new Vector2f(window.Size.X / 7, window.Size.Y / 11);
-            _buttonStart = new Button("Start", 1f, _font, sizer.Percent(30f, 70f), buttonSize);
-            _buttonSettings = new Button("Settings",1f,  _font, sizer.Percent(50f, 70f), buttonSize);
-            _buttonExit = new Button("Exit", 1f, _font, sizer.Percent(70f, 70f), buttonSize);
+            Vector2f buttonSize = screen.Percent(15f, 10f); // new Vector2f(window.Size.X / 7, window.Size.Y / 11);
+            _buttonStart = new Button("Start", 1f, _font, screen.Percent(30f, 70f), buttonSize);
+            _buttonSettings = new Button("Settings",1f,  _font, screen.Percent(50f, 70f), buttonSize);
+            _buttonExit = new Button("Exit", 1f, _font, screen.Percent(70f, 70f), buttonSize);
         }
         
         public void Update()
