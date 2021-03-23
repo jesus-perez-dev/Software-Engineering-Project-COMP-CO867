@@ -27,7 +27,22 @@ namespace MarbleSorterGame.GameEntities
         {
             //write to PLC
         }
+        
+        public override Vector2f Size
+        {
+            get => Box.Size;
+            set
+            {
+                _sensorSprite.Scale = RescaleSprite(value, _sensorSprite);
+                Box.Size = value;
+            }
+        }
 
+        public override Vector2f Position
+        {
+            get => Box.Position;
+            set => _sensorSprite.Position = Box.Position = value;
+        }
 
         /// <summary>
         /// Plays sensor activation sound

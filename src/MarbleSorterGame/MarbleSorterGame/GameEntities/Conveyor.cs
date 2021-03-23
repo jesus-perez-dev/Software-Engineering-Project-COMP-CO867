@@ -11,11 +11,11 @@ namespace MarbleSorterGame.GameEntities
 
         public Conveyor(Vector2f position, Vector2f size, Vector2f conveyorSpeed) : base(position, size)
         {
-            _conveyor = new RectangleShape(size);
+            _conveyor = Box;
             _conveyorSpeed = conveyorSpeed;
 
-            _conveyor.OutlineColor = SFML.Graphics.Color.Black;
-            _conveyor.FillColor = SFML.Graphics.Color.Black;
+            _conveyor.OutlineColor = Color.Black;
+            _conveyor.FillColor = Color.Black;
 
             _conveyor.Position = position;
         }
