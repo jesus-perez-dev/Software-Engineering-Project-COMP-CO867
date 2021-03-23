@@ -353,27 +353,49 @@ namespace MarbleSorterGame.Screens
             _buckets[2].InfoText = "Bucket 3 \n %I1.0 Bool";
         }
 
-        /// <summary>
-        /// Mouse movement event handler to detect 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="mouse"></param>
-        public void GameMouseMoveEventHandler(object? sender, SFML.Window.MouseMoveEventArgs mouse)
+        private void GameMouseMoveEventHandler(object? sender, MouseMoveEventArgs mouse)
         {
-            var mousePosition = new Vector2f(mouse.X, mouse.Y);
+            var notAllowed = new Cursor(Cursor.CursorType.NotAllowed);
+            var hand = new Cursor(Cursor.CursorType.Hand);
 
-            foreach(GameEntity entity in _entities)
+            if (_buttonStart.MouseInButton(mouse.X, mouse.Y))
             {
-                if (entity.MouseHovered(mousePosition) && entity.InfoText != null)
-                {
-                    _hoveredEntity = entity;
-                }
+                _buttonStart.Hovered = true;
+                _buttonReset.Hovered = false;
+                _buttonExit.Hovered = false;
+
+                _window.SetMouseCursor(_buttonStart.Disabled ? notAllowed : hand);
+            } 
+            else if (_buttonReset.MouseInButton(mouse.X, mouse.Y))
+            {
+                _buttonStart.Hovered = false;
+                _buttonReset.Hovered = true;
+                _buttonExit.Hovered = false;
+
+                _window.SetMouseCursor(_buttonReset.Disabled ? notAllowed : hand);
+            }
+            else if (_buttonExit.MouseInButton(mouse.X, mouse.Y))
+            {
+                _buttonStart.Hovered = false;
+                _buttonReset.Hovered = false;
+                _buttonExit.Hovered = true;
+
+                _window.SetMouseCursor(_buttonExit.Disabled ? notAllowed : hand);
+            }
+            else
+            {
+                _buttonStart.Hovered = false;
+                _buttonReset.Hovered = false;
+                _buttonExit.Hovered = false;
+                
+                var arrow = new Cursor(Cursor.CursorType.Arrow);
+                _window.SetMouseCursor(arrow);
             }
         }
 
-        public void GameMouseClickEventHandler(object? sender, MouseButtonEventArgs mouse)
+        private void GameMouseClickEventHandler(object? sender, MouseButtonEventArgs mouse)
         {
-            if (_buttonStart.IsPressed(mouse.X, mouse.Y))
+            if (_buttonStart.MouseInButton(mouse.X, mouse.Y) && !_buttonStart.Disabled)
             {
                 // TODO: Toggle the simulation (?)
                 if (_driver is S7IODriver s7driver)
@@ -381,18 +403,18 @@ namespace MarbleSorterGame.Screens
                     s7driver.SetRunState(true);
                 }
             }
-            else if (_buttonReset.IsPressed(mouse.X, mouse.Y))
+            else if (_buttonReset.MouseInButton(mouse.X, mouse.Y) && !_buttonReset.Disabled)
             {
                 // TODO: Reset the game
             }
-            else if (_buttonExit.IsPressed(mouse.X, mouse.Y))
+            else if (_buttonExit.MouseInButton(mouse.X, mouse.Y))
             {
                 Dispose();
                 _window.Close();
             }
         }
 
-        public void GameKeyEventHandler(object? sender, KeyEventArgs key)
+        private void GameKeyEventHandler(object? sender, KeyEventArgs key)
         {
             if (_driver is KeyboardIODriver kbdriver)
             {

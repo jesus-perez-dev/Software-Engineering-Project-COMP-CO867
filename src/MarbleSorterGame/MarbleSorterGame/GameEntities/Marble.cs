@@ -22,7 +22,9 @@ namespace MarbleSorterGame
         private Vector2f _velocity { get; set; }
 
         private float _marblePeriod = 30f;
-        private float Step => GameLoop.WINDOW_WIDTH / _marblePeriod / GameLoop.FPS;
+        private float StepX => GameLoop.WINDOW_WIDTH / _marblePeriod / GameLoop.FPS;
+        private float StepY => GameLoop.WINDOW_HEIGHT / _marblePeriod / GameLoop.FPS * 2;
+
 
         /// Marble that rolls across the conveyer, contains data about color and weight that needs to be dropped in the right buckets
         public Marble(RectangleShape screen, Vector2f position, Color color, Weight weight)//: base(position, size)
@@ -51,9 +53,9 @@ namespace MarbleSorterGame
             if (state == MarbleState.Still)
                 _velocity = new Vector2f(0,0);
             if (state == MarbleState.Rolling)
-                _velocity = new Vector2f(Step,0);
+                _velocity = new Vector2f(StepX,0);
             if (state == MarbleState.Falling)
-                _velocity = new Vector2f(0,Step);
+                _velocity = new Vector2f(0,StepY);
         }
         
         public override Vector2f Size
