@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using MarbleSorterGame.Enums;
 using MarbleSorterGame.GameEntities;
@@ -6,6 +7,7 @@ using MarbleSorterGame.Utilities;
 using SFML.Graphics;
 using SFML.System;
 using SFML.Window;
+using Color = SFML.Graphics.Color;
 
 namespace MarbleSorterGame.Screens
 {
@@ -16,6 +18,7 @@ namespace MarbleSorterGame.Screens
     {
         private Font _font;
         private RenderWindow _window;
+        private RectangleShape _background;
 
         private Button _buttonStart;
         private Button _buttonSettings;
@@ -23,14 +26,22 @@ namespace MarbleSorterGame.Screens
         private Label _menuTitle;
         private Label _copyright;
 
+        private List<Marble> _aestheticMarbles = new List<Marble>();
+
+        private static float _marbleDimension = GameLoop.WINDOW_RECT.Size.Y / 6;
+        private static Vector2f _marbleSize = new Vector2f(_marbleDimension, _marbleDimension);
+        private int _updateCounter = 0;
+
         public MainScreen(RenderWindow window, IAssetBundle bundle, uint screenWidth, uint screenHeight)
         {
             _font = bundle.Font;
             _window = window;
             _window.MouseButtonPressed += MenuMousePressed;
             _window.MouseMoved += MouseHoverOverButton;
-            
             var screen = GameLoop.WINDOW_RECT;
+
+            _background = new RectangleShape { Size = screen.Size };
+            
             _menuTitle = new Label("Marble Sorter Game", screen.Percent(50, 30), 50, SFML.Graphics.Color.Black, _font);
             _copyright = new Label("Copyright 2021 - Mohawk College", screen.Percent(80, 95), 15, SFML.Graphics.Color.Black, _font);
 
@@ -40,6 +51,17 @@ namespace MarbleSorterGame.Screens
             // todo dont make disabled
             _buttonSettings.Disabled = true;
             _buttonExit = new Button("Exit", 1f, _font, screen.Percent(70f, 70f), buttonSize);
+
+            Enums.Color[] colors = {Enums.Color.Red, Enums.Color.Green, Enums.Color.Blue};
+            for (int i = 0; i < 3; i++)
+            {
+                var marble = new Marble(screen, default, colors[i], Weight.Large);
+                marble.SetState(MarbleState.Rolling);
+                marble.Load(bundle);
+                marble.Size = _marbleSize;
+                marble.Update();
+                _aestheticMarbles.Add(marble);
+            }
         }
 
          private void MenuMousePressed(object? sender, SFML.Window.MouseButtonEventArgs mouse)
@@ -119,6 +141,25 @@ namespace MarbleSorterGame.Screens
 
         public void Update()
         {
+            float xOffset = default;
+            foreach (var marble in _aestheticMarbles)
+            {
+                marble.Update();
+                marble.Position = (GameLoop.WINDOW_RECT.Size / 2) - (marble.Size / 2);
+                marble.Position = marble.Position
+                    .ShiftX(-_marbleDimension*2)
+                    .ShiftX(xOffset);
+                xOffset += _marbleDimension*2;
+            }
+            
+            /*
+            _background.FillColor = new Color(
+                (byte) (Math.Sin(_updateCounter * Math.PI/180)*63 + 190),
+                (byte)(Math.Sin(_updateCounter * Math.PI/180)*63 + 190),
+                (byte)(Math.Sin(_updateCounter * Math.PI/180)*63 + 190)
+            );
+            _updateCounter += 5;
+            */
         }
 
         /// <summary>
@@ -128,7 +169,11 @@ namespace MarbleSorterGame.Screens
         /// <param name="font"></param>
         public void Draw(RenderWindow window)
         {
-            //var sizer = new Sizer(window.Size.X,window.Size.Y);
+            window.Draw(_background);
+            
+            foreach (var marble in _aestheticMarbles)
+                marble.Render(window);
+            
             _buttonStart.Render(window);
             _buttonSettings.Render(window);
             _buttonExit.Render(window);
