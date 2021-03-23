@@ -30,7 +30,7 @@ namespace MarbleSorterGame.GameEntities
 
         public Gate(Vector2f position, Vector2f size) : base(position, size)
         {
-            _gate = new RectangleShape(size);
+            _gate = Box;
             _gate.FillColor = SFML.Graphics.Color.Black;
             _gate.Position = position;
             

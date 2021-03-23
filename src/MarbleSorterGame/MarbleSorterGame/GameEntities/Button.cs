@@ -32,7 +32,7 @@ namespace MarbleSorterGame.GameEntities
 			_text.Position = position; // new Vector2f(position.X + (size.X/2), position.Y + (size.Y/2));
 			_text.Origin = _text.CenterOrigin();
 
-			_button = new RectangleShape(size);
+			_button = Box; //new RectangleShape(size);
 			_button.FillColor = new SFML.Graphics.Color(200, 200, 200);
 			_button.OutlineColor = SFML.Graphics.Color.Black;
 			_button.OutlineThickness = 1f;
