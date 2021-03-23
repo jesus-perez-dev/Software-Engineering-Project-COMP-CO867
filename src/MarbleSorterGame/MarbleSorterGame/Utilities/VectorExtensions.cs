@@ -10,6 +10,19 @@ namespace MarbleSorterGame.Utilities
         End     // Bottom if vertical, far-right if horizontal
     }
     
+    public static class ShapeExtensions
+    {
+        public static Vector2f Percent(this Shape self, float percentX, float percentY) =>
+            new Vector2f().PercentOf(self, percentX, percentY);
+        
+        public static Vector2f PositionRelative(this Shape self, Joint xJoint, Joint yJoint)
+        {
+            return new Vector2f()
+                .PositionRelativeToX(self, xJoint)
+                .PositionRelativeToY(self, yJoint);
+        }
+    }
+    
     public static class VectorExtensions
     {
         private static float Align(float start, float dimension, Joint joint)
