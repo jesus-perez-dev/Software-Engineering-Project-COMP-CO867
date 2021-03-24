@@ -19,9 +19,11 @@ namespace MarbleSorterGame.GameEntities
         private Text _capacityLabel;
         private Text _requiredSizeLabel;
         private CircleShape _requiredColorLabel;
-
+        public int TotalMarbles => TotalCorrect + TotalIncorrect;
+        public int TotalCorrect;
+        public int TotalIncorrect;
         public int Capacity;
-        public int Accepted;
+
 
         /// Bucket that holds dropped marbles, containing requirements for color, weight and capacity
         public Bucket(Vector2f position, Vector2f size, Color? requiredColor, Weight? requiredWeight, int capacity) :  base (position, size)
@@ -31,7 +33,7 @@ namespace MarbleSorterGame.GameEntities
             Capacity = capacity;
             
             _bucket = new Sprite();
-            Size =  new Vector2f(MarbleSorterGame.WINDOW_WIDTH/19, MarbleSorterGame.WINDOW_HEIGHT/10); // Note: Largest marble cannot be larger than this
+            base.Size =  new Vector2f(MarbleSorterGame.WINDOW_WIDTH/19, MarbleSorterGame.WINDOW_HEIGHT/10); // Note: Largest marble cannot be larger than this
             _bucket.Position = Position - new Vector2f(0, Size.Y);
 
             _requiredColorLabel = new CircleShape()
@@ -42,29 +44,54 @@ namespace MarbleSorterGame.GameEntities
                 Position = new Vector2f(Position.X + Size.X / 2, Position.Y - Size.Y / 2),
                 Radius = Size.X / 8
             };
-
+            
             _requiredColorLabel.Origin = new Vector2f(_requiredColorLabel.Radius, _requiredColorLabel.Radius);
+
+            TotalCorrect = 0;
+            TotalIncorrect = 0;
+        }
+
+        public override Vector2f Position
+        {
+            get => Box.Position;
+            set => _bucket.Position = Box.Position = value;
+        }
+        
+        public override Vector2f Size
+        {
+            get => Box.Size;
+            set
+            {
+                _bucket.Scale = RescaleSprite(value, _bucket);
+                Box.Size = value;
+            }
         }
 
         /// Insert marble into the bucket, return true/false depening on whether marble meets its requirements
         public bool InsertMarble(Marble m)
         {
-            bool marbleOk = (_requiredColor == null || m.Color == _requiredColor)  &&
-                            (_requiredColor == null || m.Weight == _requiredWeight) &&
-                            Accepted < Capacity;
+            bool marbleOk = ValidateMarble(m);
 
             if (marbleOk)
             {
-                Accepted++;
+                TotalCorrect++;
                 _successSound.Play();
             }
             else
             {
+                TotalIncorrect++;
                 _failSound.Play();
             }
 
-            _capacityLabel.DisplayedString = $"{Accepted}/{Capacity}";
+            _capacityLabel.DisplayedString = $"{TotalMarbles}/{Capacity}";
             return marbleOk;
+        }
+
+        public bool ValidateMarble(Marble m)
+        {
+            return (_requiredColor == null || m.Color == _requiredColor)  &&
+                    (_requiredWeight == null || m.Weight == _requiredWeight) &&
+                    TotalMarbles < Capacity;
         }
 
         /// Draws the bucket onto render target RenderWindow

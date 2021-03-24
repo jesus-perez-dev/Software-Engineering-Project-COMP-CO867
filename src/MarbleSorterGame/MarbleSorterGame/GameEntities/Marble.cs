@@ -27,7 +27,7 @@ namespace MarbleSorterGame
 
 
         /// Marble that rolls across the conveyer, contains data about color and weight that needs to be dropped in the right buckets
-        public Marble(Sizer sizer, Vector2f position, Color color, Weight weight)//: base(position, size)
+        public Marble(RectangleShape screen, Vector2f position, Color color, Weight weight)//: base(position, size)
         {
             Color = color;
             Weight = weight;
@@ -45,7 +45,7 @@ namespace MarbleSorterGame
             
             Position = position;
             Radius = size.X / 2;
-            Size = size;
+            base.Size = size;
         }
 
         public void SetState(MarbleState state)
@@ -57,6 +57,17 @@ namespace MarbleSorterGame
             if (state == MarbleState.Falling)
                 _velocity = new Vector2f(0,StepY);
         }
+        
+        public override Vector2f Size
+        {
+            get => Box.Size;
+            set
+            {
+                _sprite.Scale = RescaleSprite(value, _sprite);
+                Box.Size = value;
+            }
+        }
+        
 
         /// Increment position by velocity and rotate accordingly
         public void Update()

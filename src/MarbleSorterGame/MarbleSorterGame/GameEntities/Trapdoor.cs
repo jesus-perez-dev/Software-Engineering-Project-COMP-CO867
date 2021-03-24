@@ -29,13 +29,25 @@ namespace MarbleSorterGame.GameEntities
             else
                 _rotateStep = RotateStep * -1;
         }
+        
+        public override Vector2f Size
+        {
+            get => Box.Size;
+            set => Box.Size = _trapdoor.Size = _indicateConveyorDrop.Size = value;
+        }
+
+        public override Vector2f Position
+        {
+            get => Box.Position;
+            set => Box.Position = _trapdoor.Position = _indicateConveyorDrop.Position = value;
+        }
 
         /// <summary>
         /// Rotatable part of the conveyer belt that drops marbles onto buckets below
         /// </summary>
         public Trapdoor(Vector2f position, Vector2f size) : base(position, size)
         {
-            _trapdoor = new RectangleShape();
+            _trapdoor = Box;
             _trapdoor.Size = Size;
             _trapdoor.FillColor = SFML.Graphics.Color.Red;
             _trapdoor.Position = position;

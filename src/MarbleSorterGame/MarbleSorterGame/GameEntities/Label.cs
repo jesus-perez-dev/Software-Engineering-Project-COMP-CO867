@@ -7,10 +7,17 @@ namespace MarbleSorterGame.GameEntities
 {
 	/// <summary>
 	/// label is simply a centered text
+	/// Centered text
 	/// </summary>
 	public class Label : Drawable
 	{
-		public Text Text { get; }
+		public String Text
+        {
+			get => _text.DisplayedString;
+			set => _text.DisplayedString = value;
+        }
+
+		private Text _text;
 		public Vector2f _labelPosition { get; }
 		private String _labelText;
 		private int _labelSize;
@@ -37,35 +44,21 @@ namespace MarbleSorterGame.GameEntities
 			_labelColor = labelColor;
 			_labelFont = labelFont;
 
-			Text = new Text(_labelText, _labelFont, (uint) _labelSize);
-			Text.FillColor = _labelColor;
+			_text = new Text(_labelText, _labelFont, (uint) _labelSize);
+			_text.FillColor = _labelColor;
 
-			Text.Origin = Text.CenterOrigin();
-			Text.Position = _labelPosition;
-		}
-
-		public static Text Create(string displayString, Vector2f position, Font font, Color color)
-		{
-			/**
-			return new Text
-			{
-				Position = position,
-				DisplayedString = displayString,
-				Font = font,
-				FillColor = color,
-			};
-			*/
-			return null;
+			_text.Origin = _text.CenterOrigin();
+			_text.Position = _labelPosition;
 		}
 
 		public void Draw(RenderWindow window)
 		{
-			window.Draw(Text);
+			window.Draw(_text);
 		}
 
 		public void Draw(RenderTarget target, RenderStates states)
 		{
-			target.Draw(Text);
+			target.Draw(_text);
 		}
 	}
 }
