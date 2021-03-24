@@ -193,27 +193,19 @@ namespace MarbleSorterGame.Screens
             
             _pressureSensor = new PressureSensor(gateSensorPosition, sensorSize);
             _colorSensor = new ColorSensor(gateSensorPosition, sensorSize);
-            _motionSensorConveyor = new MotionSensor(new Vector2f(MarbleSorterGame.WINDOW_WIDTH - sensorSize.X, gateSensorPosition.Y), sensorSize);
-
+            
+            // Difference between middle of motion sensor and right-edge of gate
+            float motionSensorXPosition = MarbleSorterGame.WINDOW_WIDTH - sensorSize.X;
+            float motionSensorLaserRange = (_gateEntrance.Position.X + _gateEntrance.Size.X) - (motionSensorXPosition + sensorSize.X / 2);
+            _motionSensorConveyor = new MotionSensor(motionSensorLaserRange, new Vector2f(motionSensorXPosition, gateSensorPosition.Y), sensorSize);
             _gateEntrance = new Gate(screen.Percent(13, 52), gateEntranceSize);
 
             PressureSensor sensorPressureStart = new PressureSensor(screen.Percent(3, 55), sensorSize);
             ColorSensor sensorColorStart = new ColorSensor(screen.Percent(6, 55), sensorSize);
-            MotionSensor sensorMotionEnd = new MotionSensor(screen.Percent(94, 55), sensorSize);
 
             // Position half-way between conveyer and top of buckets
             Vector2f motionSensorPosition = new Vector2f(MarbleSorterGame.WINDOW_WIDTH - sensorSize.X, _buckets[0].Position.Y - sensorSize.Y);
-            _motionSensorBucket = new MotionSensor(motionSensorPosition, sensorSize);
-
-            MotionSensor sensorMotionBucket2 = new MotionSensor(
-                screen.Percent(45, 100),
-                screen.Percent(0, 0)
-                );
-
-            MotionSensor sensorMotionBucket3 = new MotionSensor(
-                screen.Percent(65, 100),
-                screen.Percent(0, 0)
-                );
+            _motionSensorBucket = new MotionSensor(motionSensorLaserRange, motionSensorPosition, sensorSize);
 
             SignalLight signalColor1 = new SignalLight(
                 screen.Percent(30, 20),
@@ -345,7 +337,7 @@ namespace MarbleSorterGame.Screens
             _trapDoors[2].InfoText = "Trapdoor 3 \n %Q0.2 Bool";
             sensorColorStart.InfoText = "Color Sensor \n %Q0.2 Bool";
             sensorPressureStart.InfoText = "Pressure Sensor \n %Q0.2 Bool";
-            sensorMotionEnd.InfoText = "Motion Sensor \n %Q0.2 Bool";
+            _motionSensorBucket.InfoText = "Motion Sensor \n %Q0.2 Bool";
 
             sensorColorStart.InfoText = "Color Sensor \n %Q0.2 Bool";
             _buckets[0].InfoText = "Bucket 1 \n %I1.0 Bool";
@@ -451,17 +443,16 @@ namespace MarbleSorterGame.Screens
                 // Write pressure of overlapping marble
                 if (_pressureSensor.Overlaps(marble))
                     _driver.PressureSensor = (byte) marble.Weight;
-                
-                // If marble position is past the gate and its X-value is on the conveyer belt (not falling)
-                // write to the conveyer motion sensor
-                bool marbleOnConveyor = marble.Position.Y == _conveyor.Position.Y - marble.Size.Y; // TODO: This should be its own method
-                bool marblePastGate = marble.Position.X > _gateEntrance.Position.X; // TODO: Should we use radius or size here?
-                _driver.ConveyorMotionSensor |= marbleOnConveyor && marblePastGate;
-
-                // If a straight horizontal line drawn from the marble across the screen touches the bucket motion sensor, fire-off the sensor
-                bool marbleVerticalMatches = _motionSensorBucket.OverlapsVertical(marble);
-                _driver.BucketMotionSensor |= marbleVerticalMatches;
             }
+            
+            // If marble position is past the gate and its X-value is on the conveyer belt (not falling)
+            // write to the conveyer motion sensor
+            _motionSensorConveyor.Update(_marbles);
+            _driver.ConveyorMotionSensor |= _motionSensorConveyor.Detected;
+
+            // If a straight horizontal line drawn from the marble across the screen touches the bucket motion sensor, fire-off the sensor
+            _motionSensorBucket.Update(_marbles);
+            _driver.BucketMotionSensor |= _motionSensorBucket.Detected;
             
             //////// END: TODO FIXME HACK
             //////////////////////////////////////////////////////////// 
