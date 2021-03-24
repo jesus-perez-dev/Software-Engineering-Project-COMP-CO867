@@ -358,7 +358,6 @@ namespace MarbleSorterGame.Screens
             _trapDoors[0].SetState(_driver.TrapDoor1);
             _trapDoors[1].SetState(_driver.TrapDoor2);
             _trapDoors[2].SetState(_driver.TrapDoor3);
-            _gateEntrance.SetState(_driver.Gate);
             
             //////////////////////////////////////////////////////////// 
             /////// BEGIN: TODO FIXME HACK
@@ -404,10 +403,14 @@ namespace MarbleSorterGame.Screens
             {
                 // By default, marble should roll right
                 marble.SetState(MarbleState.Rolling);
-                
+
                 // If marble is touching gate and gate is closed, do not move
-                if (_gateEntrance.Overlaps(marble) && !_gateEntrance.IsFullyOpen)
+                // Marble can clip through if more than half of marble is past gate
+                if (!_gateEntrance.IsFullyOpen && _gateEntrance.Overlaps(marble) 
+                                               && marble.Position.X + marble.Size.X/2 < _gateEntrance.Position.X)
+                {
                     marble.SetState(MarbleState.Still);
+                }
                 
                 // If marble has started falling, keep it falling
                 if (marble.Position.Y + marble.Size.Y > _conveyor.Position.Y)
@@ -418,7 +421,7 @@ namespace MarbleSorterGame.Screens
             // NOTE: This assumes marble order is placed from left-to-right!
             for (int i = 0; i < _marbles.Length - 1; i++)
             {
-                if (_marbles[i].Overlaps(_marbles[i + 1]))
+                if (_marbles[i].MarbleOverlaps(_marbles[i + 1]))
                 {
                     _marbles[i].SetState(MarbleState.Still);
                 }
