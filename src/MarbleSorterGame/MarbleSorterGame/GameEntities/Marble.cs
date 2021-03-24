@@ -67,7 +67,6 @@ namespace MarbleSorterGame
                 Box.Size = value;
             }
         }
-        
 
         /// Increment position by velocity and rotate accordingly
         public void Update()
