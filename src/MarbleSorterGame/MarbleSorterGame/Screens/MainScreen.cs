@@ -30,26 +30,26 @@ namespace MarbleSorterGame.Screens
             _window.MouseButtonPressed += MenuMousePressed;
             _window.MouseMoved += MouseHoverOverButton;
             
-            Sizer sizer = new Sizer(screenWidth, screenHeight);
-            _menuTitle = new Label("Marble Sorter Game", sizer.Percent(50, 30), 50, SFML.Graphics.Color.Black, _font);
-            _copyright = new Label("Copyright 2021 - Mohawk College", sizer.Percent(80, 95), 15, SFML.Graphics.Color.Black, _font);
+            var screen = GameLoop.WINDOW_RECT;
+            _menuTitle = new Label("Marble Sorter Game", screen.Percent(50, 30), 50, SFML.Graphics.Color.Black, _font);
+            _copyright = new Label("Copyright 2021 - Mohawk College", screen.Percent(80, 95), 15, SFML.Graphics.Color.Black, _font);
 
-            Vector2f buttonSize = sizer.Percent(15f, 10f); // new Vector2f(window.Size.X / 7, window.Size.Y / 11);
-            _buttonStart = new Button("Start", 1f, _font, sizer.Percent(30f, 70f), buttonSize);
-            _buttonSettings = new Button("Settings",1f,  _font, sizer.Percent(50f, 70f), buttonSize);
+            Vector2f buttonSize = screen.Percent(15f, 10f); // new Vector2f(window.Size.X / 7, window.Size.Y / 11);
+            _buttonStart = new Button("Start", 1f, _font, screen.Percent(30f, 70f), buttonSize);
+            _buttonSettings = new Button("Settings",1f,  _font, screen.Percent(50f, 70f), buttonSize);
             // todo dont make disabled
-            _buttonSettings.disabled = true;
-            _buttonExit = new Button("Exit", 1f, _font, sizer.Percent(70f, 70f), buttonSize);
+            _buttonSettings.Disabled = true;
+            _buttonExit = new Button("Exit", 1f, _font, screen.Percent(70f, 70f), buttonSize);
         }
 
          private void MenuMousePressed(object? sender, SFML.Window.MouseButtonEventArgs mouse)
         {
-            if (_buttonStart.MouseInButton(mouse.X, mouse.Y) && !_buttonStart.disabled)
+            if (_buttonStart.MouseInButton(mouse.X, mouse.Y) && !_buttonStart.Disabled)
             {
                 MarbleSorterGame.ActiveMenu = Menu.Game;
                 Dispose();
             }
-            else if (_buttonSettings.MouseInButton(mouse.X, mouse.Y) && !_buttonSettings.disabled)
+            else if (_buttonSettings.MouseInButton(mouse.X, mouse.Y) && !_buttonSettings.Disabled)
             {
                 MarbleSorterGame.ActiveMenu = Menu.Settings;
                 Dispose();
@@ -67,46 +67,46 @@ namespace MarbleSorterGame.Screens
 
             if (_buttonStart.MouseInButton(mouse.X, mouse.Y))
             {
-                _buttonStart.hovered = true;
-                _buttonSettings.hovered = false;
-                _buttonExit.hovered = false;
+                _buttonStart.Hovered = true;
+                _buttonSettings.Hovered = false;
+                _buttonExit.Hovered = false;
 
-                _window.SetMouseCursor(_buttonStart.disabled ? notAllowed : hand);
+                _window.SetMouseCursor(_buttonStart.Disabled ? notAllowed : hand);
             } 
             else if (_buttonSettings.MouseInButton(mouse.X, mouse.Y))
             {
-                _buttonStart.hovered = false;
-                _buttonSettings.hovered = true;
-                _buttonExit.hovered = false;
+                _buttonStart.Hovered = false;
+                _buttonSettings.Hovered = true;
+                _buttonExit.Hovered = false;
 
-                _window.SetMouseCursor(_buttonSettings.disabled ? notAllowed : hand);
+                _window.SetMouseCursor(_buttonSettings.Disabled ? notAllowed : hand);
             }
             else if (_buttonExit.MouseInButton(mouse.X, mouse.Y))
             {
-                _buttonStart.hovered = false;
-                _buttonSettings.hovered = false;
-                _buttonExit.hovered = true;
+                _buttonStart.Hovered = false;
+                _buttonSettings.Hovered = false;
+                _buttonExit.Hovered = true;
 
-                _window.SetMouseCursor(_buttonExit.disabled ? notAllowed : hand);
+                _window.SetMouseCursor(_buttonExit.Disabled ? notAllowed : hand);
             }
             else
             {
-                _buttonStart.hovered = false;
-                _buttonSettings.hovered = false;
-                _buttonExit.hovered = false;
+                _buttonStart.Hovered = false;
+                _buttonSettings.Hovered = false;
+                _buttonExit.Hovered = false;
                 
                 var arrow = new Cursor(Cursor.CursorType.Arrow);
                 _window.SetMouseCursor(arrow);
             }
-            // _buttonStart.hovered = _buttonStart.MouseInButton(mouse.X, mouse.Y);
-            // _buttonSettings.hovered = _buttonSettings.MouseInButton(mouse.X, mouse.Y);
-            // _buttonExit.hovered = _buttonExit.MouseInButton(mouse.X, mouse.Y);
+            // _buttonStart.Hovered = _buttonStart.MouseInButton(mouse.X, mouse.Y);
+            // _buttonSettings.Hovered = _buttonSettings.MouseInButton(mouse.X, mouse.Y);
+            // _buttonExit.Hovered = _buttonExit.MouseInButton(mouse.X, mouse.Y);
             //
-            // if (_buttonStart.hovered && _buttonStart.MouseInButton(mouse.X, mouse.Y))
+            // if (_buttonStart.Hovered && _buttonStart.MouseInButton(mouse.X, mouse.Y))
             // {
             //     
             // }
-            // if (_buttonStart.hovered || _buttonSettings.hovered || _buttonExit.hovered)
+            // if (_buttonStart.Hovered || _buttonSettings.Hovered || _buttonExit.Hovered)
             // {
             //     var pointer = new Cursor(Cursor.CursorType.Hand);
             //     _window.SetMouseCursor(pointer);

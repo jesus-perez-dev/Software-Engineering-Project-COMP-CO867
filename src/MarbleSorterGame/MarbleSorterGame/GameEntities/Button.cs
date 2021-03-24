@@ -11,9 +11,15 @@ namespace MarbleSorterGame.GameEntities
 	{
 		private RectangleShape _button;
 		private Text _text;
+
+		public bool Hovered { get; set; }
+		public bool Disabled { get; set; }
 		
-		public bool hovered;
-		public bool disabled;
+		public Color FillColor
+		{
+			get => _button.FillColor;
+			set => _button.FillColor = value;
+		}
 
 		public String LabelText
 		{
@@ -37,15 +43,15 @@ namespace MarbleSorterGame.GameEntities
 			_text.Position = position; // new Vector2f(position.X + (size.X/2), position.Y + (size.Y/2));
 			_text.Origin = _text.CenterOrigin();
 
-			_button = new RectangleShape(size);
+			_button = Box; //new RectangleShape(size);
 			_button.FillColor = new SFML.Graphics.Color(200, 200, 200);
 			_button.OutlineColor = SFML.Graphics.Color.Black;
 			_button.OutlineThickness = 1f;
 			_button.Origin = _button.CenterOrigin(); //set transform origins of text/button to its center 
 			_button.Position = position;
 
-			hovered = false;
-			disabled = false;
+			Hovered = false;
+			Disabled = false;
 		}
 
 		/// <summary>
@@ -66,12 +72,12 @@ namespace MarbleSorterGame.GameEntities
 
 		public override void Render(RenderWindow window)
 		{
-			if (disabled)
+			if (Disabled)
 			{
 				_button.FillColor = new Color(200,200,200);
 				_text.FillColor = Color.White;
 			}
-			else if (hovered)
+			else if (Hovered)
 			{
 				_button.FillColor = new Color(50, 50, 50);
 				_text.FillColor = Color.White;

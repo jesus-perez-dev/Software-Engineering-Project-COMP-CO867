@@ -1,8 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MarbleSorterGame", "MarbleSorterGame\MarbleSorterGame.csproj", "{BD483F90-2058-448E-B6FC-3A032AE8C5C8}"
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30907.101
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MarbleSorterGame", "MarbleSorterGame\MarbleSorterGame.csproj", "{BD483F90-2058-448E-B6FC-3A032AE8C5C8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "S7PLCSIM-Library", "..\S7PLCSIM-Library\S7PLCSIM-Library\S7PLCSIM-Library.csproj", "{89F36143-555F-4FCB-8BD2-F5A003CAFA69}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "S7PLCSIM-Library", "..\S7PLCSIM-Library\S7PLCSIM-Library\S7PLCSIM-Library.csproj", "{DEC149BF-5E44-40DD-B2DC-39B3B38D9543}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -14,9 +17,15 @@ Global
 		{BD483F90-2058-448E-B6FC-3A032AE8C5C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BD483F90-2058-448E-B6FC-3A032AE8C5C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BD483F90-2058-448E-B6FC-3A032AE8C5C8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{89F36143-555F-4FCB-8BD2-F5A003CAFA69}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{89F36143-555F-4FCB-8BD2-F5A003CAFA69}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{89F36143-555F-4FCB-8BD2-F5A003CAFA69}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{89F36143-555F-4FCB-8BD2-F5A003CAFA69}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DEC149BF-5E44-40DD-B2DC-39B3B38D9543}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DEC149BF-5E44-40DD-B2DC-39B3B38D9543}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DEC149BF-5E44-40DD-B2DC-39B3B38D9543}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DEC149BF-5E44-40DD-B2DC-39B3B38D9543}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {8C5633BE-E9E8-4E57-9129-CADFD02F981D}
 	EndGlobalSection
 EndGlobal
