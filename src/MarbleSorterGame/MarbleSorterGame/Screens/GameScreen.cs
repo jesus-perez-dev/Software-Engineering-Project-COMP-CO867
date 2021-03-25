@@ -515,7 +515,7 @@ namespace MarbleSorterGame.Screens
                     if (bucket.Inside(marble))
                     {
                         // Set marble position offscreen and update bucket counters
-                        marble.Position = new Vector2f(50000, 50000);
+                        marble.Position = new Vector2f(50, 50000);
                         bool success = bucket.InsertMarble(marble);
                     }
                 }
@@ -528,7 +528,7 @@ namespace MarbleSorterGame.Screens
             _driver.Update();
 
             // Update legend text
-            _marblesRemaining = (_marblesTotal - _buckets.Select(b => b.TotalMarbles).Sum());
+            _marblesRemaining = _marblesTotal - _buckets.Select(b => b.TotalMarbles).Sum();
             int marblesCorrectDrop = _buckets.Select(b => b.TotalCorrect).Sum();
             int marblesIncorrectDrop = _buckets.Select(b => b.TotalIncorrect).Sum();
 

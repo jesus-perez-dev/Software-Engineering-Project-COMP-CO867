@@ -1,10 +1,10 @@
 {
-  "ScreenWidth": 1600,
-  "ScreenHeight": 900,
+  "ScreenWidth": 900,
+  "ScreenHeight": 600,
   "MarblePeriod": 9.0,
   "GatePeriod": 0.5,
   "TrapDoorPeriod": 0.5,
-  "Driver": "Simulation",
+  "Driver": "Keyboard",
   "DriverOptions": { "SimulationName":  "test" },
   "Presets": [
     {
