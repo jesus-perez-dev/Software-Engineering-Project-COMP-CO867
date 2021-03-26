@@ -52,19 +52,29 @@ namespace MarbleSorterGame.Screens
         private GameState _gameState;
         private int _marblesTotal;
         private int _marblesRemaining;
-
-        // TODO: Pass a game configuration structure in here instead of width/height uints
+        
+        //
+        private IAssetBundle _bundle;
+        private MarbleGamePreset _preset;
+        
         public GameScreen(RenderWindow window, IAssetBundle bundle, IIODriver driver, int presetIndex)
+        {
+            _window = window;
+            _bundle = bundle;
+            _driver = driver;
+            _preset = bundle.GameConfiguration.Presets[presetIndex];
+            Reset();
+        }
+
+        // Initialize all game entity objects and reset values to default states
+        private void Reset()
         {
             // Used for positioning by percentage relative to screen
             var screen = GameLoop.WINDOW_RECT;
-            
-            _driver = driver;
-            _window = window;
-            var font = bundle.Font;
+            var font = _bundle.Font;
 
             _legendData = new Dictionary<string, string>() { };
-            _marblesTotal = bundle.GameConfiguration.Presets[presetIndex].Marbles.Count;
+            _marblesTotal = _preset.Marbles.Count;
             _marblesRemaining = _marblesTotal;
             _gameState = GameState.Progress;
 
@@ -138,7 +148,7 @@ namespace MarbleSorterGame.Screens
             Vector2f gateEntranceSize = screen.Percent(0.5f, 9);
             Vector2f signalSize = screen.Percent(3, 8);
 
-            _marbles = bundle.GameConfiguration.Presets[presetIndex].Marbles
+            _marbles = _preset.Marbles
                 .Select(mc => new Marble(screen, new Vector2f(40, _conveyor.Position.Y), mc.Color, mc.Weight))
                 .Reverse()
                 .ToArray();
@@ -155,9 +165,9 @@ namespace MarbleSorterGame.Screens
                 offset += marble.Size.X;
             }
 
-            int bucketCount = bundle.GameConfiguration.Presets[presetIndex].Buckets.Count;
+            int bucketCount = _preset.Buckets.Count;
             float bucketHorizontalSpaceIncrement = 100.0f / (bucketCount + 2);
-            _buckets = bundle.GameConfiguration.Presets[presetIndex].Buckets
+            _buckets = _preset.Buckets
                 .Select((bc, i) => new Bucket(
                     screen.Percent(bucketHorizontalSpaceIncrement * (i + 1), 100),
                     screen.Percent(10, 20),
@@ -263,9 +273,7 @@ namespace MarbleSorterGame.Screens
                 .ToArray();
 
             foreach (GameEntity entity in _entities)
-            {
-                entity.Load(bundle);
-            }
+                entity.Load(_bundle);
 
             _drawables = new Drawable[]
             {
@@ -487,6 +495,8 @@ namespace MarbleSorterGame.Screens
 
         private void ResetButtonClickHandler(object? sender, MouseButtonEventArgs args)
         {
+            Dispose();
+            Reset();
         }
 
         private void MainMenuButtonClickHandler(object? sender, MouseButtonEventArgs args)
