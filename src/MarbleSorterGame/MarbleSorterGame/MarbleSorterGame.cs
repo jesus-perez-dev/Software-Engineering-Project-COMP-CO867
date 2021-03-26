@@ -4,6 +4,7 @@ using MarbleSorterGame.Enums;
 using MarbleSorterGame.Screens;
 using SFML.Graphics;
 using SFML.System;
+using SFML.Window;
 
 namespace MarbleSorterGame
 {
@@ -31,6 +32,29 @@ namespace MarbleSorterGame
             _gameScreen = new GameScreen(Window, bundle, WINDOW_WIDTH, WINDOW_HEIGHT, driver, 0);
             _mainScreen = new MainScreen(Window, bundle, WINDOW_WIDTH, WINDOW_HEIGHT);
             _settingsScreen = new SettingsScreen(Window, bundle, WINDOW_WIDTH, WINDOW_HEIGHT);
+        }
+
+        // Trigger click event(s) on buttons if a click event occured there
+        public static void UpdateButtonsFromClickEvent(object? sender, GameEntities.Button[] buttons, MouseButtonEventArgs mouse)
+        {
+            foreach (var button in buttons)
+                if (button.MouseInButton(mouse.X, mouse.Y))
+                    button.Click(sender, mouse);
+        }
+
+        // Update the state of buttons/cursor based on mouse event and list of buttons
+        public static void UpdateButtonsFromMouseEvent(RenderWindow window, GameEntities.Button[] buttons, MouseMoveEventArgs mouse)
+        {
+            window.SetMouseCursor(Cursors.Arrow);
+            foreach (var button in buttons)
+            {
+                button.Hovered = false;
+                if (button.MouseInButton(mouse.X, mouse.Y))
+                {
+                    button.Hovered = true;
+                    window.SetMouseCursor(button.Disabled ? GameLoop.Cursors.NotAllowed : GameLoop.Cursors.Hand);
+                }
+            }
         }
 
         /// <summary>
