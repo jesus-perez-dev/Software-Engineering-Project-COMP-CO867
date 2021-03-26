@@ -498,17 +498,17 @@ namespace MarbleSorterGame.Screens
             }
         }
 
-        public void StartSimulationButtonClickHandler(object? sender, MouseButtonEventArgs args)
+        private void StartSimulationButtonClickHandler(object? sender, MouseButtonEventArgs args)
         {
             if (_driver is S7IODriver s7driver)
                 s7driver.SetRunState(true);
         }
 
-        public void ResetButtonClickHandler(object? sender, MouseButtonEventArgs args)
+        private void ResetButtonClickHandler(object? sender, MouseButtonEventArgs args)
         {
         }
 
-        public void ExitButtonClickHandler(object? sender, MouseButtonEventArgs args)
+        private void ExitButtonClickHandler(object? sender, MouseButtonEventArgs args)
         {
             Dispose();
             _window.Close();
