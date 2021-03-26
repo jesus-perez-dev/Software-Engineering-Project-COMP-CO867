@@ -14,7 +14,9 @@ namespace MarbleSorterGame.GameEntities
 
 		public bool Hovered { get; set; }
 		public bool Disabled { get; set; }
-		
+
+		public event EventHandler<MouseButtonEventArgs> ClickEvent;
+
 		public Color FillColor
 		{
 			get => _button.FillColor;
@@ -67,6 +69,8 @@ namespace MarbleSorterGame.GameEntities
 				X > buttonBounds.Left && X < buttonBounds.Left + buttonBounds.Width &&
 				Y > buttonBounds.Top && Y < buttonBounds.Top + buttonBounds.Height);
 		}
+
+		public void Click(object? sender, MouseButtonEventArgs args) => ClickEvent?.Invoke(sender, args);
 
 		public delegate bool IsPressedDelegate(int X, int Y);
 
