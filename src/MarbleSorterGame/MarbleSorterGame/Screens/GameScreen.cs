@@ -522,7 +522,7 @@ namespace MarbleSorterGame.Screens
             }
 
             // Update entrace gate position
-            _gateEntrance.Update();
+            _gateEntrance.Update(_marbles);
             
             // Update IIODriver instance
             _driver.Update();
