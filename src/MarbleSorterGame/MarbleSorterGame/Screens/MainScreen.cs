@@ -31,7 +31,7 @@ namespace MarbleSorterGame.Screens
         private static Vector2f _marbleSize = new Vector2f(_marbleDimension, _marbleDimension);
         private int _updateCounter = 0;
 
-        public MainScreen(RenderWindow window, IAssetBundle bundle, uint screenWidth, uint screenHeight)
+        public MainScreen(RenderWindow window, IAssetBundle bundle)
         {
             _font = bundle.Font;
             _window = window;
