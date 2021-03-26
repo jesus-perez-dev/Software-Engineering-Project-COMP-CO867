@@ -29,9 +29,9 @@ namespace MarbleSorterGame
                 _ => throw new ArgumentException($"Unknown IO driver: {bundle.GameConfiguration.Driver}")
             };
             
-            _gameScreen = new GameScreen(Window, bundle, WINDOW_WIDTH, WINDOW_HEIGHT, driver, 0);
-            _mainScreen = new MainScreen(Window, bundle, WINDOW_WIDTH, WINDOW_HEIGHT);
-            _settingsScreen = new SettingsScreen(Window, bundle, WINDOW_WIDTH, WINDOW_HEIGHT);
+            _gameScreen = new GameScreen(Window, bundle, driver, 0);
+            _mainScreen = new MainScreen(Window, bundle);
+            _settingsScreen = new SettingsScreen(Window, bundle);
         }
 
         // Trigger click event(s) on buttons if a click event occured there
@@ -52,7 +52,7 @@ namespace MarbleSorterGame
                 if (button.MouseInButton(mouse.X, mouse.Y))
                 {
                     button.Hovered = true;
-                    window.SetMouseCursor(button.Disabled ? GameLoop.Cursors.NotAllowed : GameLoop.Cursors.Hand);
+                    window.SetMouseCursor(button.Disabled ? Cursors.NotAllowed : Cursors.Hand);
                 }
             }
         }

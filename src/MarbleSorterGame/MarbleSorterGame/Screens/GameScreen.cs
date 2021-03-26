@@ -55,7 +55,7 @@ namespace MarbleSorterGame.Screens
 
         
         // TODO: Pass a game configuration structure in here instead of width/height uints
-        public GameScreen(RenderWindow window, IAssetBundle bundle, uint screenWidth, uint screenHeight, IIODriver driver, int presetIndex)
+        public GameScreen(RenderWindow window, IAssetBundle bundle, IIODriver driver, int presetIndex)
         {
             // Used for positioning by percentage relative to screen
             var screen = GameLoop.WINDOW_RECT;
