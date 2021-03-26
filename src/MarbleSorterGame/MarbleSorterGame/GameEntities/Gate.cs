@@ -1,6 +1,7 @@
 ﻿using SFML.Graphics;
 using SFML.System;
 using System;
+using System.Linq;
 
 namespace MarbleSorterGame.GameEntities
 {
@@ -8,7 +9,9 @@ namespace MarbleSorterGame.GameEntities
     {
         public bool IsFullyOpen => _gate.Position.Y <= _minGateY;
         public bool IsFullyClosed => _gate.Position.Y >= _maxGateY;
-        
+        public bool IsClosing => !IsOpening && !IsFullyOpen && !IsFullyClosed;
+        public bool IsOpening { get; private set;  }
+
         private float _gatePeriod = 30f; // Default: Take 30 seconds to open
         
         private float Step => Size.Y / GameLoop.FPS / _gatePeriod;
@@ -22,6 +25,7 @@ namespace MarbleSorterGame.GameEntities
 
         public void SetState(bool opening)
         {
+            IsOpening = opening;
             if (opening)
                 _step = Step * -1;
             else
@@ -39,8 +43,12 @@ namespace MarbleSorterGame.GameEntities
             _maxGateY = position.Y;
         }
 
-        public void Update()
+        public void Update(Marble[] marbles)
         {
+            // If there is a marble anywhere underneath the gate, dont do anything
+            if (marbles.Any(InsideHorizontal))
+                return;
+            
             float newY = Math.Min(Math.Max(_minGateY, _gate.Position.Y + _step), _maxGateY);
             _gate.Position = new Vector2f(_gate.Position.X, newY);
             Position = _gate.Position;
