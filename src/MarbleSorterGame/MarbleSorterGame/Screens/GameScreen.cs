@@ -292,32 +292,18 @@ namespace MarbleSorterGame.Screens
 
         private void GameMouseMoveEventHandler(object? sender, MouseMoveEventArgs mouse)
         {
-            _window.SetMouseCursor(GameLoop.Cursors.Arrow);
-            
-            foreach (var button in _buttons)
-            {
-                button.Hovered = false;
-                if (button.MouseInButton(mouse.X, mouse.Y))
-                {
-                    button.Hovered = true;
-                    _window.SetMouseCursor(button.Disabled ? GameLoop.Cursors.NotAllowed : GameLoop.Cursors.Hand);
-                }
-            }
+            MarbleSorterGame.UpdateButtonsFromMouseEvent(_window, _buttons, mouse);
         }
 
         private void GameMouseClickEventHandler(object? sender, MouseButtonEventArgs mouse)
         {
-            foreach (var button in _buttons)
-                if (button.MouseInButton(mouse.X, mouse.Y))
-                    button.Click(this, mouse);
+            MarbleSorterGame.UpdateButtonsFromClickEvent(sender, _buttons, mouse);
         }
 
         private void GameKeyEventHandler(object? sender, KeyEventArgs key)
         {
             if (_driver is KeyboardIODriver kbdriver)
-            {
                 kbdriver.UpdateByKey(key);
-            }
         }
         
         public void Update()
@@ -530,6 +516,9 @@ namespace MarbleSorterGame.Screens
 
         public void Dispose()
         {
+            _buttonStart.ClickEvent -= StartSimulationButtonClickHandler;
+            _buttonReset.ClickEvent -= ResetButtonClickHandler;
+            _buttonExit.ClickEvent -= ExitButtonClickHandler;
             _window.MouseButtonPressed -= GameMouseClickEventHandler;
             _window.KeyPressed -= GameKeyEventHandler;
             _window.MouseMoved -= GameMouseMoveEventHandler;
