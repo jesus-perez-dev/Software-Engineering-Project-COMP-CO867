@@ -39,7 +39,7 @@ namespace MarbleSorterGame.Screens
         // UI Buttons
         private Button _winPopup;
         private Button _losePopup;
-        private Button _buttonStart;
+        private Button _buttonPause;
         private Button _buttonReset;
         private Button _buttonMainMenu;
         private Button[] _buttons;
@@ -73,7 +73,7 @@ namespace MarbleSorterGame.Screens
             var screen = GameLoop.WINDOW_RECT;
             var font = _bundle.Font;
 
-            _legendData = new Dictionary<string, string>() { };
+            _legendData = new Dictionary<string, string>();
             _marblesTotal = _preset.Marbles.Count;
             _marblesRemaining = _marblesTotal;
             _gameState = GameState.Progress;
@@ -105,15 +105,15 @@ namespace MarbleSorterGame.Screens
 
             Vector2f menuButtonSize = screen.Percent(13, 5);
             float menuButtonFontScale = 0.4f;
-            _buttonStart = new Button("Start Simulation", menuButtonFontScale, font, screen.Percent(60, 3), menuButtonSize);
+            _buttonPause = new Button("Pause", menuButtonFontScale, font, screen.Percent(60, 3), menuButtonSize);
             _buttonReset = new Button("Reset Game", menuButtonFontScale, font, screen.Percent(75, 3), menuButtonSize);
             _buttonMainMenu = new Button("Main Menu", menuButtonFontScale, font, screen.Percent(90, 3), menuButtonSize);
 
-            _buttonStart.ClickEvent += StartSimulationButtonClickHandler;
+            _buttonPause.ClickEvent += PauseButtonClickHandler;
             _buttonReset.ClickEvent += ResetButtonClickHandler;
             _buttonMainMenu.ClickEvent += MainMenuButtonClickHandler;
             
-            _buttons = new[] { _buttonMainMenu, _buttonStart, _buttonReset, _winPopup, _losePopup };
+            _buttons = new[] { _buttonMainMenu, _buttonPause, _buttonReset, _winPopup, _losePopup };
 
             //================= Labels ====================//
             String instructionsText = "Use the Input/Output Addresses shown below to create a working \nPLC for the marble sorter, based on the requirements on the buckets below.";
@@ -233,7 +233,7 @@ namespace MarbleSorterGame.Screens
 
             _entities = new GameEntity[]
             {
-                _buttonStart,
+                _buttonPause,
                 _buttonReset,
                 _buttonMainMenu,
                 /**
@@ -312,11 +312,10 @@ namespace MarbleSorterGame.Screens
             if (_driver is KeyboardIODriver kbdriver)
                 kbdriver.UpdateByKey(key);
         }
-        
-        public override void Update()
+
+        private void UpdateDriver()
         {
             _gateEntrance.SetState(_driver.Gate);
-
             _trapDoors[0].SetState(_driver.TrapDoor1);
             _trapDoors[1].SetState(_driver.TrapDoor2);
             _trapDoors[2].SetState(_driver.TrapDoor3);
@@ -353,13 +352,14 @@ namespace MarbleSorterGame.Screens
             _driver.BucketMotionSensor |= _motionSensorBucket.Detected;
             
             //////// END: TODO FIXME HACK
-            //////////////////////////////////////////////////////////// 
+            ////////////////////////////////////////////////////////////
 
-            foreach (var trapdoor in _trapDoors)
-            {
-                trapdoor.Update();
-            }
-            
+            // Update IIODriver instance
+            _driver.Update();
+        }
+
+        private void UpdateMarbles()
+        {
             foreach (var marble in _marbles)
             {
                 // By default, marble should roll right
@@ -381,30 +381,18 @@ namespace MarbleSorterGame.Screens
             // If marbles are touching/overlapping each other, the marble farthest to left should stop moving
             // NOTE: This assumes marble order is placed from left-to-right!
             for (int i = 0; i < _marbles.Length - 1; i++)
-            {
                 if (_marbles[i].MarbleOverlaps(_marbles[i + 1]))
-                {
                     _marbles[i].SetState(MarbleState.Still);
-                }
-            }
             
             // If marble is overtop a trap-door, and the trap door is open, switch velocity to falling
             foreach (var marble in _marbles)
-            {
                 foreach (var trapdoor in _trapDoors)
-                {
                     if (marble.InsideHorizontal(trapdoor) && trapdoor.IsOpen)
-                    {
                         marble.SetState(MarbleState.Falling);
-                    }
-                }
-            }
 
             // Now actually update marble coordinates
             foreach (var m in _marbles)
-            {
                 m.Update();
-            }
             
             // When the marble is complete inside the bucket, insert marble and teleport it offscreen
             foreach (var marble in _marbles)
@@ -419,14 +407,44 @@ namespace MarbleSorterGame.Screens
                     }
                 }
             }
+        }
+
+        private void UpdateDoors()
+        {
+            foreach (var trapdoor in _trapDoors)
+                trapdoor.Update();
 
             // Update entrace gate position
             _gateEntrance.Update(_marbles);
-            
-            // Update IIODriver instance
-            _driver.Update();
+        }
 
-            // Update legend text
+        private void UpdateLegend()
+        {
+            _legendData["Game Data"] = "";
+            _legendData["Marbles Remaining Total"] = _marblesRemaining.ToString();
+            _legendData["Marbles Correctly Dropped"] = _buckets.Select(b => b.TotalCorrect).Sum().ToString();
+            _legendData["Marbles Incorrectly Dropped"] = _buckets.Select(b => b.TotalIncorrect).Sum().ToString();
+            _legendData["PLC Devices I/O"] = "";
+            _legendData["Conveyor State"] = _driver.Conveyor.ToString();
+            _legendData["Trapdoor 1 Opening"] = _driver.TrapDoor1.ToString();
+            _legendData["Trapdoor 2 Opening"] = _driver.TrapDoor2.ToString();
+            _legendData["Trapdoor 3 Opening"] = _driver.TrapDoor3.ToString();
+            _legendData["Entrance Gate Opening"] = _driver.Gate.ToString();
+            _legendData["Entrance Gate Opening"] = DateTime.Now.ToString();
+
+            var legendBuilder = new System.Text.StringBuilder();
+
+            if (_hoveredEntity != null)
+                legendBuilder.AppendLine(_hoveredEntity.InfoText);
+
+            foreach (var stat in _legendData)
+                legendBuilder.AppendLine(String.Format("{0,-30}: {1}", stat.Key, stat.Value));
+            
+            _legend.Text = legendBuilder.ToString();
+        }
+
+        public void UpdateGameState()
+        {
             _marblesRemaining = _marblesTotal - _buckets.Select(b => b.TotalMarbles).Sum();
             int marblesCorrectDrop = _buckets.Select(b => b.TotalCorrect).Sum();
             int marblesIncorrectDrop = _buckets.Select(b => b.TotalIncorrect).Sum();
@@ -450,27 +468,19 @@ namespace MarbleSorterGame.Screens
                 _gameState = GameState.Win;
             else if (marblesIncorrectDrop > 0)
                 _gameState = GameState.Lose;
+        }
 
-            _legendData["Game Data"] = "";
-            _legendData["Marbles Remaining Total"] = _marblesRemaining.ToString();
-            _legendData["Marbles Correctly Dropped"] = marblesCorrectDrop.ToString();
-            _legendData["Marbles Incorrectly Dropped"] = marblesIncorrectDrop.ToString();
-            _legendData["PLC Devices I/O"] = "";
-            _legendData["Conveyor State"] = _driver.Conveyor.ToString();
-            _legendData["Trapdoor 1 Opening"] = _driver.TrapDoor1.ToString();
-            _legendData["Trapdoor 2 Opening"] = _driver.TrapDoor2.ToString();
-            _legendData["Trapdoor 3 Opening"] = _driver.TrapDoor3.ToString();
-            _legendData["Entrance Gate Opening"] = _driver.Gate.ToString();
+        public override void Update()
+        {
+            UpdateLegend();
 
-            var legendBuilder = new System.Text.StringBuilder();
-
-            if (_hoveredEntity != null)
-                legendBuilder.AppendLine(_hoveredEntity.InfoText);
-
-            foreach (var stat in _legendData)
-                legendBuilder.AppendLine(String.Format("{0,-30}: {1}", stat.Key, stat.Value));
-            
-            _legend.Text = legendBuilder.ToString();
+            if (_gameState == GameState.Progress)
+            {
+                UpdateDriver();
+                UpdateMarbles();
+                UpdateDoors();
+                UpdateGameState(); // Win, lose, or pause
+            }
         }
         
         /// Method that gets called when the screen is to be redrawn
@@ -487,10 +497,15 @@ namespace MarbleSorterGame.Screens
             }
         }
 
-        private void StartSimulationButtonClickHandler(object? sender, MouseButtonEventArgs args)
+        private void PauseButtonClickHandler(object? sender, MouseButtonEventArgs args)
         {
-            if (_driver is S7IODriver s7driver)
-                s7driver.SetRunState(true);
+            if (_gameState == GameState.Pause)
+                _gameState = GameState.Progress;
+            else if (_gameState == GameState.Progress)
+                _gameState = GameState.Pause;
+            
+            //if (_driver is S7IODriver s7driver)
+            //   s7driver.SetRunState(true);
         }
 
         private void ResetButtonClickHandler(object? sender, MouseButtonEventArgs args)
@@ -508,7 +523,7 @@ namespace MarbleSorterGame.Screens
 
         public void Dispose()
         {
-            _buttonStart.ClickEvent -= StartSimulationButtonClickHandler;
+            _buttonPause.ClickEvent -= PauseButtonClickHandler;
             _buttonReset.ClickEvent -= ResetButtonClickHandler;
             _buttonMainMenu.ClickEvent -= MainMenuButtonClickHandler;
             _window.MouseButtonPressed -= GameMouseClickEventHandler;
