@@ -430,7 +430,6 @@ namespace MarbleSorterGame.Screens
             _legendData["Trapdoor 2 Opening"] = _driver.TrapDoor2.ToString();
             _legendData["Trapdoor 3 Opening"] = _driver.TrapDoor3.ToString();
             _legendData["Entrance Gate Opening"] = _driver.Gate.ToString();
-            _legendData["Entrance Gate Opening"] = DateTime.Now.ToString();
 
             var legendBuilder = new System.Text.StringBuilder();
 
