@@ -59,7 +59,7 @@ namespace MarbleSorterGame.Screens
 
         //legend helper text
         private GameEntity _hoveredEntity;
-
+        
         // TODO: Pass a game configuration structure in here instead of width/height uints
         public GameScreen(RenderWindow window, IAssetBundle bundle, uint screenWidth, uint screenHeight, IIODriver driver, int presetIndex)
         {
@@ -347,41 +347,17 @@ namespace MarbleSorterGame.Screens
 
         private void GameMouseMoveEventHandler(object? sender, MouseMoveEventArgs mouse)
         {
-            var notAllowed = new Cursor(Cursor.CursorType.NotAllowed);
-            var hand = new Cursor(Cursor.CursorType.Hand);
-
-            if (_buttonStart.MouseInButton(mouse.X, mouse.Y))
+            _window.SetMouseCursor(GameLoop.Cursors.Arrow);
+            
+            Button[] buttons = { _buttonExit, _buttonStart, _buttonReset } ;
+            foreach (var button in buttons)
             {
-                _buttonStart.Hovered = true;
-                _buttonReset.Hovered = false;
-                _buttonExit.Hovered = false;
-
-                _window.SetMouseCursor(_buttonStart.Disabled ? notAllowed : hand);
-            } 
-            else if (_buttonReset.MouseInButton(mouse.X, mouse.Y))
-            {
-                _buttonStart.Hovered = false;
-                _buttonReset.Hovered = true;
-                _buttonExit.Hovered = false;
-
-                _window.SetMouseCursor(_buttonReset.Disabled ? notAllowed : hand);
-            }
-            else if (_buttonExit.MouseInButton(mouse.X, mouse.Y))
-            {
-                _buttonStart.Hovered = false;
-                _buttonReset.Hovered = false;
-                _buttonExit.Hovered = true;
-
-                _window.SetMouseCursor(_buttonExit.Disabled ? notAllowed : hand);
-            }
-            else
-            {
-                _buttonStart.Hovered = false;
-                _buttonReset.Hovered = false;
-                _buttonExit.Hovered = false;
-                
-                var arrow = new Cursor(Cursor.CursorType.Arrow);
-                _window.SetMouseCursor(arrow);
+                button.Hovered = false;
+                if (button.MouseInButton(mouse.X, mouse.Y))
+                {
+                    button.Hovered = true;
+                    _window.SetMouseCursor(button.Disabled ? GameLoop.Cursors.NotAllowed : GameLoop.Cursors.Hand);
+                }
             }
         }
 

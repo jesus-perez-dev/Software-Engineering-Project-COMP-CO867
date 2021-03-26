@@ -21,6 +21,13 @@ namespace MarbleSorterGame
         public static uint WINDOW_HEIGHT;
         public static RectangleShape WINDOW_RECT;
         
+        public static class Cursors
+        {
+            public static readonly Cursor NotAllowed = new Cursor(Cursor.CursorType.NotAllowed);
+            public static readonly Cursor Hand = new Cursor(Cursor.CursorType.Hand);
+            public static readonly Cursor Arrow = new Cursor(Cursor.CursorType.Arrow);
+        }
+        
         /// <summary>
         /// Display window for the game
         /// </summary>
