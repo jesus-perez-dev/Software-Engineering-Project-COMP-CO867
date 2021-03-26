@@ -41,7 +41,7 @@ namespace MarbleSorterGame.Screens
         private Button _losePopup;
         private Button _buttonStart;
         private Button _buttonReset;
-        private Button _buttonExit;
+        private Button _buttonMainMenu;
         private Button[] _buttons;
 
         // Legend helper text
@@ -53,7 +53,6 @@ namespace MarbleSorterGame.Screens
         private int _marblesTotal;
         private int _marblesRemaining;
 
-        
         // TODO: Pass a game configuration structure in here instead of width/height uints
         public GameScreen(RenderWindow window, IAssetBundle bundle, IIODriver driver, int presetIndex)
         {
@@ -98,13 +97,13 @@ namespace MarbleSorterGame.Screens
             float menuButtonFontScale = 0.4f;
             _buttonStart = new Button("Start Simulation", menuButtonFontScale, font, screen.Percent(60, 3), menuButtonSize);
             _buttonReset = new Button("Reset Game", menuButtonFontScale, font, screen.Percent(75, 3), menuButtonSize);
-            _buttonExit = new Button("Exit Game", menuButtonFontScale, font, screen.Percent(90, 3), menuButtonSize);
+            _buttonMainMenu = new Button("Main Menu", menuButtonFontScale, font, screen.Percent(90, 3), menuButtonSize);
 
             _buttonStart.ClickEvent += StartSimulationButtonClickHandler;
             _buttonReset.ClickEvent += ResetButtonClickHandler;
-            _buttonExit.ClickEvent += ExitButtonClickHandler;
+            _buttonMainMenu.ClickEvent += MainMenuButtonClickHandler;
             
-            _buttons = new[] { _buttonExit, _buttonStart, _buttonReset, _winPopup, _losePopup };
+            _buttons = new[] { _buttonMainMenu, _buttonStart, _buttonReset, _winPopup, _losePopup };
 
             //================= Labels ====================//
             String instructionsText = "Use the Input/Output Addresses shown below to create a working \nPLC for the marble sorter, based on the requirements on the buckets below.";
@@ -226,7 +225,7 @@ namespace MarbleSorterGame.Screens
             {
                 _buttonStart,
                 _buttonReset,
-                _buttonExit,
+                _buttonMainMenu,
                 /**
                 _winPopup,
                 _losePopup,
@@ -429,38 +428,20 @@ namespace MarbleSorterGame.Screens
             {
                 if (marble.Position.X - marble.Radius > _window.Size.X)
                 {
-                    bool marbleSkipped = false;
-
-                    foreach(var bucket in _buckets)
-                    {
-                        if (bucket.ValidateMarble(marble))
-                        {
-                            marbleSkipped = true;
-                        }
-                    }
-
-                    if (marbleSkipped)
-                    {
+                    if (_buckets.Any(b => b.ValidateMarble(marble)))
                         marblesCorrectDrop++;
-                    } else
-                    {
+                    else
                         marblesIncorrectDrop++;
-                    }
 
                     _marblesRemaining--;
                 }
-
             }
 
             //check game win state
             if (_marblesRemaining == 0 && marblesIncorrectDrop == 0)
-            {
                 _gameState = GameState.Win;
-            }
             else if (marblesIncorrectDrop > 0)
-            {
                 _gameState = GameState.Lose;
-            }
 
             _legendData["Game Data"] = "";
             _legendData["Marbles Remaining Total"] = _marblesRemaining.ToString();
@@ -508,7 +489,7 @@ namespace MarbleSorterGame.Screens
         {
         }
 
-        private void ExitButtonClickHandler(object? sender, MouseButtonEventArgs args)
+        private void MainMenuButtonClickHandler(object? sender, MouseButtonEventArgs args)
         {
             Dispose();
             _window.Close();
@@ -518,7 +499,7 @@ namespace MarbleSorterGame.Screens
         {
             _buttonStart.ClickEvent -= StartSimulationButtonClickHandler;
             _buttonReset.ClickEvent -= ResetButtonClickHandler;
-            _buttonExit.ClickEvent -= ExitButtonClickHandler;
+            _buttonMainMenu.ClickEvent -= MainMenuButtonClickHandler;
             _window.MouseButtonPressed -= GameMouseClickEventHandler;
             _window.KeyPressed -= GameKeyEventHandler;
             _window.MouseMoved -= GameMouseMoveEventHandler;
