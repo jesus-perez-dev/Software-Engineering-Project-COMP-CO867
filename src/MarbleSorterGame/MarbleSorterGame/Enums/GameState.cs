@@ -4,6 +4,7 @@ namespace MarbleSorterGame.Enums
     {
         Lose,
         Win,
-        Progress
+        Progress,
+        Pause
     }
 }
