@@ -94,6 +94,5 @@ namespace MarbleSorterGame
                     break;
             }
         }
-        
     }
 }
