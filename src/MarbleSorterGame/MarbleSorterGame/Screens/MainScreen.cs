@@ -12,7 +12,7 @@ using Color = SFML.Graphics.Color;
 namespace MarbleSorterGame.Screens
 {
     /// The main page where users can go to the setting screen or the game
-    public class MainScreen : IDisposable
+    public class MainScreen : Screen, IDisposable
     {
         private Font _font;
         private RenderWindow _window;
@@ -35,8 +35,6 @@ namespace MarbleSorterGame.Screens
         {
             _font = bundle.Font;
             _window = window;
-            _window.MouseButtonPressed += MenuMousePressed;
-            _window.MouseMoved += MouseHoverOverButton;
             var screen = GameLoop.WINDOW_RECT;
 
             _background = new RectangleShape { Size = screen.Size };
@@ -49,9 +47,6 @@ namespace MarbleSorterGame.Screens
             _buttonSettings = new Button("Settings",1f,  _font, screen.Percent(50f, 70f), buttonSize);
             _buttonExit = new Button("Exit", 1f, _font, screen.Percent(70f, 70f), buttonSize);
 
-            _buttonStart.ClickEvent += StartButtonClickHandler;
-            _buttonSettings.ClickEvent += SettingsButtonClickHandler;
-            _buttonExit.ClickEvent += ExitButtonClickHandler;
 
             _buttons = new [] { _buttonStart, _buttonSettings, _buttonExit };
 
@@ -65,6 +60,16 @@ namespace MarbleSorterGame.Screens
                 marble.Update();
                 _aestheticMarbles.Add(marble);
             }
+            
+            SetupInputHandlers();
+        }
+        private void SetupInputHandlers()
+        {
+            _window.MouseButtonPressed += MenuMousePressed;
+            _window.MouseMoved += MouseHoverOverButton;
+            _buttonStart.ClickEvent += StartButtonClickHandler;
+            _buttonSettings.ClickEvent += SettingsButtonClickHandler;
+            _buttonExit.ClickEvent += ExitButtonClickHandler;
         }
 
         private void StartButtonClickHandler(object? sender, MouseButtonEventArgs mouse)
@@ -94,7 +99,7 @@ namespace MarbleSorterGame.Screens
             MarbleSorterGame.UpdateButtonsFromMouseEvent(_window, _buttons, mouse);
         }
 
-        public void Update()
+        public override void Update()
         {
             float xOffset = default;
             foreach (var marble in _aestheticMarbles)
@@ -118,7 +123,7 @@ namespace MarbleSorterGame.Screens
         }
 
         // Method that gets called when the screen is to be redrawn
-        public void Draw(RenderWindow window)
+        public override void Draw(RenderWindow window)
         {
             window.Draw(_background);
             

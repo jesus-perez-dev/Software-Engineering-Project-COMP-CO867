@@ -13,7 +13,7 @@ namespace MarbleSorterGame.Screens
     /// <summary>
     /// The game itself
     /// </summary>
-    public class GameScreen : IDisposable
+    public class GameScreen : Screen, IDisposable
     {
         private RenderWindow _window;
         private Drawable[] _drawables;
@@ -313,7 +313,7 @@ namespace MarbleSorterGame.Screens
                 kbdriver.UpdateByKey(key);
         }
         
-        public void Update()
+        public override void Update()
         {
             _gateEntrance.SetState(_driver.Gate);
 
@@ -474,7 +474,7 @@ namespace MarbleSorterGame.Screens
         }
         
         /// Method that gets called when the screen is to be redrawn
-        public void Draw(RenderWindow window)
+        public override void Draw(RenderWindow window)
         {
             foreach (var drawable in _drawables)
             {
@@ -502,7 +502,8 @@ namespace MarbleSorterGame.Screens
         private void MainMenuButtonClickHandler(object? sender, MouseButtonEventArgs args)
         {
             Dispose();
-            _window.Close();
+            Reset();
+            MarbleSorterGame.ActiveMenu = Menu.Main;
         }
 
         public void Dispose()
