@@ -8,14 +8,14 @@ namespace MarbleSorterGame.Screens
     /// <summary>
     /// The settings screen
     /// </summary>
-    public class SettingsScreen
+    public class SettingsScreen : Screen
     {
         public SettingsScreen(RenderWindow window, IAssetBundle bundle)
         {
             Font font = bundle.Font;
         }
         
-        public void Update()
+        public override void Update()
         {
             
         }
@@ -25,7 +25,7 @@ namespace MarbleSorterGame.Screens
         /// </summary>
         /// <param name="window"></param>
         /// <param name="font"></param>
-        public void Draw(RenderWindow window)
+        public override void Draw(RenderWindow window)
         {
             //default sizes
             Vector2f buttonSize = new Vector2f(window.Size.X / 7, window.Size.Y / 11);
