@@ -247,90 +247,21 @@ namespace MarbleSorterGame.Screens
             var signalColor2 = new SignalLight(new Vector2f(signalColor1.Position.X + signalSize.X + 10, signalColor1.Position.Y), signalSize );
             var signalPressure1 = new SignalLight(new Vector2f(signalColor2.Position.X + signalSize.X + 10, signalColor1.Position.Y), signalSize );
             var signalMotion1 = new SignalLight(screen.Percent(95, 50), signalSize );
-            var gateOpen = new SignalLight(screen.Percent(10, 74), signalSize );
-            var gateClosed = new SignalLight(new Vector2f(gateOpen.Position.X + signalSize.X + 10, gateOpen.Position.Y), signalSize );
+            _gateOpen = new SignalLight(new Vector2f(_gateEntrance.Position.X + gateEntranceSize.X + 10, _trapDoors[0].Position.Y - 50), signalSize);
+            _gateClosed = new SignalLight(new Vector2f(_gateEntrance.Position.X + gateEntranceSize.X + 10, _trapDoors[0].Position.Y + 25), signalSize);
             var conveyerOn = new SignalLight(screen.Percent(5, 75), signalSize );
             var bucketDropped = new SignalLight(screen.Percent(115, 100), signalSize );
-            var trapdoorOpen1 = new SignalLight(new Vector2f(_trapDoors[0].Position.X, _trapDoors[0].Position.Y + 150), signalSize );
-            var trapdoorClosed1 = new SignalLight(new Vector2f(trapdoorOpen1.Position.X + signalSize.X + 10, trapdoorOpen1.Position.Y), signalSize );
-            var trapdoorOpen2 = new SignalLight(new Vector2f(_trapDoors[1].Position.X + 100, _trapDoors[1].Position.Y + 150), signalSize );
-            var trapdoorClosed2 = new SignalLight(new Vector2f(trapdoorOpen2.Position.X + signalSize.X + 10, trapdoorOpen2.Position.Y), signalSize );
-            var trapdoorOpen3 = new SignalLight(new Vector2f(_trapDoors[2].Position.X + 200, _trapDoors[2].Position.Y + 150), signalSize );
-            var trapdoorClosed3 = new SignalLight(new Vector2f(trapdoorOpen3.Position.X + signalSize.X + 10, trapdoorOpen3.Position.Y), signalSize );
-            // SignalLight signalColor1 = new SignalLight(
-            //     screen.Percent(30, 20),
-            //     signalSize
-            //     );
-            //
-            // SignalLight signalColor2 = new SignalLight(
-            //     new Vector2f(signalColor1.Position.X + signalSize.X + 10, signalColor1.Position.Y),
-            //     signalSize
-            //     );
-            //
-            // SignalLight signalPressure1 = new SignalLight(
-            //     new Vector2f(signalColor2.Position.X + signalSize.X + 10, signalColor1.Position.Y),
-            //     signalSize
-            //     );
-
-            // SignalLight signalMotion1 = new SignalLight(
-            //     screen.Percent(95, 50),
-            //     signalSize
-            //     );
-
-            _gateOpen = new SignalLight(
-                new Vector2f(_gateEntrance.Position.X + gateEntranceSize.X + 10, _trapDoors[0].Position.Y - 50),
-                signalSize
-                );
-
-            _gateClosed = new SignalLight(
-                new Vector2f(_gateEntrance.Position.X + gateEntranceSize.X + 10, _trapDoors[0].Position.Y + 25),
-                signalSize
-                );
-
-            // SignalLight conveyerOn = new SignalLight(
-            //     screen.Percent(5, 75),
-            //     signalSize
-            //     );
-
-            SignalLight bucketDropped = new SignalLight(
-                screen.Percent(115, 100),
-                signalSize
-                );
-
+            
             var trapDoorSizeX = _trapDoors[0].Size.X;
             
-            SignalLight trapdoorOpen1 = new SignalLight(
-                new Vector2f(_trapDoors[0].Position.X + trapDoorSizeX, _trapDoors[0].Position.Y - 50),
-                signalSize
-                );
-
-            SignalLight trapdoorOpen2 = new SignalLight(
-                new Vector2f(_trapDoors[1].Position.X + trapDoorSizeX, _trapDoors[1].Position.Y - 50),
-                signalSize
-                );
-
-            SignalLight trapdoorOpen3 = new SignalLight(
-                new Vector2f(_trapDoors[2].Position.X + trapDoorSizeX, _trapDoors[2].Position.Y - 50),
-                signalSize
-                );
-
+            var trapdoorOpen1 = new SignalLight(new Vector2f(_trapDoors[0].Position.X + trapDoorSizeX, _trapDoors[0].Position.Y - 50), signalSize);
+            var trapdoorOpen2 = new SignalLight(new Vector2f(_trapDoors[1].Position.X + trapDoorSizeX, _trapDoors[1].Position.Y - 50), signalSize);
+            var trapdoorOpen3 = new SignalLight(new Vector2f(_trapDoors[2].Position.X + trapDoorSizeX, _trapDoors[2].Position.Y - 50), signalSize);
             _trapDoorsOpen = new[] {trapdoorOpen1, trapdoorOpen2, trapdoorOpen3};
             
-            SignalLight trapdoorClosed1 = new SignalLight(
-                new Vector2f(_trapDoors[0].Position.X - signalSize.X, _trapDoors[0].Position.Y + 50),
-                signalSize
-            );
-
-            SignalLight trapdoorClosed2 = new SignalLight(
-                new Vector2f(_trapDoors[1].Position.X - signalSize.X, _trapDoors[1].Position.Y + 50),
-                signalSize
-            );
-            
-            SignalLight trapdoorClosed3 = new SignalLight(
-                new Vector2f(_trapDoors[2].Position.X - signalSize.X, _trapDoors[2].Position.Y + 50),
-                signalSize
-                );
-            
+            var trapdoorClosed1 = new SignalLight(new Vector2f(_trapDoors[0].Position.X - signalSize.X, _trapDoors[0].Position.Y + 50), signalSize);
+            var trapdoorClosed2 = new SignalLight(new Vector2f(_trapDoors[1].Position.X - signalSize.X, _trapDoors[1].Position.Y + 50), signalSize);
+            var trapdoorClosed3 = new SignalLight(new Vector2f(_trapDoors[2].Position.X - signalSize.X, _trapDoors[2].Position.Y + 50), signalSize);
             _trapDoorsClosed = new[] {trapdoorClosed1, trapdoorClosed2, trapdoorClosed3};
 
             _entities = new GameEntity[]
