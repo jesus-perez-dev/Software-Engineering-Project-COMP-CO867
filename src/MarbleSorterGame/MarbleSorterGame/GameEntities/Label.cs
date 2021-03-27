@@ -18,6 +18,7 @@ namespace MarbleSorterGame.GameEntities
         }
 
 		private Text _text;
+		public Text LabelText { get => _text; }
 		public Vector2f _labelPosition { get; }
 		private String _labelText;
 		private int _labelSize;

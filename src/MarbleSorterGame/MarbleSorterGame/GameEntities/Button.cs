@@ -4,6 +4,7 @@ using MarbleSorterGame.Utilities;
 using SFML.Graphics;
 using SFML.System;
 using SFML.Window;
+using Color = SFML.Graphics.Color;
 
 namespace MarbleSorterGame.GameEntities
 {
@@ -11,10 +12,21 @@ namespace MarbleSorterGame.GameEntities
 	{
 		private RectangleShape _button;
 		private Text _text;
-
+		
+		private static Color _disabledFillColor = new Color(200,200,200);
+		private static Color _disabledTextColor = Color.White;
+		
+		private static Color _hoveredFillColor = new Color(50, 50, 50);
+		private static Color _hoveredTextColor = Color.White;
+		
+		//private static Color _defaultFillColor = new Color(200, 200, 200);
+		private static Color _defaultFillColor = new Color(238, 236, 150);
+		private static Color _defaultTextColor = Color.Black;
 		public bool Hovered { get; set; }
 		public bool Disabled { get; set; }
-		
+
+		public event EventHandler<MouseButtonEventArgs> ClickEvent;
+
 		public Color FillColor
 		{
 			get => _button.FillColor;
@@ -27,14 +39,7 @@ namespace MarbleSorterGame.GameEntities
 			set => _text.DisplayedString = value;
 		}
 		
-		/// <summary>
 		/// Full constructor of Button class, with all parameters
-		/// </summary>
-		/// <param name="displayText">String label on button</param>
-		/// <param name="fontScale">Size of the font</param>
-		/// <param name="font">Font of button label</param>
-		/// <param name="position">Vector coordinate of center of button</param>
-		/// <param name="size">Vector size of button</param>
 		public Button(string displayText, float fontScale, Font font, Vector2f position, Vector2f size) :
 			base(position, size)
 		{
@@ -44,9 +49,10 @@ namespace MarbleSorterGame.GameEntities
 			_text.Origin = _text.CenterOrigin();
 
 			_button = Box; //new RectangleShape(size);
-			_button.FillColor = new SFML.Graphics.Color(200, 200, 200);
-			_button.OutlineColor = SFML.Graphics.Color.Black;
-			_button.OutlineThickness = 1f;
+			//_button.FillColor = new SFML.Graphics.Color(200, 200, 200);
+			_button.FillColor = new Color(218, 216, 124);
+			_button.OutlineColor = Color.Black;
+			_button.OutlineThickness = 2f;
 			_button.Origin = _button.CenterOrigin(); //set transform origins of text/button to its center 
 			_button.Position = position;
 
@@ -54,38 +60,43 @@ namespace MarbleSorterGame.GameEntities
 			Disabled = false;
 		}
 
-		/// <summary>
+		public override Vector2f Position
+		{
+			get => Position;
+			set
+			{
+				 _text.Position = value;
+				 Box.Position = value;
+			}
+		}
+
 		/// checks whether button has been pressed with mouse coordinates
-		/// </summary>
-		/// <param name="X">Mouse pressed x-coordinate</param>
-		/// <param name="Y">Mouse pressed y-coordinate</param>
-		/// <returns></returns>
-		public bool MouseInButton(int X, int Y)
+		public bool MouseInButton(int x, int y)
 		{
 			FloatRect buttonBounds = _button.GetGlobalBounds();
 			return (
-				X > buttonBounds.Left && X < buttonBounds.Left + buttonBounds.Width &&
-				Y > buttonBounds.Top && Y < buttonBounds.Top + buttonBounds.Height);
+				x > buttonBounds.Left && x < buttonBounds.Left + buttonBounds.Width &&
+				y > buttonBounds.Top && y < buttonBounds.Top + buttonBounds.Height);
 		}
 
-		public delegate bool IsPressedDelegate(int X, int Y);
+		public void Click(object? sender, MouseButtonEventArgs args) => ClickEvent?.Invoke(sender, args);
 
 		public override void Render(RenderWindow window)
 		{
 			if (Disabled)
 			{
-				_button.FillColor = new Color(200,200,200);
-				_text.FillColor = Color.White;
+				_button.FillColor = _disabledFillColor;
+				_text.FillColor = _disabledTextColor;
 			}
 			else if (Hovered)
 			{
-				_button.FillColor = new Color(50, 50, 50);
-				_text.FillColor = Color.White;
+				_button.FillColor = _hoveredFillColor;
+				_text.FillColor = _hoveredTextColor;
 			}
 			else
 			{
-				_button.FillColor = new Color(150, 150, 150);
-				_text.FillColor = Color.Black;
+				_button.FillColor = _defaultFillColor;
+				_text.FillColor = _defaultTextColor;
 			}
 
 			window.Draw(_button);
