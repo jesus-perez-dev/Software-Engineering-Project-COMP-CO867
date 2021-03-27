@@ -5,6 +5,7 @@ using SFML.Graphics;
 using SFML.Window;
 using SFML.Audio;
 using SFML.System;
+using SFML.Window;
 
 namespace MarbleSorterGame
 {
@@ -14,22 +15,20 @@ namespace MarbleSorterGame
     public abstract class GameLoop
     {
         public static int FPS = 60;
-        public static int MS_PER_TICK = 1000/FPS;
         
         // Update resolution from config file
         public static uint WINDOW_WIDTH;
         public static uint WINDOW_HEIGHT;
         public static RectangleShape WINDOW_RECT;
+        protected static RenderWindow WINDOW;
         
-        /// <summary>
-        /// Display window for the game
-        /// </summary>
-        public RenderWindow Window
+        public static class Cursors
         {
-            get;
-            protected set;
+            public static readonly Cursor NotAllowed = new Cursor(Cursor.CursorType.NotAllowed);
+            public static readonly Cursor Hand = new Cursor(Cursor.CursorType.Hand);
+            public static readonly Cursor Arrow = new Cursor(Cursor.CursorType.Arrow);
         }
-
+        
         /// <summary>
         /// Color for when the window get cleared
         /// </summary>
@@ -51,12 +50,12 @@ namespace MarbleSorterGame
             WINDOW_WIDTH = windowWidth;
             WINDOW_HEIGHT = windowHeight;
             WINDOW_RECT = new RectangleShape {Size = new Vector2f(WINDOW_WIDTH, WINDOW_HEIGHT)};
+            WINDOW = new RenderWindow(new VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), windowTitle);
 
             WindowClearColor = windowClearColor;
-            Window = new RenderWindow(new VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), windowTitle);
             
-            Window.Closed += Window_Closed;
-            Window.Resized += Window_Resized;
+            WINDOW.Closed += WINDOW_Closed;
+            WINDOW.Resized += WINDOW_Resized;
         }
 
         /// <summary>
@@ -66,14 +65,14 @@ namespace MarbleSorterGame
         /// </summary>
         public void Run()
         {
-            while (Window.IsOpen)
+            while (WINDOW.IsOpen)
             {
-                Window.DispatchEvents();
+                WINDOW.DispatchEvents();
                 Thread.Sleep(1000 / FPS);
                 Update();
-                Window.Clear(WindowClearColor);
+                WINDOW.Clear(WindowClearColor);
                 Draw();
-                Window.Display();
+                WINDOW.Display();
             }
         }
 
@@ -88,14 +87,14 @@ namespace MarbleSorterGame
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void Window_Closed(object sender, EventArgs e)
+        private void WINDOW_Closed(object sender, EventArgs e)
         {
-            Window.Close();
+            WINDOW.Close();
         }
         
-        private void Window_Resized(object sender, SizeEventArgs e)
+        private void WINDOW_Resized(object sender, SizeEventArgs e)
         {
-            Window.SetView(new View(new FloatRect(0, 0, e.Width, e.Height)));
+            WINDOW.SetView(new View(new FloatRect(0, 0, e.Width, e.Height)));
         }
     }
 }
