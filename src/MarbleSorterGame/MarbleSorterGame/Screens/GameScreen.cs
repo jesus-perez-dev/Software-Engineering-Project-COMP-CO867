@@ -30,10 +30,14 @@ namespace MarbleSorterGame.Screens
 
         // Other Entities
         private Gate _gateEntrance;
+        private SignalLight _gateOpen;
+        private SignalLight _gateClosed;
         private Conveyor _conveyor;
         private Label _legend;
         private Marble[] _marbles;
         private Trapdoor[] _trapDoors;
+        private SignalLight[] _trapDoorsOpen;
+        private SignalLight[] _trapDoorsClosed;
         private Bucket[] _buckets;
         private GameEntities.Sensor[] _sensors;
 
@@ -187,7 +191,7 @@ namespace MarbleSorterGame.Screens
             }
 
             int bucketCount = _preset.Buckets.Count;
-            float bucketHorizontalSpaceIncrement = 100.0f / (bucketCount + 2);
+            float bucketHorizontalSpaceIncrement = 125.0f / (bucketCount + 2);
             _buckets = _preset.Buckets
                 .Select((bc, i) => new Bucket(
                     screen.Percent(bucketHorizontalSpaceIncrement * (i + 1), 100),
@@ -243,16 +247,22 @@ namespace MarbleSorterGame.Screens
             var signalColor2 = new SignalLight(new Vector2f(signalColor1.Position.X + signalSize.X + 10, signalColor1.Position.Y), signalSize );
             var signalPressure1 = new SignalLight(new Vector2f(signalColor2.Position.X + signalSize.X + 10, signalColor1.Position.Y), signalSize );
             var signalMotion1 = new SignalLight(screen.Percent(95, 50), signalSize );
-            var gateOpen = new SignalLight(screen.Percent(10, 74), signalSize );
-            var gateClosed = new SignalLight(new Vector2f(gateOpen.Position.X + signalSize.X + 10, gateOpen.Position.Y), signalSize );
+            _gateOpen = new SignalLight(new Vector2f(_gateEntrance.Position.X + gateEntranceSize.X + 10, _trapDoors[0].Position.Y - 50), signalSize);
+            _gateClosed = new SignalLight(new Vector2f(_gateEntrance.Position.X + gateEntranceSize.X + 10, _trapDoors[0].Position.Y + 25), signalSize);
             var conveyerOn = new SignalLight(screen.Percent(5, 75), signalSize );
             var bucketDropped = new SignalLight(screen.Percent(115, 100), signalSize );
-            var trapdoorOpen1 = new SignalLight(new Vector2f(_trapDoors[0].Position.X, _trapDoors[0].Position.Y + 150), signalSize );
-            var trapdoorClosed1 = new SignalLight(new Vector2f(trapdoorOpen1.Position.X + signalSize.X + 10, trapdoorOpen1.Position.Y), signalSize );
-            var trapdoorOpen2 = new SignalLight(new Vector2f(_trapDoors[1].Position.X + 100, _trapDoors[1].Position.Y + 150), signalSize );
-            var trapdoorClosed2 = new SignalLight(new Vector2f(trapdoorOpen2.Position.X + signalSize.X + 10, trapdoorOpen2.Position.Y), signalSize );
-            var trapdoorOpen3 = new SignalLight(new Vector2f(_trapDoors[2].Position.X + 200, _trapDoors[2].Position.Y + 150), signalSize );
-            var trapdoorClosed3 = new SignalLight(new Vector2f(trapdoorOpen3.Position.X + signalSize.X + 10, trapdoorOpen3.Position.Y), signalSize );
+            
+            var trapDoorSizeX = _trapDoors[0].Size.X;
+            
+            var trapdoorOpen1 = new SignalLight(new Vector2f(_trapDoors[0].Position.X + trapDoorSizeX, _trapDoors[0].Position.Y - 50), signalSize);
+            var trapdoorOpen2 = new SignalLight(new Vector2f(_trapDoors[1].Position.X + trapDoorSizeX, _trapDoors[1].Position.Y - 50), signalSize);
+            var trapdoorOpen3 = new SignalLight(new Vector2f(_trapDoors[2].Position.X + trapDoorSizeX, _trapDoors[2].Position.Y - 50), signalSize);
+            _trapDoorsOpen = new[] {trapdoorOpen1, trapdoorOpen2, trapdoorOpen3};
+            
+            var trapdoorClosed1 = new SignalLight(new Vector2f(_trapDoors[0].Position.X - signalSize.X, _trapDoors[0].Position.Y + 50), signalSize);
+            var trapdoorClosed2 = new SignalLight(new Vector2f(_trapDoors[1].Position.X - signalSize.X, _trapDoors[1].Position.Y + 50), signalSize);
+            var trapdoorClosed3 = new SignalLight(new Vector2f(_trapDoors[2].Position.X - signalSize.X, _trapDoors[2].Position.Y + 50), signalSize);
+            _trapDoorsClosed = new[] {trapdoorClosed1, trapdoorClosed2, trapdoorClosed3};
 
             _entities = new GameEntity[]
             {
@@ -273,9 +283,8 @@ namespace MarbleSorterGame.Screens
                 */
                 _motionSensorBucket,
                 _motionSensorConveyor,
-                /*
-                gateOpen,
-                gateClosed,
+                _gateOpen,
+                _gateClosed,
                 // conveyerOn,
                 bucketDropped,
                 trapdoorOpen1,
@@ -284,7 +293,6 @@ namespace MarbleSorterGame.Screens
                 trapdoorClosed2,
                 trapdoorOpen3,
                 trapdoorClosed3,
-                */
                 // signalMotion1,
             };
 
@@ -340,9 +348,21 @@ namespace MarbleSorterGame.Screens
         private void UpdateDriver()
         {
             _gateEntrance.SetState(_driver.Gate);
+            
+            _gateOpen.SetState(_gateEntrance.IsFullyOpen);
+            _gateClosed.SetState(_gateEntrance.IsFullyClosed);
+
             _trapDoors[0].SetState(_driver.TrapDoor1);
             _trapDoors[1].SetState(_driver.TrapDoor2);
             _trapDoors[2].SetState(_driver.TrapDoor3);
+
+            _trapDoorsOpen[0].SetState(_trapDoors[0].IsFullyOpen);
+            _trapDoorsOpen[1].SetState(_trapDoors[1].IsFullyOpen);
+            _trapDoorsOpen[2].SetState(_trapDoors[2].IsFullyOpen);
+            
+            _trapDoorsClosed[0].SetState(_trapDoors[0].IsFullyClosed);
+            _trapDoorsClosed[1].SetState(_trapDoors[1].IsFullyClosed);
+            _trapDoorsClosed[2].SetState(_trapDoors[2].IsFullyClosed);
             
             //////////////////////////////////////////////////////////// 
             /////// BEGIN: TODO FIXME HACK
