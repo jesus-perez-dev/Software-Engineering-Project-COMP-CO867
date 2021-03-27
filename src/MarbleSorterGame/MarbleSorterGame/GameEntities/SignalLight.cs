@@ -6,45 +6,37 @@ namespace MarbleSorterGame.GameEntities
 {
     public class SignalLight : GameEntity
     {
-        private Sprite _signalLightOn;
-        private Sprite _signalLightOff;
+        private CircleShape _signalLight;
         public bool SignalState { get; protected set; }
 
         public SignalLight(Vector2f position, Vector2f size) : base(position, size)
         {
-            SignalState = false;
+            SignalState = true;
+
+            _signalLight = new CircleShape(10.0f)
+            {
+                Position = position, 
+                FillColor = Color.Black, 
+                OutlineColor = Color.Black, 
+                OutlineThickness = 5
+            };
         }
 
-        public void Toggle()
+        public void SetState(bool signalOn)
         {
-            SignalState = !SignalState;
+            SignalState = signalOn;
         }
-
+        
         public override void Load(IAssetBundle bundle)
         {
-            _signalLightOff = new Sprite(bundle.SensorSignalOffTexture);
-            _signalLightOn = new Sprite(bundle.SensorSignalOnTexture);
-
-            _signalLightOff.Scale = ScaleEntity(bundle.SensorSignalOffTexture);
-            _signalLightOn.Scale = ScaleEntity(bundle.SensorSignalOnTexture);
-
-            _signalLightOff.Origin = CenterOrigin(bundle.SensorSignalOffTexture);
-            _signalLightOn.Origin = CenterOrigin(bundle.SensorSignalOnTexture);
+            
         }
 
         public override void Render(RenderWindow window)
         {
-            window.Draw(_signalLightOff);
-
-            _signalLightOn.Position = Position;
-            _signalLightOff.Position = Position;
-            if (SignalState)
-            {
-                window.Draw(_signalLightOn);
-            } else
-            {
-                window.Draw(_signalLightOff);
-            }
+            _signalLight.FillColor = SignalState ? Color.Yellow : Color.Black;
+            
+            window.Draw(_signalLight);
         }
     }
 
