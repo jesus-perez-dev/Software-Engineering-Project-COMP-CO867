@@ -53,7 +53,12 @@ namespace MarbleSorterGame
             WINDOW_RECT = new RectangleShape {Size = new Vector2f(WINDOW_WIDTH, WINDOW_HEIGHT)};
 
             WindowClearColor = windowClearColor;
-            Window = new RenderWindow(new VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), windowTitle);
+
+            Styles styles = Styles.Close;
+            ContextSettings settings = default;
+            settings.AntialiasingLevel = 8;
+            
+            Window = new RenderWindow(new VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), windowTitle, styles, settings);
             
             Window.Closed += Window_Closed;
             Window.Resized += Window_Resized;
