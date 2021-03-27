@@ -14,15 +14,13 @@ namespace MarbleSorterGame.Screens
     /// <summary>
     /// The game itself
     /// </summary>
-    public class GameScreen : IDisposable
+    public class GameScreen : Screen, IDisposable
     {
         private RenderWindow _window;
-        private Font _font;
-
-        private IIODriver _driver;
-
         private Drawable[] _drawables;
         private GameEntity[] _entities;
+        
+        private IIODriver _driver;
 
         // Sensors
         private MotionSensor _motionSensorConveyor;
@@ -30,53 +28,60 @@ namespace MarbleSorterGame.Screens
         private ColorSensor _colorSensor;
         private PressureSensor _pressureSensor;
 
+        // Other Entities
         private Gate _gateEntrance;
         private SignalLight _gateOpen;
         private SignalLight _gateClosed;
         private Conveyor _conveyor;
+        private Label _legend;
         private Marble[] _marbles;
         private Trapdoor[] _trapDoors;
         private SignalLight[] _trapDoorsOpen;
         private SignalLight[] _trapDoorsClosed;
         private Bucket[] _buckets;
         private GameEntities.Sensor[] _sensors;
-        private Label _legend;
-
-        public enum GameState
-        {
-            Lose,
-            Win,
-            Progress
-        }
-        private GameState _gameState;
-        private Button _winPopup;
-        private Button _losePopup;
-
-        private int _marblesTotal;
-        private int _marblesRemaining;
-
-        private Dictionary<String, String> _legendData;
 
         // UI Buttons
-        private Button _buttonStart;
+        private Button _winPopup;
+        private Button _losePopup;
+        private Button _buttonPause;
         private Button _buttonReset;
-        private Button _buttonExit;
+        private Button _buttonMainMenu;
+        private Button[] _buttons;
+        private RectangleShape _legendBackground;
 
-        //legend helper text
+        // Legend helper text
         private GameEntity _hoveredEntity;
+        private Dictionary<string, string> _legendData;
+        private readonly float _legendPadding = 5;
+        
+        // Game screen state
+        private GameState _gameState;
+        private int _marblesTotal;
+        private int _marblesRemaining;
+        
+        //
+        private IAssetBundle _bundle;
+        private MarbleGamePreset _preset;
+        
+        public GameScreen(RenderWindow window, IAssetBundle bundle, IIODriver driver, int presetIndex)
+        {
+            _window = window;
+            _bundle = bundle;
+            _driver = driver;
+            _preset = bundle.GameConfiguration.Presets[presetIndex];
+            Reset();
+        }
 
-        // TODO: Pass a game configuration structure in here instead of width/height uints
-        public GameScreen(RenderWindow window, IAssetBundle bundle, uint screenWidth, uint screenHeight, IIODriver driver, int presetIndex)
+        // Initialize all game entity objects and reset values to default states
+        private void Reset()
         {
             // Used for positioning by percentage relative to screen
             var screen = GameLoop.WINDOW_RECT;
-            
-            _driver = driver;
-            _window = window;
-            _font = bundle.Font;
+            var font = _bundle.Font;
 
-            _legendData = new Dictionary<string, string>() { };
-            _marblesTotal = bundle.GameConfiguration.Presets[presetIndex].Marbles.Count;
+            _legendData = new Dictionary<string, string>();
+            _marblesTotal = _preset.Marbles.Count;
             _marblesRemaining = _marblesTotal;
             _gameState = GameState.Progress;
 
@@ -85,71 +90,95 @@ namespace MarbleSorterGame.Screens
             _window.KeyPressed += GameKeyEventHandler;
             _window.MouseMoved += GameMouseMoveEventHandler;
 
+            // Color of the menu and legend background
+            var chromeColor = new SFML.Graphics.Color(218, 224, 226);
+
             //================= Background widgets ====================//
             // Menu bar background (slight gray recantgle behind buttons)
             RectangleShape menuBarBackground = new RectangleShape
             {
                 Position = new Vector2f(),
                 Size = screen.Percent(100f, 6f),
-                FillColor = new SFML.Graphics.Color(89, 105, 115) // dark-blue-gray ish color
+                FillColor = chromeColor,
+                OutlineColor = Color.Black,
+                OutlineThickness = 2
             };
 
             Vector2f popupSize = screen.Percent(15f, 10f);
             Vector2f popupPosition = screen.Percent(15f, 10f);
             
-            _winPopup = new Button("YOU WIN!", 20f, _font, popupPosition, popupSize);
+            _winPopup = new Button("YOU WIN!", 20f, font, popupPosition, popupSize);
             _winPopup.FillColor = new SFML.Graphics.Color(102, 255, 51); // green
             
-            _losePopup = new Button ("YOU LOSE!", 20f, _font, popupPosition, popupSize);
+            _losePopup = new Button ("YOU LOSE!", 20f, font, popupPosition, popupSize);
             _losePopup.FillColor = new SFML.Graphics.Color(255, 80, 80); // red
 
             //================= Buttons ====================//
 
-            Vector2f menuButtonSize = screen.Percent(13, 5);
+            Vector2f menuButtonSize = screen.Percent(8, 4);
             float menuButtonFontScale = 0.4f;
-            _buttonStart = new Button("Start Simulation", menuButtonFontScale, _font, screen.Percent(60, 3), menuButtonSize);
-            _buttonReset = new Button("Reset Game", menuButtonFontScale, _font, screen.Percent(75, 3), menuButtonSize);
-            _buttonExit = new Button("Exit Game", menuButtonFontScale, _font, screen.Percent(90, 3), menuButtonSize);
+            //_buttonPause = new Button("Pause", menuButtonFontScale, font, screen.Percent(60, 3), menuButtonSize);
+            //_buttonReset = new Button("Reset Game", menuButtonFontScale, font, screen.Percent(75, 3), menuButtonSize);
+            //_buttonMainMenu = new Button("Main Menu", menuButtonFontScale, font, screen.Percent(90, 3), menuButtonSize);
+            
+            _buttonPause = new Button("Pause", menuButtonFontScale, font, default, menuButtonSize);
+            _buttonReset = new Button("Reset Game", menuButtonFontScale, font, default, menuButtonSize);
+            _buttonMainMenu = new Button("Main Menu", menuButtonFontScale, font, default, menuButtonSize);
+
+            // NOTE: Button is centered by *Origin = Center*, which affects our shift values
+            _buttonMainMenu.Position = screen
+                .PositionRelative(Joint.End, Joint.Start) // Position top corner of screen
+                .ShiftX(-menuButtonSize.X/2) // Shift left so its not over screen edge
+                .ShiftX(-new Vector2f().PercentOfX(screen, 1f).X) // Add a 1% spacer from screen edge
+                .ShiftY((menuButtonSize.Y)/2 + Math.Max(0, menuBarBackground.Size.Y - menuButtonSize.Y)/2); // Shift down so its vertically centered in menu bar background
+
+            _buttonReset.Position = _buttonMainMenu.Box
+                .PositionRelative(Joint.Start, Joint.Start)
+                .ShiftX(-menuButtonSize.X)
+                .ShiftX(-new Vector2f().PercentOfX(screen, 1f).X); // Add a 1% spacer from button edge
+            
+            _buttonPause.Position = _buttonReset.Box
+                .PositionRelative(Joint.Start, Joint.Start)
+                .ShiftX(-menuButtonSize.X)
+                .ShiftX(-new Vector2f().PercentOfX(screen, 1f).X); // Add a 1% spacer from button edge
+
+            _buttonPause.ClickEvent += PauseButtonClickHandler;
+            _buttonReset.ClickEvent += ResetButtonClickHandler;
+            _buttonMainMenu.ClickEvent += MainMenuButtonClickHandler;
+            
+            _buttons = new[] { _buttonMainMenu, _buttonPause, _buttonReset, _winPopup, _losePopup };
 
             //================= Labels ====================//
-            String instructionsText = "Use the Input/Output Addresses shown below to create a working \nPLC for the marble sorter, based on the requirements on the buckets below.";
+            // string instructionsText = "Use the Input/Output Addresses shown below to create a working \nPLC for the marble sorter, based on the requirements on the buckets below.";
+            // //Label instructions = new Label(instructionsText,screen.Percent(0, 3), 14, SFML.Graphics.Color.Black, font);
+            // var instructions = QuickShape.Label(instructionsText, new Vector2f(0, 0), font, Color.Black);
+            // instructions.Scale = new Vector2f(0.5f, 0.5f);
+            // var gameScreenTitle = QuickShape.Label("Marble Sorter", new Vector2f(0, 0), font, Color.Black);
 
-            Label instructions = new Label(
-                instructionsText,
-                screen.Percent(29.5f, 3),
-                14,
-                SFML.Graphics.Color.Black,
-                _font);
-
-            var legendBackgroundSize = screen.Percent(30.5f, 40f);
-            RectangleShape legendBackground = new RectangleShape
+            var legendBackgroundSize = screen.Percent(50f, 40f);
+            _legendBackground = new RectangleShape
             {
                 Size = legendBackgroundSize,
-                FillColor = new SFML.Graphics.Color(89, 105, 115), // dark-blue-gray ish color
-                Position = menuBarBackground
-                            .PositionRelative(Joint.End, Joint.End)
-                            .ShiftX(-legendBackgroundSize.X)
+                FillColor = chromeColor,
+                OutlineColor = Color.Black,
+                OutlineThickness = 2,
+                //Position = menuBarBackground.PositionRelative(Joint.End, Joint.End).ShiftX(-legendBackgroundSize.X)
+                Position = menuBarBackground.PositionRelative(Joint.Start, Joint.End)
+                    .ShiftX(screen.Percent(0, 1).Y)
+                    .ShiftY(screen.Percent(0, 1).Y)
             };
 
-            _legend = new Label(String.Empty, legendBackground.Position.Shift(new Vector2f(5, 5)), 14, SFML.Graphics.Color.Black, _font );
+            _legend = new Label(String.Empty, _legendBackground.Position.Shift(new Vector2f(_legendPadding, _legendPadding)), 14, SFML.Graphics.Color.Black, font);
 
             //================= Game Entities ====================//
+            _conveyor = new Conveyor(screen.Percent(0, 60), screen.Percent(100, 1), new Vector2f(1, 0));
 
-            _conveyor = new Conveyor(
-                screen.Percent(0, 60),
-                screen.Percent(100, 1),
-                new Vector2f(1, 0)
-                );
-
-            Vector2f gateEntranceSize = screen.Percent(0.5f, 9);
-            Vector2f signalSize = screen.Percent(3, 8);
-
-            _marbles = bundle.GameConfiguration.Presets[presetIndex].Marbles
+            _marbles = _preset.Marbles
                 .Select(mc => new Marble(screen, new Vector2f(40, _conveyor.Position.Y), mc.Color, mc.Weight))
                 .Reverse()
                 .ToArray();
 
-            // Set marble initialal positions based on screen dimensions
+            // Set marble initial positions based on screen dimensions
             float offset = 0;
             foreach (var marble in _marbles.Reverse())
             {
@@ -161,9 +190,9 @@ namespace MarbleSorterGame.Screens
                 offset += marble.Size.X;
             }
 
-            int bucketCount = bundle.GameConfiguration.Presets[presetIndex].Buckets.Count;
+            int bucketCount = _preset.Buckets.Count;
             float bucketHorizontalSpaceIncrement = 125.0f / (bucketCount + 2);
-            _buckets = bundle.GameConfiguration.Presets[presetIndex].Buckets
+            _buckets = _preset.Buckets
                 .Select((bc, i) => new Bucket(
                     screen.Percent(bucketHorizontalSpaceIncrement * (i + 1), 100),
                     screen.Percent(10, 20),
@@ -186,6 +215,7 @@ namespace MarbleSorterGame.Screens
                 bucket.Position -= new Vector2f(0, bucket.Size.Y);
             }
 
+            Vector2f gateEntranceSize = screen.Percent(0.5f, 9);
             _gateEntrance = new Gate(screen.Percent(13, 52), gateEntranceSize);
 
             Vector2f sensorSize = new Vector2f(MarbleSorterGame.WINDOW_WIDTH / 40, MarbleSorterGame.WINDOW_WIDTH / 40); // Size half of the largest marble size
@@ -212,6 +242,21 @@ namespace MarbleSorterGame.Screens
             Vector2f motionSensorPosition = new Vector2f(MarbleSorterGame.WINDOW_WIDTH - sensorSize.X, _buckets[0].Position.Y - sensorSize.Y);
             _motionSensorBucket = new MotionSensor(motionSensorLaserRange, motionSensorPosition, sensorSize);
 
+            Vector2f signalSize = screen.Percent(3, 8);
+            var signalColor1 = new SignalLight(screen.Percent(30, 20), signalSize );
+            var signalColor2 = new SignalLight(new Vector2f(signalColor1.Position.X + signalSize.X + 10, signalColor1.Position.Y), signalSize );
+            var signalPressure1 = new SignalLight(new Vector2f(signalColor2.Position.X + signalSize.X + 10, signalColor1.Position.Y), signalSize );
+            var signalMotion1 = new SignalLight(screen.Percent(95, 50), signalSize );
+            var gateOpen = new SignalLight(screen.Percent(10, 74), signalSize );
+            var gateClosed = new SignalLight(new Vector2f(gateOpen.Position.X + signalSize.X + 10, gateOpen.Position.Y), signalSize );
+            var conveyerOn = new SignalLight(screen.Percent(5, 75), signalSize );
+            var bucketDropped = new SignalLight(screen.Percent(115, 100), signalSize );
+            var trapdoorOpen1 = new SignalLight(new Vector2f(_trapDoors[0].Position.X, _trapDoors[0].Position.Y + 150), signalSize );
+            var trapdoorClosed1 = new SignalLight(new Vector2f(trapdoorOpen1.Position.X + signalSize.X + 10, trapdoorOpen1.Position.Y), signalSize );
+            var trapdoorOpen2 = new SignalLight(new Vector2f(_trapDoors[1].Position.X + 100, _trapDoors[1].Position.Y + 150), signalSize );
+            var trapdoorClosed2 = new SignalLight(new Vector2f(trapdoorOpen2.Position.X + signalSize.X + 10, trapdoorOpen2.Position.Y), signalSize );
+            var trapdoorOpen3 = new SignalLight(new Vector2f(_trapDoors[2].Position.X + 200, _trapDoors[2].Position.Y + 150), signalSize );
+            var trapdoorClosed3 = new SignalLight(new Vector2f(trapdoorOpen3.Position.X + signalSize.X + 10, trapdoorOpen3.Position.Y), signalSize );
             // SignalLight signalColor1 = new SignalLight(
             //     screen.Percent(30, 20),
             //     signalSize
@@ -290,9 +335,9 @@ namespace MarbleSorterGame.Screens
 
             _entities = new GameEntity[]
             {
-                _buttonStart,
+                _buttonPause,
                 _buttonReset,
-                _buttonExit,
+                _buttonMainMenu,
                 /**
                 _winPopup,
                 _losePopup,
@@ -328,15 +373,14 @@ namespace MarbleSorterGame.Screens
                 .ToArray();
 
             foreach (GameEntity entity in _entities)
-            {
-                entity.Load(bundle);
-            }
+                entity.Load(_bundle);
 
             _drawables = new Drawable[]
             {
                 menuBarBackground,
-                legendBackground,
-                instructions,
+                _legendBackground,
+                //instructions,
+                //gameScreenTitle,
                 _legend
             };
 
@@ -356,74 +400,21 @@ namespace MarbleSorterGame.Screens
 
         private void GameMouseMoveEventHandler(object? sender, MouseMoveEventArgs mouse)
         {
-            var notAllowed = new Cursor(Cursor.CursorType.NotAllowed);
-            var hand = new Cursor(Cursor.CursorType.Hand);
-
-            if (_buttonStart.MouseInButton(mouse.X, mouse.Y))
-            {
-                _buttonStart.Hovered = true;
-                _buttonReset.Hovered = false;
-                _buttonExit.Hovered = false;
-
-                _window.SetMouseCursor(_buttonStart.Disabled ? notAllowed : hand);
-            } 
-            else if (_buttonReset.MouseInButton(mouse.X, mouse.Y))
-            {
-                _buttonStart.Hovered = false;
-                _buttonReset.Hovered = true;
-                _buttonExit.Hovered = false;
-
-                _window.SetMouseCursor(_buttonReset.Disabled ? notAllowed : hand);
-            }
-            else if (_buttonExit.MouseInButton(mouse.X, mouse.Y))
-            {
-                _buttonStart.Hovered = false;
-                _buttonReset.Hovered = false;
-                _buttonExit.Hovered = true;
-
-                _window.SetMouseCursor(_buttonExit.Disabled ? notAllowed : hand);
-            }
-            else
-            {
-                _buttonStart.Hovered = false;
-                _buttonReset.Hovered = false;
-                _buttonExit.Hovered = false;
-                
-                var arrow = new Cursor(Cursor.CursorType.Arrow);
-                _window.SetMouseCursor(arrow);
-            }
+            MarbleSorterGame.UpdateButtonsFromMouseEvent(_window, _buttons, mouse);
         }
 
         private void GameMouseClickEventHandler(object? sender, MouseButtonEventArgs mouse)
         {
-            if (_buttonStart.MouseInButton(mouse.X, mouse.Y) && !_buttonStart.Disabled)
-            {
-                // TODO: Toggle the simulation (?)
-                if (_driver is S7IODriver s7driver)
-                {
-                    s7driver.SetRunState(true);
-                }
-            }
-            else if (_buttonReset.MouseInButton(mouse.X, mouse.Y) && !_buttonReset.Disabled)
-            {
-                // TODO: Reset the game
-            }
-            else if (_buttonExit.MouseInButton(mouse.X, mouse.Y))
-            {
-                Dispose();
-                _window.Close();
-            }
+            MarbleSorterGame.UpdateButtonsFromClickEvent(sender, _buttons, mouse);
         }
 
         private void GameKeyEventHandler(object? sender, KeyEventArgs key)
         {
             if (_driver is KeyboardIODriver kbdriver)
-            {
                 kbdriver.UpdateByKey(key);
-            }
         }
-        
-        public void Update()
+
+        private void UpdateDriver()
         {
             _gateEntrance.SetState(_driver.Gate);
             
@@ -474,13 +465,14 @@ namespace MarbleSorterGame.Screens
             _driver.BucketMotionSensor |= _motionSensorBucket.Detected;
             
             //////// END: TODO FIXME HACK
-            //////////////////////////////////////////////////////////// 
+            ////////////////////////////////////////////////////////////
 
-            foreach (var trapdoor in _trapDoors)
-            {
-                trapdoor.Update();
-            }
-            
+            // Update IIODriver instance
+            _driver.Update();
+        }
+
+        private void UpdateMarbles()
+        {
             foreach (var marble in _marbles)
             {
                 // By default, marble should roll right
@@ -502,30 +494,18 @@ namespace MarbleSorterGame.Screens
             // If marbles are touching/overlapping each other, the marble farthest to left should stop moving
             // NOTE: This assumes marble order is placed from left-to-right!
             for (int i = 0; i < _marbles.Length - 1; i++)
-            {
                 if (_marbles[i].MarbleOverlaps(_marbles[i + 1]))
-                {
                     _marbles[i].SetState(MarbleState.Still);
-                }
-            }
             
             // If marble is overtop a trap-door, and the trap door is open, switch velocity to falling
             foreach (var marble in _marbles)
-            {
                 foreach (var trapdoor in _trapDoors)
-                {
                     if (marble.InsideHorizontal(trapdoor) && trapdoor.IsOpen)
-                    {
                         marble.SetState(MarbleState.Falling);
-                    }
-                }
-            }
 
             // Now actually update marble coordinates
             foreach (var m in _marbles)
-            {
                 m.Update();
-            }
             
             // When the marble is complete inside the bucket, insert marble and teleport it offscreen
             foreach (var marble in _marbles)
@@ -540,14 +520,42 @@ namespace MarbleSorterGame.Screens
                     }
                 }
             }
+        }
+
+        private void UpdateDoors()
+        {
+            foreach (var trapdoor in _trapDoors)
+                trapdoor.Update();
 
             // Update entrace gate position
             _gateEntrance.Update(_marbles);
-            
-            // Update IIODriver instance
-            _driver.Update();
+        }
 
-            // Update legend text
+        private void UpdateLegend()
+        {
+            _legendData["Currently Hovered Item"] = _hoveredEntity == null ? "N/A" : _hoveredEntity.InfoText;
+            _legendData["Marbles Remaining Total"] = _marblesRemaining.ToString();
+            _legendData["Marbles Correctly Dropped"] = _buckets.Select(b => b.TotalCorrect).Sum().ToString();
+            _legendData["Marbles Incorrectly Dropped"] = _buckets.Select(b => b.TotalIncorrect).Sum().ToString();
+            _legendData["PLC Devices I/O"] = "";
+            _legendData["Conveyor State"] = _driver.Conveyor.ToString();
+            _legendData["Trapdoor 1 Opening"] = _driver.TrapDoor1.ToString();
+            _legendData["Trapdoor 2 Opening"] = _driver.TrapDoor2.ToString();
+            _legendData["Trapdoor 3 Opening"] = _driver.TrapDoor3.ToString();
+            _legendData["Entrance Gate Opening"] = _driver.Gate.ToString();
+
+            var legendBuilder = new System.Text.StringBuilder();
+            foreach (var stat in _legendData)
+                legendBuilder.AppendLine(String.Format("{0,-40}: {1}", stat.Key, stat.Value));
+            
+            _legend.Text = legendBuilder.ToString();
+            // Automatically adjust background height and width according to height of the text label
+            var legendBounds = _legend.LabelText.GetGlobalBounds();
+            _legendBackground.Size = new Vector2f(legendBounds.Width + _legendPadding*4, legendBounds.Height + _legendPadding*2);
+        }
+
+        public void UpdateGameState()
+        {
             _marblesRemaining = _marblesTotal - _buckets.Select(b => b.TotalMarbles).Sum();
             int marblesCorrectDrop = _buckets.Select(b => b.TotalCorrect).Sum();
             int marblesIncorrectDrop = _buckets.Select(b => b.TotalIncorrect).Sum();
@@ -557,72 +565,37 @@ namespace MarbleSorterGame.Screens
             {
                 if (marble.Position.X - marble.Radius > _window.Size.X)
                 {
-                    bool marbleSkipped = false;
-
-                    foreach(var bucket in _buckets)
-                    {
-                        if (bucket.ValidateMarble(marble))
-                        {
-                            marbleSkipped = true;
-                        }
-                    }
-
-                    if (marbleSkipped)
-                    {
+                    if (_buckets.Any(b => b.ValidateMarble(marble)))
                         marblesCorrectDrop++;
-                    } else
-                    {
+                    else
                         marblesIncorrectDrop++;
-                    }
 
                     _marblesRemaining--;
                 }
-
             }
 
             //check game win state
             if (_marblesRemaining == 0 && marblesIncorrectDrop == 0)
-            {
                 _gameState = GameState.Win;
-            }
             else if (marblesIncorrectDrop > 0)
-            {
                 _gameState = GameState.Lose;
-            }
+        }
 
-            _legendData["Game Data"] = "";
-            _legendData["Marbles Remaining Total"] = _marblesRemaining.ToString();
-            _legendData["Marbles Correctly Dropped"] = marblesCorrectDrop.ToString();
-            _legendData["Marbles Incorrectly Dropped"] = marblesIncorrectDrop.ToString();
-            _legendData["PLC Devices I/O"] = "";
-            _legendData["Conveyor State"] = _driver.Conveyor.ToString();
-            _legendData["Trapdoor 1 Opening"] = _driver.TrapDoor1.ToString();
-            _legendData["Trapdoor 2 Opening"] = _driver.TrapDoor2.ToString();
-            _legendData["Trapdoor 3 Opening"] = _driver.TrapDoor3.ToString();
-            _legendData["Entrance Gate Opening"] = _driver.Gate.ToString();
+        public override void Update()
+        {
+            UpdateLegend();
 
-            var legendBuilder = new System.Text.StringBuilder();
-
-            if (_hoveredEntity != null)
+            if (_gameState == GameState.Progress)
             {
-                legendBuilder.AppendLine(_hoveredEntity.InfoText);
+                UpdateDriver();
+                UpdateMarbles();
+                UpdateDoors();
+                UpdateGameState(); // Win, lose, or pause
             }
-
-            foreach (var stat in _legendData)
-            {
-                legendBuilder.AppendLine(
-                        String.Format("{0,-30}: {1}", stat.Key, stat.Value)
-                    );
-            }
-            _legend.Text = legendBuilder.ToString();
         }
         
-        /// <summary>
         /// Method that gets called when the screen is to be redrawn
-        /// </summary>
-        /// <param name="window"></param>
-        /// <param name="font"></param>
-        public void Draw(RenderWindow window)
+        public override void Draw(RenderWindow window)
         {
             foreach (var drawable in _drawables)
             {
@@ -635,8 +608,35 @@ namespace MarbleSorterGame.Screens
             }
         }
 
+        private void PauseButtonClickHandler(object? sender, MouseButtonEventArgs args)
+        {
+            if (_gameState == GameState.Pause)
+                _gameState = GameState.Progress;
+            else if (_gameState == GameState.Progress)
+                _gameState = GameState.Pause;
+            
+            //if (_driver is S7IODriver s7driver)
+            //   s7driver.SetRunState(true);
+        }
+
+        private void ResetButtonClickHandler(object? sender, MouseButtonEventArgs args)
+        {
+            Dispose();
+            Reset();
+        }
+
+        private void MainMenuButtonClickHandler(object? sender, MouseButtonEventArgs args)
+        {
+            Dispose();
+            Reset();
+            MarbleSorterGame.ActiveMenu = Menu.Main;
+        }
+
         public void Dispose()
         {
+            _buttonPause.ClickEvent -= PauseButtonClickHandler;
+            _buttonReset.ClickEvent -= ResetButtonClickHandler;
+            _buttonMainMenu.ClickEvent -= MainMenuButtonClickHandler;
             _window.MouseButtonPressed -= GameMouseClickEventHandler;
             _window.KeyPressed -= GameKeyEventHandler;
             _window.MouseMoved -= GameMouseMoveEventHandler;

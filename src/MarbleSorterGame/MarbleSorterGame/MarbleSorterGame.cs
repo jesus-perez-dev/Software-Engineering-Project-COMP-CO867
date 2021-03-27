@@ -4,6 +4,7 @@ using MarbleSorterGame.Enums;
 using MarbleSorterGame.Screens;
 using SFML.Graphics;
 using SFML.System;
+using SFML.Window;
 
 namespace MarbleSorterGame
 {
@@ -12,25 +13,58 @@ namespace MarbleSorterGame
     /// </summary>
     public class MarbleSorterGame : GameLoop
     {
-        public static string WINDOW_TITLE = "PLC Training Simulator - Marble Sorter Game";
-        
-        private GameScreen _gameScreen;
-        private SettingsScreen _settingsScreen;
-        private MainScreen _mainScreen;
-        public static Menu ActiveMenu { get; set; }
+        private static string WINDOW_TITLE = "PLC Training Simulator - Marble Sorter Game";
+        private static Screen _activeScreen;
+        private static IAssetBundle _bundle;
+        private static IIODriver _driver;
 
+        public static Menu ActiveMenu
+        {
+            set
+            {
+                _activeScreen = value switch
+                {
+                    Menu.Game => new GameScreen(WINDOW, _bundle, _driver, 0),
+                    Menu.Main => new MainScreen(WINDOW, _bundle),
+                    Menu.Settings => new SettingsScreen(WINDOW, _bundle) 
+                };
+            }
+        }
+        
         public MarbleSorterGame(IAssetBundle bundle) : base(bundle.GameConfiguration.ScreenWidth, bundle.GameConfiguration.ScreenHeight, WINDOW_TITLE, SFML.Graphics.Color.White)
         {
-            IIODriver driver = bundle.GameConfiguration.Driver switch
+            _bundle = bundle;
+            _driver = bundle.GameConfiguration.Driver switch
             {
                 DriverType.Keyboard => new KeyboardIODriver(),
                 DriverType.Simulation => new S7IODriver(bundle.GameConfiguration.DriverOptions),
                 _ => throw new ArgumentException($"Unknown IO driver: {bundle.GameConfiguration.Driver}")
             };
-            
-            _gameScreen = new GameScreen(Window, bundle, WINDOW_WIDTH, WINDOW_HEIGHT, driver, 0);
-            _mainScreen = new MainScreen(Window, bundle, WINDOW_WIDTH, WINDOW_HEIGHT);
-            _settingsScreen = new SettingsScreen(Window, bundle, WINDOW_WIDTH, WINDOW_HEIGHT);
+
+            ActiveMenu = Menu.Main;
+        }
+
+        // Trigger click event(s) on buttons if a click event occured there
+        public static void UpdateButtonsFromClickEvent(object? sender, GameEntities.Button[] buttons, MouseButtonEventArgs mouse)
+        {
+            foreach (var button in buttons)
+                if (button.MouseInButton(mouse.X, mouse.Y))
+                    button.Click(sender, mouse);
+        }
+
+        // Update the state of buttons/cursor based on mouse event and list of buttons
+        public static void UpdateButtonsFromMouseEvent(RenderWindow window, GameEntities.Button[] buttons, MouseMoveEventArgs mouse)
+        {
+            window.SetMouseCursor(Cursors.Arrow);
+            foreach (var button in buttons)
+            {
+                button.Hovered = false;
+                if (button.MouseInButton(mouse.X, mouse.Y))
+                {
+                    button.Hovered = true;
+                    window.SetMouseCursor(button.Disabled ? Cursors.NotAllowed : Cursors.Hand);
+                }
+            }
         }
 
         /// <summary>
@@ -38,18 +72,7 @@ namespace MarbleSorterGame
         /// </summary>
         public override void Update()
         {
-            switch (ActiveMenu)
-            {
-                case Menu.Main:
-                    _mainScreen.Update();
-                    break;
-                case Menu.Settings:
-                    _settingsScreen.Update();
-                    break;
-                case Menu.Game:
-                    _gameScreen.Update();
-                    break;
-            }
+            _activeScreen.Update();
         }
 
         /// <summary>
@@ -57,19 +80,7 @@ namespace MarbleSorterGame
         /// </summary>
         public override void Draw()
         {
-            switch (ActiveMenu)
-            {
-                case Menu.Main:
-                    _mainScreen.Draw(Window);
-                    break;
-                case Menu.Settings:
-                    _settingsScreen.Draw(Window);
-                    break;
-                case Menu.Game:
-                    _gameScreen.Draw(Window);
-                    break;
-            }
+            _activeScreen.Draw(WINDOW);
         }
-        
     }
 }
