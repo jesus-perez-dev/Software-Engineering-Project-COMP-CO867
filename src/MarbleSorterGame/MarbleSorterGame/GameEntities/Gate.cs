@@ -7,51 +7,54 @@ namespace MarbleSorterGame.GameEntities
 {
     public class Gate : GameEntity
     {
+        // normal color of gate
+        private static readonly Color DefaultGateColor = Color.Black;
+        // Color of gate when a marble is stuck underneath
+        private static readonly Color JammedGateColor = Color.Red;
+
+        private readonly float _maxGateY;
+        private readonly float _minGateY;
         public bool IsFullyOpen => _gate.Position.Y <= _minGateY;
         public bool IsFullyClosed => _gate.Position.Y >= _maxGateY;
+        public bool IsOpening { get; private set; }
         public bool IsClosing => !IsOpening && !IsFullyOpen && !IsFullyClosed;
-        public bool IsOpening { get; private set;  }
-
-        private float _gatePeriod = 30f; // Default: Take 30 seconds to open
-        
-        private float Step => Size.Y / GameLoop.FPS / _gatePeriod;
+        private float Step => Size.Y / GameLoop.FPS / _gatePeriod * (IsOpening ? -1 : 1);
 
         /// How much to in/decrement gate Y-position per-step
-        private float _step;
-        private RectangleShape _gate;
-
-        private float _maxGateY;
-        private float _minGateY;
+        private readonly RectangleShape _gate;
+        
+         // How many seconds takes for the gate to open. By default, 30 seconds, but source this from Config in .Load()
+        private float _gatePeriod = 30f;
 
         public void SetState(bool opening)
         {
             IsOpening = opening;
-            if (opening)
-                _step = Step * -1;
-            else
-                _step = Step;
         }
 
         public Gate(Vector2f position, Vector2f size) : base(position, size)
         {
             _gate = Box;
-            _gate.FillColor = SFML.Graphics.Color.Black;
+            _gate.FillColor = DefaultGateColor;
             _gate.Position = position;
             
-            _step = size.Y / Step;
-            _minGateY = position.Y - size.Y;
             _maxGateY = position.Y;
+            _minGateY = position.Y - size.Y;
         }
 
         public void Update(Marble[] marbles)
         {
-            // If there is a marble anywhere underneath the gate, dont do anything
-            if (marbles.Any(InsideHorizontal))
-                return;
-            
-            float newY = Math.Min(Math.Max(_minGateY, _gate.Position.Y + _step), _maxGateY);
-            _gate.Position = new Vector2f(_gate.Position.X, newY);
-            Position = _gate.Position;
+            if (marbles.Any(InsideHorizontal) && IsClosing)
+            {
+                // If there is a marble anywhere underneath the gate, change to red color but dont move anywhere
+                _gate.FillColor = JammedGateColor; 
+            }
+            else
+            {
+                // Move the gate up or down appropriately (based on Step value)
+                _gate.FillColor = DefaultGateColor;
+                float newY = Math.Min(Math.Max(_minGateY, _gate.Position.Y + Step), _maxGateY);
+                _gate.Position = new Vector2f(_gate.Position.X, newY);
+            }
         }
 
         public override void Render(RenderWindow window)
