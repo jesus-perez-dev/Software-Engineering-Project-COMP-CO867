@@ -89,7 +89,7 @@ namespace MarbleSorterGame.Screens
             _window.MouseButtonPressed += GameMouseClickEventHandler;
             _window.KeyPressed += GameKeyEventHandler;
             _window.MouseMoved += GameMouseMoveEventHandler;
-
+            
             // Color of the menu and legend background
             var chromeColor = new SFML.Graphics.Color(218, 224, 226);
 
@@ -214,15 +214,20 @@ namespace MarbleSorterGame.Screens
             {
                 bucket.Position -= new Vector2f(0, bucket.Size.Y);
             }
+            
+            Vector2f gateEntranceSize = screen.Percent(0.5f, 0);
+            gateEntranceSize.Y = Marble.MarbleSizeLarge;
+            // screen.Percent(13, 52)
+            _gateEntrance = new Gate(
+                _conveyor.Box
+                    .PositionRelative(Joint.Start, Joint.Start)
+                    .ShiftX(screen.Percent(15, 0).X)
+                    .ShiftY(-gateEntranceSize.Y), gateEntranceSize);
 
-            Vector2f gateEntranceSize = screen.Percent(0.5f, 9);
-            _gateEntrance = new Gate(screen.Percent(13, 52), gateEntranceSize);
-
-            Vector2f sensorSize = new Vector2f(MarbleSorterGame.WINDOW_WIDTH / 40, MarbleSorterGame.WINDOW_WIDTH / 40); // Size half of the largest marble size
+            Vector2f sensorSize = new Vector2f(Marble.MarbleSizeSmall, Marble.MarbleSizeSmall);
             
             Vector2f gateSensorPosition = _gateEntrance.Box
                 .PositionRelative(Joint.Start, Joint.End)
-                .ShiftY(-_conveyor.GlobalBounds.Height)
                 .ShiftY(-sensorSize.Y)
                 .ShiftX(-sensorSize.X);
             
@@ -233,7 +238,6 @@ namespace MarbleSorterGame.Screens
             float motionSensorXPosition = MarbleSorterGame.WINDOW_WIDTH - sensorSize.X;
             float motionSensorLaserRange = (_gateEntrance.Position.X + _gateEntrance.Size.X) - (motionSensorXPosition + sensorSize.X / 2);
             _motionSensorConveyor = new MotionSensor(motionSensorLaserRange, new Vector2f(motionSensorXPosition, gateSensorPosition.Y), sensorSize);
-            _gateEntrance = new Gate(screen.Percent(13, 52), gateEntranceSize);
 
             PressureSensor sensorPressureStart = new PressureSensor(screen.Percent(3, 55), sensorSize);
             ColorSensor sensorColorStart = new ColorSensor(screen.Percent(6, 55), sensorSize);
@@ -411,11 +415,18 @@ namespace MarbleSorterGame.Screens
 
                 // If marble is touching gate and gate is closed, do not move
                 // Marble can clip through if more than half of marble is past gate
+                //if (!_gateEntrance.IsFullyOpen && _gateEntrance.Overlaps(marble) 
+                //                               && marble.Position.X + marble.Size.X/2 < _gateEntrance.Position.X)
+                
                 if (!_gateEntrance.IsFullyOpen && _gateEntrance.Overlaps(marble) 
-                                               && marble.Position.X + marble.Size.X/2 < _gateEntrance.Position.X)
+                                               && marble.Position.X < _gateEntrance.Position.X)
                 {
                     marble.SetState(MarbleState.Still);
                 }
+                
+                // If the right edge of the marble is passed the left edge of the gate, keep it going
+                if (marble.Position.X + (marble.Size.X) > _gateEntrance.Position.X + _gateEntrance.Size.X)
+                    marble.SetState(MarbleState.Rolling);
                 
                 // If marble has started falling, keep it falling
                 if (marble.Position.Y + marble.Size.Y > _conveyor.Position.Y)
@@ -529,14 +540,10 @@ namespace MarbleSorterGame.Screens
         public override void Draw(RenderWindow window)
         {
             foreach (var drawable in _drawables)
-            {
                 window.Draw(drawable);
-            }
             
             foreach (var entity in _entities) 
-            {
                 entity.Render(window);
-            }
         }
 
         private void PauseButtonClickHandler(object? sender, MouseButtonEventArgs args)
@@ -559,7 +566,6 @@ namespace MarbleSorterGame.Screens
         private void MainMenuButtonClickHandler(object? sender, MouseButtonEventArgs args)
         {
             Dispose();
-            Reset();
             MarbleSorterGame.ActiveMenu = Menu.Main;
         }
 
