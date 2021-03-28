@@ -89,7 +89,7 @@ namespace MarbleSorterGame.Screens
             _window.MouseButtonPressed += GameMouseClickEventHandler;
             _window.KeyPressed += GameKeyEventHandler;
             _window.MouseMoved += GameMouseMoveEventHandler;
-
+            
             // Color of the menu and legend background
             var chromeColor = new SFML.Graphics.Color(218, 224, 226);
 
@@ -529,14 +529,10 @@ namespace MarbleSorterGame.Screens
         public override void Draw(RenderWindow window)
         {
             foreach (var drawable in _drawables)
-            {
                 window.Draw(drawable);
-            }
             
             foreach (var entity in _entities) 
-            {
                 entity.Render(window);
-            }
         }
 
         private void PauseButtonClickHandler(object? sender, MouseButtonEventArgs args)
@@ -559,7 +555,6 @@ namespace MarbleSorterGame.Screens
         private void MainMenuButtonClickHandler(object? sender, MouseButtonEventArgs args)
         {
             Dispose();
-            Reset();
             MarbleSorterGame.ActiveMenu = Menu.Main;
         }
 
