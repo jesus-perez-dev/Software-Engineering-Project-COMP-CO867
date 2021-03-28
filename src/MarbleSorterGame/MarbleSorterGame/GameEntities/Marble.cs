@@ -18,13 +18,15 @@ namespace MarbleSorterGame
         public float Radius { get; }
         public Color Color { get; }
         public Weight Weight { get; }
-        
-        private Vector2f _velocity { get; set; }
+        private Vector2f _velocity;
 
         private float _marblePeriod = 30f;
         private float StepX => GameLoop.WINDOW_WIDTH / _marblePeriod / GameLoop.FPS;
         private float StepY => GameLoop.WINDOW_HEIGHT / _marblePeriod / GameLoop.FPS * 2;
 
+        public static readonly float MarbleSizeLarge = GameLoop.WINDOW_WIDTH / 20f;
+        public static readonly float MarbleSizeMedium = GameLoop.WINDOW_WIDTH / 30f;
+        public static readonly float MarbleSizeSmall = GameLoop.WINDOW_WIDTH / 40f;
 
         /// Marble that rolls across the conveyer, contains data about color and weight that needs to be dropped in the right buckets
         public Marble(RectangleShape screen, Vector2f position, Color color, Weight weight)//: base(position, size)
@@ -35,13 +37,13 @@ namespace MarbleSorterGame
             Vector2f size = new Vector2f(0, 0);
 
             if (weight == Weight.Large)
-                size = new Vector2f(MarbleSorterGame.WINDOW_WIDTH/20, MarbleSorterGame.WINDOW_WIDTH/20); //sizer.Percent(5 ,5);
+                size = new Vector2f(MarbleSizeLarge, MarbleSizeLarge); //sizer.Percent(5 ,5);
 
             if (weight == Weight.Medium)
-                size = new Vector2f(MarbleSorterGame.WINDOW_WIDTH/30, MarbleSorterGame.WINDOW_WIDTH/30); //sizer.Percent(4.5f, 4.5f);
+                size = new Vector2f(MarbleSizeMedium, MarbleSizeMedium); //sizer.Percent(4.5f, 4.5f);
             
             if (weight == Weight.Small)
-                size = new Vector2f(MarbleSorterGame.WINDOW_WIDTH/40,MarbleSorterGame.WINDOW_WIDTH/40); //sizer.Percent(3.5f, 3.5f);
+                size = new Vector2f(MarbleSizeSmall,MarbleSizeSmall); //sizer.Percent(3.5f, 3.5f);
             
             Position = position;
             Radius = size.X / 2;
@@ -80,6 +82,8 @@ namespace MarbleSorterGame
         public override void Render(RenderWindow window)
         {
             //base.Render(window);
+            //Box.OutlineColor = SFML.Graphics.Color.Green;
+            //Box.OutlineThickness = 2;
             window.Draw(_sprite);
         }
 
