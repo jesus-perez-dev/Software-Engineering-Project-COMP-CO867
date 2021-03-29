@@ -45,10 +45,10 @@ namespace MarbleSorterGame
         /// <param name="windowHeight"></param>
         /// <param name="windowTitle"></param>
         /// <param name="windowClearColor"></param>
-        protected GameLoop(uint windowWidth, uint windowHeight, string windowTitle, SFML.Graphics.Color windowClearColor)
+        protected GameLoop(IAssetBundle bundle, string windowTitle, Color windowClearColor)
         {
-            WINDOW_WIDTH = windowWidth;
-            WINDOW_HEIGHT = windowHeight;
+            WINDOW_WIDTH = bundle?.GameConfiguration?.ScreenWidth ?? 800;
+            WINDOW_HEIGHT = bundle?.GameConfiguration?.ScreenHeight ?? 600;
             WINDOW_RECT = new RectangleShape {Size = new Vector2f(WINDOW_WIDTH, WINDOW_HEIGHT)};
             
             Styles styles = Styles.Close;

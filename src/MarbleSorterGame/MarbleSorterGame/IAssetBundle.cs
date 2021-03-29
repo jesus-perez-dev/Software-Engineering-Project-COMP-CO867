@@ -24,5 +24,6 @@ namespace MarbleSorterGame
         public Sound SensorActivate { get; set; }
         public MarbleGameConfiguration GameConfiguration { get; set; }
         public Font Font { get; set;  }
+        public string Error { get;  }
     }
 }

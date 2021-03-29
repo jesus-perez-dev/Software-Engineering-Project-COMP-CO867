@@ -62,14 +62,18 @@ namespace MarbleSorterGame.Screens
         
         //
         private IAssetBundle _bundle;
-        private MarbleGamePreset _preset;
         
-        public GameScreen(RenderWindow window, IAssetBundle bundle, IIODriver driver, int presetIndex)
+        public GameScreen(RenderWindow window, IAssetBundle bundle)
         {
             _window = window;
             _bundle = bundle;
-            _driver = driver;
-            _preset = bundle.GameConfiguration.Presets[presetIndex];
+            _driver = bundle.GameConfiguration.Driver switch
+            {
+                DriverType.Keyboard => new KeyboardIODriver(),
+                DriverType.Simulation => new S7IODriver(bundle.GameConfiguration.DriverOptions),
+                _ => throw new ArgumentException($"Unknown IO driver: {bundle.GameConfiguration.Driver}")
+            };
+            
             Reset();
         }
 
@@ -79,9 +83,10 @@ namespace MarbleSorterGame.Screens
             // Used for positioning by percentage relative to screen
             var screen = GameLoop.WINDOW_RECT;
             var font = _bundle.Font;
+            var preset = _bundle.GameConfiguration.Preset;
 
             _legendData = new Dictionary<string, string>();
-            _marblesTotal = _preset.Marbles.Count;
+            _marblesTotal = preset.Marbles.Count;
             _marblesRemaining = _marblesTotal;
             _gameState = GameState.Progress;
 
@@ -173,7 +178,7 @@ namespace MarbleSorterGame.Screens
             //================= Game Entities ====================//
             _conveyor = new Conveyor(screen.Percent(0, 60), screen.Percent(100, 1), new Vector2f(1, 0));
 
-            _marbles = _preset.Marbles
+            _marbles = preset.Marbles
                 .Select(mc => new Marble(screen, new Vector2f(40, _conveyor.Position.Y), mc.Color, mc.Weight))
                 .Reverse()
                 .ToArray();
@@ -190,9 +195,9 @@ namespace MarbleSorterGame.Screens
                 offset += marble.Size.X;
             }
 
-            int bucketCount = _preset.Buckets.Count;
+            int bucketCount = preset.Buckets.Count;
             float bucketHorizontalSpaceIncrement = 125.0f / (bucketCount + 2);
-            _buckets = _preset.Buckets
+            _buckets = preset.Buckets
                 .Select((bc, i) => new Bucket(
                     screen.Percent(bucketHorizontalSpaceIncrement * (i + 1), 100),
                     screen.Percent(10, 20),
