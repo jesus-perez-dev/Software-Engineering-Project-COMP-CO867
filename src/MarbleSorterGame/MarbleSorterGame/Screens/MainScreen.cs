@@ -50,10 +50,10 @@ namespace MarbleSorterGame.Screens
             _copyright = new Label("Copyright 2021 - Mohawk College", screen.Percent(80, 95), 15, SFML.Graphics.Color.Black, _font);
 
             Vector2f buttonSize = screen.Percent(15f, 10f); // new Vector2f(window.Size.X / 7, window.Size.Y / 11);
-            _buttonStart = new Button("Start", 1f, _font, screen.Percent(30f, 70f), buttonSize);
-            _buttonSettings = new Button("Settings",1f,  _font, screen.Percent(50f, 70f), buttonSize);
+            _buttonStart = new Button("Start", 0.7f, _font, screen.Percent(30f, 70f), buttonSize);
+            _buttonSettings = new Button("Settings",0.7f,  _font, screen.Percent(50f, 70f), buttonSize);
             _buttonSettings.Disabled = true;
-            _buttonExit = new Button("Exit", 1f, _font, screen.Percent(70f, 70f), buttonSize);
+            _buttonExit = new Button("Exit", 0.7f, _font, screen.Percent(70f, 70f), buttonSize);
 
 
             _buttons = new [] { _buttonStart, _buttonSettings, _buttonExit };
