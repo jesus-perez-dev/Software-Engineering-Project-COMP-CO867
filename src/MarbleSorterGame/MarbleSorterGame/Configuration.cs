@@ -71,27 +71,8 @@ namespace MarbleSorterGame
     
     public class MarbleGameConfigException: System.Exception
     {
-        public static Weight ToGameWeight(this ConfigWeight self)
-        {
-            return self switch
-            {
-                ConfigWeight.Large => Weight.Large,
-                ConfigWeight.Medium => Weight.Medium,
-                ConfigWeight.Small => Weight.Small,
-                ConfigWeight.Random => new[] {Weight.Large, Weight.Medium, Weight.Small}[new Random().Next(0, 3)],
-            };
-        }
-        
-        public static Color ToGameColor(this ConfigColor self)
-        {
-            return self switch
-            {
-                ConfigColor.Red => Color.Red,
-                ConfigColor.Green => Color.Green,
-                ConfigColor.Blue => Color.Blue,
-                ConfigColor.Random => new[] {Color.Red, Color.Green, Color.Blue}[new Random().Next(0, 3)],
-            };
-        }
+       public MarbleGameConfigException() { }
+       public MarbleGameConfigException(string message): base(message) { }
     }
     
     public class ConfigValidationException: System.Exception
