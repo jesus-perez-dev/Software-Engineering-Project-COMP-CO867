@@ -1,6 +1,5 @@
 ﻿using SFML.Graphics;
 using SFML.System;
-using System;
 
 namespace MarbleSorterGame.GameEntities
 {
@@ -10,14 +9,21 @@ namespace MarbleSorterGame.GameEntities
     /// </summary>
     public class SignalLight : GameEntity
     {
-        private CircleShape _signalLight;
-        public bool SignalState { get; protected set; }
+        /// <summary>
+        /// The circle to display on the window
+        /// </summary>
+        private readonly CircleShape _signalLight;
+        
+        /// <summary>
+        /// Whether the light should be on or off
+        /// </summary>
+        private bool SignalState { get; set; }
 
         /// <summary>
-        /// Constructor of signal light
+        /// Constructor for signal light
         /// </summary>
-        /// <param name="position">Global vector position</param>
-        /// <param name="size">Global vector size</param>
+        /// <param name="position">The position on the window</param>
+        /// <param name="size">The size of the light (unused)</param>
         public SignalLight(Vector2f position, Vector2f size) : base(position, size)
         {
             SignalState = true;
@@ -41,9 +47,9 @@ namespace MarbleSorterGame.GameEntities
         }
         
         /// <summary>
-        /// Loads assets for signal light
+        /// Loads any assets used (empty since we are using the built in circle shape)
         /// </summary>
-        /// <param name="bundle">reference to bundle object containing asset references</param>
+        /// <param name="bundle">Assets to load</param>
         public override void Load(IAssetBundle bundle)
         {
         }
