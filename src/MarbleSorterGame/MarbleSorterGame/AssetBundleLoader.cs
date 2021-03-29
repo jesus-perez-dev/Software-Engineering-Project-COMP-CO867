@@ -19,9 +19,6 @@ namespace MarbleSorterGame
         public Texture MarbleBlueTexture { get; set; }
         public Texture MarbleGreenTexture { get; set; }
         public Texture SensorTexture { get; set; }
-        public Texture SensorSignalOffTexture { get; set; }
-        public Texture SensorSignalOnTexture { get; set; }
-        public Sound SensorActivate { get; set; }
         public MarbleGameConfiguration GameConfiguration { get; set; }
 
         public Font Font { get; set; }
@@ -37,12 +34,7 @@ namespace MarbleSorterGame
                 BucketTexture = new Texture(assetDirectoryPath + "Images/bucket3.png");
                 BucketDropSuccess = new Sound(new SoundBuffer(assetDirectoryPath + "Sounds/bucketDropSuccess.ogg"));
                 BucketDropFail = new Sound(new SoundBuffer(assetDirectoryPath + "Sounds/bucketDropFail.ogg"));
-
                 SensorTexture = new Texture(assetDirectoryPath + "Images/sensor.png");
-                SensorSignalOffTexture = new Texture(assetDirectoryPath + "Images/sensorSignalOff1.png");
-                SensorSignalOnTexture = new Texture(assetDirectoryPath + "Images/sensorSignalOn1.png");
-                SensorActivate = new Sound(new SoundBuffer(assetDirectoryPath + "Sounds/sensorActivate.ogg"));
-
                 MarbleRedTexture = new Texture(assetDirectoryPath + "Images/marbleRed.png");
                 MarbleGreenTexture = new Texture(assetDirectoryPath + "Images/marbleGreen.png");
                 MarbleBlueTexture = new Texture(assetDirectoryPath + "Images/marbleBlue.png");
