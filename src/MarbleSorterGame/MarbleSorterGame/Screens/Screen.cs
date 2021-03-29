@@ -3,20 +3,13 @@ using SFML.Graphics;
 
 namespace MarbleSorterGame.Screens
 {
-    /// <summary>
-    /// General window state that points to other screens
-    /// </summary>
+    // General window state that points to other screens
     public abstract class Screen
     {
-        /// <summary>
-        /// Updates any game entity positions, game logic and driver states
-        /// </summary>
+        // Updates any game entity positions, game logic and driver states
         public abstract void Update();
         
-        /// <summary>
-        /// Draws any game entities to the current window
-        /// </summary>
-        /// <param name="window">Current window to draw</param>
+        // Draws any game entities to the current window
         public abstract void Draw(RenderWindow window);
     }
 }

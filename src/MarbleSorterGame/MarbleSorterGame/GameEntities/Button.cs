@@ -9,9 +9,7 @@ using Color = SFML.Graphics.Color;
 namespace MarbleSorterGame.GameEntities
 {
 
-	/// <summary>
-	/// Menu object that, when clicked, links to other screens or features
-	/// </summary>
+	// Menu object that, when clicked, links to other screens or features
 	public class Button : GameEntity
 	{
 		private RectangleShape _button;
@@ -43,14 +41,7 @@ namespace MarbleSorterGame.GameEntities
 			set => _text.DisplayedString = value;
 		}
 		
-		/// <summary>
-		/// Constructor of button
-		/// </summary>
-		/// <param name="displayText">Text the button will display</param>
-		/// <param name="fontScale">Text size of button</param>
-		/// <param name="font">Font of button</param>
-		/// <param name="position">Global vector position</param>
-		/// <param name="size">Global vector size</param>
+		// Constructor of button
 		public Button(string displayText, float fontScale, Font font, Vector2f position, Vector2f size) :
 			base(position, size)
 		{
@@ -81,12 +72,7 @@ namespace MarbleSorterGame.GameEntities
 			}
 		}
 
-		/// <summary>
-		/// checks whether button has been pressed with mouse coordinates
-		/// </summary>
-		/// <param name="x">Global x-coordinate of mouse position</param>
-		/// <param name="y">Global y-coordinate of mouse position</param>
-		/// <returns></returns>
+		// checks whether button has been pressed with mouse coordinates
 		public bool MouseInButton(int x, int y)
 		{
 			FloatRect buttonBounds = _button.GetGlobalBounds();
@@ -101,10 +87,7 @@ namespace MarbleSorterGame.GameEntities
 				 ClickEvent?.Invoke(sender, args);	
 		}
 
-		/// <summary>
-		/// Draws button
-		/// </summary>
-		/// <param name="window"></param>
+		// Draws button
 		public override void Render(RenderWindow window)
 		{
 			if (Disabled)
@@ -127,10 +110,7 @@ namespace MarbleSorterGame.GameEntities
 			window.Draw(_text);
 		}
 
-		/// <summary>
-		/// Loads assets required for button
-		/// </summary>
-        /// <param name="bundle">reference to bundle object containing asset references</param>
+		// Loads assets required for button
 		public override void Load(IAssetBundle bundle)
 		{
 		}
