@@ -15,7 +15,6 @@ namespace MarbleSorterGame
     /// </summary>
     public class AssetBundleLoader : IAssetBundle
     {
-        private String _assetDirectoryPath;
         public Sound BucketDrop { get; set; }
         public Sound BucketDropSuccess { get; set; }
         public Sound BucketDropFail { get; set; }
@@ -27,18 +26,17 @@ namespace MarbleSorterGame
         public MarbleGameConfiguration GameConfiguration { get; set; }
         public List<IoMapConfiguration> IoMapConfiguration { get; set; }
         public Font Font { get; set; }
-
         public string Error { get;  }
         
-        public AssetBundleLoader(String assetDirectoryPath)
+        public AssetBundleLoader(String assetDirectoryRelativePath)
         {
-            _assetDirectoryPath = Path.Join(Directory.GetCurrentDirectory(), assetDirectoryPath);
+            string assetDirectoryAbsolutePath = Path.Join(Directory.GetCurrentDirectory(), assetDirectoryRelativePath);
             string configFile = "";
             try
             {
                 // Load + Validate Game Configuration
                 // TODO: Validate IOMap configuration
-                string GetConfig(string file) => Path.Join(_assetDirectoryPath, "Config", file);
+                string GetConfig(string file) => Path.Join(assetDirectoryAbsolutePath, "Config", file);
                 configFile = "game.json";
                 GameConfiguration = ConfigurationLoader.LoadGameConfiguration(GetConfig(configFile));
                 GameConfiguration.Validate(); // May throw MarbleGameConfigException
@@ -46,15 +44,15 @@ namespace MarbleSorterGame
                 IoMapConfiguration = ConfigurationLoader.LoadIoMapConfiguration(GetConfig(configFile)); 
 
                 // Load Fonts
-                Font = new Font(Path.Join(_assetDirectoryPath, "Fonts", "DejaVuSansMono.ttf"));
+                Font = new Font(Path.Join(assetDirectoryAbsolutePath, "Fonts", "DejaVuSansMono.ttf"));
 
                 // Load Sounds
-                string GetSound(string file) => Path.Join(_assetDirectoryPath, "Sounds", file);
+                string GetSound(string file) => Path.Join(assetDirectoryAbsolutePath, "Sounds", file);
                 BucketDropSuccess = new Sound(new SoundBuffer(GetSound("bucketDropSuccess.ogg")));
                 BucketDropFail = new Sound(new SoundBuffer(GetSound("bucketDropFail.ogg")));
 
                 // Load Images
-                string GetImage(string file) => Path.Join(_assetDirectoryPath, "Images", file);
+                string GetImage(string file) => Path.Join(assetDirectoryAbsolutePath, "Images", file);
                 BucketTexture = new Texture(GetImage("bucket3.png"));
                 SensorTexture = new Texture(GetImage("sensor.png"));
                 MarbleRedTexture = new Texture(GetImage("marbleRed.png"));
@@ -67,7 +65,7 @@ namespace MarbleSorterGame
                 var lines = new Dictionary<string, string>();
                 lines["Exception"] = e.GetType().FullName;
                 lines["Message"] = e.Message;
-                lines["Asset Path"] = _assetDirectoryPath;
+                lines["Asset Path"] = assetDirectoryAbsolutePath;
                 Error = FormatErrorString("Failed to load game resources", lines);
             }
             catch (JsonException e)
@@ -77,7 +75,7 @@ namespace MarbleSorterGame
                 lines["Exception"] = e.GetType().FullName;
                 lines["LineNumber"] = e.LineNumber.ToString();
                 lines["Message"] = e.Message;
-                lines["File"] = Path.Join(_assetDirectoryPath, configFile);
+                lines["File"] = Path.Join(assetDirectoryAbsolutePath, configFile);
                 Error = FormatErrorString($"Error loading '{configFile}'", lines);
             }
             catch (ConfigValidationException e)
@@ -86,7 +84,7 @@ namespace MarbleSorterGame
                 var lines = new Dictionary<string, string>();
                 lines["Exception"] = e.GetType().FullName;
                 lines["Message"] = e.Message;
-                lines["File"] = Path.Join(_assetDirectoryPath, configFile);
+                lines["File"] = Path.Join(assetDirectoryAbsolutePath, configFile);
                 Error = FormatErrorString($"Validation error found in '{configFile}'", lines);
             }
         }
