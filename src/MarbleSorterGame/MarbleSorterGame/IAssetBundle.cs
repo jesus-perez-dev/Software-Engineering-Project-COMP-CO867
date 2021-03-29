@@ -17,11 +17,7 @@ namespace MarbleSorterGame
         public Texture MarbleRedTexture { get; set; }
         public Texture MarbleBlueTexture { get; set; }
         public Texture MarbleGreenTexture { get; set; }
-
         public Texture SensorTexture { get; set; }
-        public Texture SensorSignalOffTexture { get; set; }
-        public Texture SensorSignalOnTexture { get; set; }
-        public Sound SensorActivate { get; set; }
         public MarbleGameConfiguration GameConfiguration { get; set; }
         public Font Font { get; set;  }
     }

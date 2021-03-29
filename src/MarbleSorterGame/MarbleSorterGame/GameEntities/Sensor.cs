@@ -79,8 +79,6 @@ namespace MarbleSorterGame.GameEntities
         {
             _sensorSprite.Texture = bundle.SensorTexture;
             _sensorSprite.Scale = ScaleEntity(bundle.SensorTexture);
-
-            _sensorActivate = bundle.SensorActivate;
         }
     }
 }
