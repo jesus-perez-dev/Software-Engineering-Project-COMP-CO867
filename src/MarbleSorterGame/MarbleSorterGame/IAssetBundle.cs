@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using SFML.Audio;
 using SFML.Graphics;
 using SFML.Window;
@@ -19,6 +20,7 @@ namespace MarbleSorterGame
         public Texture MarbleGreenTexture { get; set; }
         public Texture SensorTexture { get; set; }
         public MarbleGameConfiguration GameConfiguration { get; set; }
+        public List<IoMapConfiguration> IoMapConfiguration { get; set; }
         public Font Font { get; set;  }
         public string Error { get;  }
     }
