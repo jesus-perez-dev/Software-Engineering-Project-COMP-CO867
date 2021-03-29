@@ -10,7 +10,7 @@ using SFML.Window;
 namespace MarbleSorterGame
 {
     /// <summary>
-    /// Abstract class for the game loop. This is the general structure of how the game needs to be implemented.
+    /// The general structure of how the game is implemented
     /// </summary>
     public abstract class GameLoop
     {
@@ -22,6 +22,9 @@ namespace MarbleSorterGame
         public static RectangleShape WINDOW_RECT;
         protected static RenderWindow WINDOW;
         
+        /// <summary>
+        /// Mouse cursor types
+        /// </summary>
         public static class Cursors
         {
             public static readonly Cursor NotAllowed = new Cursor(Cursor.CursorType.NotAllowed);
@@ -39,7 +42,7 @@ namespace MarbleSorterGame
         }
 
         /// <summary>
-        /// 
+        /// Game structure that determines how entities are updated and timed
         /// </summary>
         /// <param name="windowWidth"></param>
         /// <param name="windowHeight"></param>
@@ -88,7 +91,7 @@ namespace MarbleSorterGame
         public abstract void Draw();
 
         /// <summary>
-        /// Event for when users click the x button to close the game
+        /// Event handler for window closing (through clicking the X button)
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -97,6 +100,11 @@ namespace MarbleSorterGame
             WINDOW.Close();
         }
         
+        /// <summary>
+        /// Event handler for window resizing
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void WINDOW_Resized(object sender, SizeEventArgs e)
         {
             WINDOW.SetView(new View(new FloatRect(0, 0, e.Width, e.Height)));

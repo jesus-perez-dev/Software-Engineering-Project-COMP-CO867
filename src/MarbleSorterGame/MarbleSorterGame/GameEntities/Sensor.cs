@@ -5,6 +5,9 @@ using SFML.System;
 
 namespace MarbleSorterGame.GameEntities
 {
+    /// <summary>
+    /// Detects characteristics of marble such as weight, color and motion
+    /// </summary>
     public abstract class Sensor : GameEntity
     {
         protected Sprite _sensorSprite;
@@ -14,6 +17,11 @@ namespace MarbleSorterGame.GameEntities
         // Perform all IO with the PLC Simulator in SenseCallback handler
         public event EventHandler SenseCallback;
         
+        /// <summary>
+        /// Constructor for sensor
+        /// </summary>
+        /// <param name="position">Global vector position</param>
+        /// <param name="size">Global vector size</param>
         protected Sensor(Vector2f position, Vector2f size) : base(position, size) {
             _sensorSprite = new Sprite();
             _sensorActivate = new Sound();
@@ -22,10 +30,12 @@ namespace MarbleSorterGame.GameEntities
             // Console.WriteLine(_sensorSprite.Position);
         }
 
-        //inherted members might also call override
+        /// <summary>
+        /// Whether sensor has detected a marble passing through it
+        /// </summary>
+        /// <param name="m"></param>
         public void Sense(Marble m)
         {
-            //write to PLC
         }
         
         public override Vector2f Size
@@ -55,7 +65,7 @@ namespace MarbleSorterGame.GameEntities
         /// <summary>
         /// Draws sensor onto render target window
         /// </summary>
-        /// <param name="window"></param>
+        /// <param name="window">Current window to draw</param>
         public override void Render(RenderWindow window)
         {
             window.Draw(_sensorSprite);
@@ -64,13 +74,11 @@ namespace MarbleSorterGame.GameEntities
         /// <summary>
         /// extracts sensor assets from assets bundle
         /// </summary>
-        /// <param name="bundle"></param>
+        /// <param name="bundle">reference to bundle object containing asset references</param>
         public override void Load(IAssetBundle bundle)
         {
             _sensorSprite.Texture = bundle.SensorTexture;
             _sensorSprite.Scale = ScaleEntity(bundle.SensorTexture);
-
-            _sensorActivate = bundle.SensorActivate;
         }
     }
 }

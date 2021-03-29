@@ -11,7 +11,7 @@ using MarbleSorterGame.Utilities;
 namespace MarbleSorterGame
 {
     /// <summary>
-    /// Loads all available bundled assets
+    /// Organizes and stores paths to required assets
     /// </summary>
     public class AssetBundleLoader : IAssetBundle
     {
@@ -24,9 +24,6 @@ namespace MarbleSorterGame
         public Texture MarbleBlueTexture { get; set; }
         public Texture MarbleGreenTexture { get; set; }
         public Texture SensorTexture { get; set; }
-        public Texture SensorSignalOffTexture { get; set; }
-        public Texture SensorSignalOnTexture { get; set; }
-        public Sound SensorActivate { get; set; }
         public MarbleGameConfiguration GameConfiguration { get; set; }
 
         public Font Font { get; set; }
@@ -49,14 +46,11 @@ namespace MarbleSorterGame
                 string GetSound(string file) => Path.Join(_assetDirectoryPath, "Sounds", file);
                 BucketDropSuccess = new Sound(new SoundBuffer(GetSound("bucketDropSuccess.ogg")));
                 BucketDropFail = new Sound(new SoundBuffer(GetSound("bucketDropFail.ogg")));
-                SensorActivate = new Sound(new SoundBuffer(GetSound("sensorActivate.ogg")));
 
                 // Load Images
                 string GetImage(string file) => Path.Join(_assetDirectoryPath, "Images", file);
                 BucketTexture = new Texture(GetImage("bucket3.png"));
                 SensorTexture = new Texture(GetImage("sensor.png"));
-                SensorSignalOffTexture = new Texture(GetImage("sensorSignalOff1.png"));
-                SensorSignalOnTexture = new Texture(GetImage("sensorSignalOn1.png"));
                 MarbleRedTexture = new Texture(GetImage("marbleRed.png"));
                 MarbleGreenTexture = new Texture(GetImage("marbleGreen.png"));
                 MarbleBlueTexture = new Texture(GetImage("marbleBlue.png"));

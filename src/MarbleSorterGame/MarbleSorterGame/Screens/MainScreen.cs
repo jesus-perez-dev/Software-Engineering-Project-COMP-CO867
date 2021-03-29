@@ -12,7 +12,9 @@ using Color = SFML.Graphics.Color;
 
 namespace MarbleSorterGame.Screens
 {
+    /// <summary>
     /// The main page where users can go to the setting screen or the game
+    /// </summary>
     public class MainScreen : Screen, IDisposable
     {
         private Font _font;
@@ -85,6 +87,9 @@ namespace MarbleSorterGame.Screens
             }
             
         }
+        /// <summary>
+        /// Initializes all event handlers associated with main screen
+        /// </summary>
         private void SetupInputHandlers()
         {
             _window.MouseButtonPressed += MenuMousePressed;
@@ -94,33 +99,61 @@ namespace MarbleSorterGame.Screens
             _buttonExit.ClickEvent += ExitButtonClickHandler;
         }
 
+        /// <summary>
+        /// Event handler for start button click
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="mouse"></param>
         private void StartButtonClickHandler(object? sender, MouseButtonEventArgs mouse)
         {
             MarbleSorterGame.ActiveMenu = Menu.Game;
             Dispose();
         }
 
+        /// <summary>
+        /// Event handler for settings button click
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="mouse"></param>
         private void SettingsButtonClickHandler(object? sender, MouseButtonEventArgs mouse)
         {
             MarbleSorterGame.ActiveMenu = Menu.Settings;
             Dispose();
         }
 
+        /// <summary>
+        /// Event handler for exit button click
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="mouse"></param>
         private void ExitButtonClickHandler(object? sender, MouseButtonEventArgs mouse)
         {
             _window.Close();
         }
 
+        /// <summary>
+        /// Event handler for mouse click, check if any of menu buttons were clicked from that
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="mouse"></param>
          private void MenuMousePressed(object? sender, MouseButtonEventArgs mouse)
         {
             MarbleSorterGame.UpdateButtonsFromClickEvent(sender, _buttons, mouse);
         }
          
+        /// <summary>
+        /// Event handler for mouse hover-over 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="mouse"></param>
         private void MouseHoverOverButton(object? sender, MouseMoveEventArgs mouse)
         {
             MarbleSorterGame.UpdateButtonsFromMouseEvent(_window, _buttons, mouse);
         }
 
+        /// <summary>
+        /// Updates positions of game entities and game state logic
+        /// </summary>
         public override void Update()
         {
             float xOffset = default;
@@ -135,7 +168,10 @@ namespace MarbleSorterGame.Screens
             }
         }
 
-        // Method that gets called when the screen is to be redrawn
+        /// <summary>
+        /// Redraw screen in preparation for next update loop
+        /// </summary>
+        /// <param name="window"></param>
         public override void Draw(RenderWindow window)
         {
             if (_errorMode)
@@ -159,6 +195,9 @@ namespace MarbleSorterGame.Screens
             }
         }
 
+        /// <summary>
+        /// Dispose all event handlers associated with the menu screen
+        /// </summary>
         public void Dispose()
         {
             _window.MouseButtonPressed -= MenuMousePressed;
