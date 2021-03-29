@@ -38,18 +38,25 @@ using Color = SFML.Graphics.Color;
 namespace MarbleSorterGame
 {
 
+    //determines how user interacts with game
     public enum DriverType
     {
         Keyboard,
         Simulation
     }
     
+    /// <summary>
+    /// Stores driver type from config file
+    /// </summary>
     public class SimulationDriverOptions
     {
         public string SimulationName { get; set; }
         public override string ToString() => $"SimulationDriverOptions: SimulationName = {SimulationName}";
     }
     
+    /// <summary>
+    /// Stores marble types from config file
+    /// </summary>
     public class MarbleConfig
     {
         public Enums.Color Color { get; set; }
@@ -58,6 +65,9 @@ namespace MarbleSorterGame
         public override string ToString() => $"MarbleConfig: Color = {Color}, Weight = {Weight}";
     }
 
+    /// <summary>
+    /// Stores bucket requirements from config file
+    /// </summary>
     public class BucketConfig
     {
         public int Capacity { get; set; }
@@ -67,6 +77,9 @@ namespace MarbleSorterGame
         public override string ToString() => $"BucketConfig: Capacity = {Capacity}, Color = {Color}, Weight = {Weight}";
     }
 
+    /// <summary>
+    /// Stores values from config file
+    /// </summary>
     public class MarbleGameConfiguration
     {
         public List<MarbleGamePreset> Presets { get; set; }
@@ -103,11 +116,18 @@ namespace MarbleSorterGame
 
     }
 
+    /// <summary>
+    /// Stores different "level" presets (combinations of marbles/bucket requirements)
+    /// </summary>
     public class MarbleGamePreset
     {
         public List<MarbleConfig> Marbles { get; set; }
         public List<BucketConfig> Buckets { get; set; }
         
+        /// <summary>
+        /// Shows marble/bucket info
+        /// </summary>
+        /// <returns></returns>
         public override string ToString() => string.Join("\n", new[] 
         {
             "Marbles:", string.Join("\n\t", Marbles), 
@@ -115,14 +135,24 @@ namespace MarbleSorterGame
         });
     }
     
+    /// <summary>
+    /// Loads json config file containing game info
+    /// </summary>
     public class ConfigurationLoader
     {
+        /// <summary>
+        /// Converts json strings into their appropriate option
+        /// </summary>
         private static JsonSerializerOptions _options = new JsonSerializerOptions
         {
-            // Convert json string "Red" to Color.Red, etc...
             Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) } 
         };
 
+        /// <summary>
+        /// Loads in the json config file
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <returns></returns>
         public static MarbleGameConfiguration Load(string filePath)
         {
             return JsonSerializer.Deserialize<MarbleGameConfiguration>(File.ReadAllText(filePath), _options);

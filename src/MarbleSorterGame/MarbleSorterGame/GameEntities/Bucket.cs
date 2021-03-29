@@ -7,6 +7,9 @@ using Color = MarbleSorterGame.Enums.Color;
 
 namespace MarbleSorterGame.GameEntities
 {
+    /// <summary>
+    /// Container for marbles to drop onto, contains requirements that must be fulfilled to complete the marble sorter game
+    /// </summary>
     public class Bucket : GameEntity
     {
         private Sprite _bucket;
@@ -25,7 +28,14 @@ namespace MarbleSorterGame.GameEntities
         public int Capacity;
 
 
-        /// Bucket that holds dropped marbles, containing requirements for color, weight and capacity
+        /// <summary>
+        /// Constructor for bucket
+        /// </summary>
+        /// <param name="position">Global vector position</param>
+        /// <param name="size">Global vector size</param>
+        /// <param name="requiredColor">Marble color that is accepted as requirement</param>
+        /// <param name="requiredWeight">Marble weight that is accepted as requirement</param>
+        /// <param name="capacity">Any marbles dropped over capacity is counted as incorrectly dropped</param>
         public Bucket(Vector2f position, Vector2f size, Color? requiredColor, Weight? requiredWeight, int capacity) :  base (position, size)
         {
             _requiredColor = requiredColor;
@@ -67,7 +77,11 @@ namespace MarbleSorterGame.GameEntities
             }
         }
 
+        /// <summary>
         /// Insert marble into the bucket, return true/false depening on whether marble meets its requirements
+        /// </summary>
+        /// <param name="m">Marble to be inserted into</param>
+        /// <returns>Whether marble that was inserted was correctly dropped</returns>
         public bool InsertMarble(Marble m)
         {
             bool marbleOk = ValidateMarble(m);
@@ -87,6 +101,11 @@ namespace MarbleSorterGame.GameEntities
             return marbleOk;
         }
 
+        /// <summary>
+        /// Checks if marble that was dropped met the requirements
+        /// </summary>
+        /// <param name="m">Marble to be validated</param>
+        /// <returns>If marble was valid</returns>
         public bool ValidateMarble(Marble m)
         {
             return (_requiredColor == null || m.Color == _requiredColor)  &&
@@ -94,7 +113,10 @@ namespace MarbleSorterGame.GameEntities
                     TotalMarbles < Capacity;
         }
 
+        /// <summary>
         /// Draws the bucket onto render target RenderWindow
+        /// </summary>
+        /// <param name="window">Current window to draw</param>
         public override void Render(RenderWindow window)
         {
            // base.Render(window);
@@ -107,7 +129,10 @@ namespace MarbleSorterGame.GameEntities
             window.Draw(_capacityLabel);
         }
         
+        /// <summary>
         /// Extracts bucket assets, such as texture and sound, from bundle
+        /// </summary>
+        /// <param name="bundle">reference to bundle object containing asset references</param>
         public override void Load(IAssetBundle bundle)
         {
             _capacityLabel = new Text($"0/{Capacity}", bundle.Font);

@@ -6,7 +6,7 @@ using System;
 namespace MarbleSorterGame
 {
     /// <summary>
-    /// Loads all available bundled assets
+    /// Organizes and stores paths to required assets
     /// </summary>
     public class AssetBundleLoader : IAssetBundle
     {
@@ -26,6 +26,10 @@ namespace MarbleSorterGame
 
         public Font Font { get; set; }
 
+        /// <summary>
+        /// Constructor for asset bundle
+        /// </summary>
+        /// <param name="assetDirectoryPath">File path to the assets folder</param>
         public AssetBundleLoader(String assetDirectoryPath)
         {
             _assetDirectoryPath = assetDirectoryPath;

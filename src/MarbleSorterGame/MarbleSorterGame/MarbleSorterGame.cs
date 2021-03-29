@@ -44,7 +44,12 @@ namespace MarbleSorterGame
             ActiveMenu = Menu.Main;
         }
 
-        // Trigger click event(s) on buttons if a click event occured there
+        /// <summary>
+        /// Trigger click event(s) on buttons if a click event occured there
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="buttons">All buttons that could be clicked on</param>
+        /// <param name="mouse">Mouse object</param>
         public static void UpdateButtonsFromClickEvent(object? sender, GameEntities.Button[] buttons, MouseButtonEventArgs mouse)
         {
             foreach (var button in buttons)
@@ -52,7 +57,13 @@ namespace MarbleSorterGame
                     button.Click(sender, mouse);
         }
 
-        // Update the state of buttons/cursor based on mouse event and list of buttons
+
+        /// <summary>
+        /// Update the state of buttons/cursor based on mouse event and list of buttons
+        /// </summary>
+        /// <param name="window">Current window to draw</param>
+        /// <param name="buttons">All buttons that could be hovered over on</param>
+        /// <param name="mouse">Mouse object</param>
         public static void UpdateButtonsFromMouseEvent(RenderWindow window, GameEntities.Button[] buttons, MouseMoveEventArgs mouse)
         {
             window.SetMouseCursor(Cursors.Arrow);
