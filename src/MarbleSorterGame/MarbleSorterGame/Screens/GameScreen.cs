@@ -60,7 +60,7 @@ namespace MarbleSorterGame.Screens
         private int _marblesTotal;
         private int _marblesRemaining;
         
-        //
+        // Config options
         private IAssetBundle _bundle;
         
         public GameScreen(RenderWindow window, IAssetBundle bundle)
@@ -77,7 +77,9 @@ namespace MarbleSorterGame.Screens
             Reset();
         }
 
+        /// <summary>
         // Initialize all game entity objects and reset values to default states
+        /// </summary>
         private void Reset()
         {
             // Used for positioning by percentage relative to screen
@@ -312,6 +314,7 @@ namespace MarbleSorterGame.Screens
                 .Concat(new[] { _gateEntrance })
                 .ToArray();
 
+            //load assets for all entities
             foreach (GameEntity entity in _entities)
                 entity.Load(_bundle);
 
@@ -338,22 +341,40 @@ namespace MarbleSorterGame.Screens
             _buckets[2].InfoText = "Bucket 3 \n %I1.0 Bool";
         }
 
+        /// <summary>
+        /// Mouse movement event handler for features involving hover-over
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="mouse"></param>
         private void GameMouseMoveEventHandler(object? sender, MouseMoveEventArgs mouse)
         {
             MarbleSorterGame.UpdateButtonsFromMouseEvent(_window, _buttons, mouse);
         }
 
+        /// <summary>
+        /// Mouse click event handler for button clicking
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="mouse"></param>
         private void GameMouseClickEventHandler(object? sender, MouseButtonEventArgs mouse)
         {
             MarbleSorterGame.UpdateButtonsFromClickEvent(sender, _buttons, mouse);
         }
 
+        /// <summary>
+        /// Keyboard event handlers for keyboard driver, for debug purposes
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="key"></param>
         private void GameKeyEventHandler(object? sender, KeyEventArgs key)
         {
             if (_driver is KeyboardIODriver kbdriver)
                 kbdriver.UpdateByKey(key);
         }
 
+        /// <summary>
+        /// Writes driver values to the game and reads in game state 
+        /// </summary>
         private void UpdateDriver()
         {
             _gateEntrance.SetState(_driver.Gate);
@@ -411,6 +432,9 @@ namespace MarbleSorterGame.Screens
             _driver.Update();
         }
 
+        /// <summary>
+        /// Update marble positioning
+        /// </summary>
         private void UpdateMarbles()
         {
             foreach (var marble in _marbles)
@@ -469,6 +493,9 @@ namespace MarbleSorterGame.Screens
             }
         }
 
+        /// <summary>
+        /// Update door positions
+        /// </summary>
         private void UpdateDoors()
         {
             foreach (var trapdoor in _trapDoors)
@@ -478,6 +505,9 @@ namespace MarbleSorterGame.Screens
             _gateEntrance.Update(_marbles);
         }
 
+        /// <summary>
+        /// Update legend text
+        /// </summary>
         private void UpdateLegend()
         {
             _legendData["Currently Hovered Item"] = _hoveredEntity == null ? "N/A" : _hoveredEntity.InfoText;
@@ -501,6 +531,9 @@ namespace MarbleSorterGame.Screens
             _legendBackground.Size = new Vector2f(legendBounds.Width + _legendPadding*4, legendBounds.Height + _legendPadding*2);
         }
 
+        /// <summary>
+        /// Update game state from key events such as bucket handling and win state
+        /// </summary>
         public void UpdateGameState()
         {
             _marblesRemaining = _marblesTotal - _buckets.Select(b => b.TotalMarbles).Sum();
@@ -528,6 +561,9 @@ namespace MarbleSorterGame.Screens
                 _gameState = GameState.Lose;
         }
 
+        /// <summary>
+        /// Update all game entity positions, game state and driver input/output
+        /// </summary>
         public override void Update()
         {
             UpdateLegend();
@@ -541,7 +577,10 @@ namespace MarbleSorterGame.Screens
             }
         }
         
-        /// Method that gets called when the screen is to be redrawn
+        /// <summary>
+        /// Redraw screen in preparation for next update loop
+        /// </summary>
+        /// <param name="window"></param>
         public override void Draw(RenderWindow window)
         {
             foreach (var drawable in _drawables)
@@ -551,6 +590,11 @@ namespace MarbleSorterGame.Screens
                 entity.Render(window);
         }
 
+        /// <summary>
+        /// Event handler for pause button click
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
         private void PauseButtonClickHandler(object? sender, MouseButtonEventArgs args)
         {
             if (_gameState == GameState.Pause)
@@ -562,18 +606,31 @@ namespace MarbleSorterGame.Screens
             //   s7driver.SetRunState(true);
         }
 
+        /// <summary>
+        /// Event handler for reset button click
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
         private void ResetButtonClickHandler(object? sender, MouseButtonEventArgs args)
         {
             Dispose();
             Reset();
         }
 
+        /// <summary>
+        /// Event handler for main menu button click
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
         private void MainMenuButtonClickHandler(object? sender, MouseButtonEventArgs args)
         {
             Dispose();
             MarbleSorterGame.ActiveMenu = Menu.Main;
         }
 
+        /// <summary>
+        /// Dispose all event handlers associated with the game screen
+        /// </summary>
         public void Dispose()
         {
             _buttonPause.ClickEvent -= PauseButtonClickHandler;

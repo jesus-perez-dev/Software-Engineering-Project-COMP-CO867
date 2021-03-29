@@ -26,13 +26,13 @@ namespace MarbleSorterGame.GameEntities
 		private Font _labelFont;
 
 		/// <summary>
-		/// Use when creating stand-alone label
+		/// Constructor for label
 		/// </summary>
-		/// <param name="labelText"></param>
-		/// <param name="labelPosition"></param>
-		/// <param name="labelSize"></param>
-		/// <param name="labelColor"></param>
-		/// <param name="labelFont"></param>
+		/// <param name="labelText">String value of what label will output</param>
+		/// <param name="labelPosition">Global vector position</param>
+		/// <param name="labelSize">Global vector size</param>
+		/// <param name="labelColor">Background color of label</param>
+		/// <param name="labelFont">Font of label</param>
 		public Label(String labelText, Vector2f? labelPosition, int labelSize, SFML.Graphics.Color labelColor, Font labelFont)
 		{
 			_labelText = labelText;
@@ -52,11 +52,20 @@ namespace MarbleSorterGame.GameEntities
 			_text.Position = _labelPosition;
 		}
 
+		/// <summary>
+		/// Draw method of label
+		/// </summary>
+		/// <param name="window">Current drawn window</param>
 		public void Draw(RenderWindow window)
 		{
 			window.Draw(_text);
 		}
 
+		/// <summary>
+		/// Draw method of label
+		/// </summary>
+		/// <param name="target"></param>
+		/// <param name="states"></param>
 		public void Draw(RenderTarget target, RenderStates states)
 		{
 			target.Draw(_text);

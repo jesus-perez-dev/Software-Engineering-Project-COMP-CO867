@@ -12,6 +12,11 @@ namespace MarbleSorterGame.GameEntities
     {
         Weight Value;
 
+        /// <summary>
+        /// Constructor for pressure sensor
+        /// </summary>
+        /// <param name="position"></param>
+        /// <param name="size"></param>
         public PressureSensor(Vector2f position, Vector2f size) : base(position, size)
         {
             //_sensorSprite.Position = position;

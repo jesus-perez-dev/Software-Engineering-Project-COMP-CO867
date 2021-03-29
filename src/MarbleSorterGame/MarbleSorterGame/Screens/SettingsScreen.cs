@@ -10,11 +10,19 @@ namespace MarbleSorterGame.Screens
     /// </summary>
     public class SettingsScreen : Screen
     {
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="window">Current window to draw</param>
+        /// <param name="bundle">reference to bundle object containing asset references</param>
         public SettingsScreen(RenderWindow window, IAssetBundle bundle)
         {
             Font font = bundle.Font;
         }
         
+        /// <summary>
+        /// Updates any game states changed by the setting
+        /// </summary>
         public override void Update()
         {
             

@@ -51,6 +51,9 @@ namespace MarbleSorterGame
         public override string ToString() => $"SimulationDriverOptions: SimulationName = {SimulationName}";
     }
     
+    /// <summary>
+    /// Stores marble types from config file
+    /// </summary>
     public class MarbleConfig
     {
         public Color Color { get; set; }
@@ -59,6 +62,9 @@ namespace MarbleSorterGame
         public override string ToString() => $"MarbleConfig: Color = {Color}, Weight = {Weight}";
     }
 
+    /// <summary>
+    /// Stores bucket requirements from config file
+    /// </summary>
     public class BucketConfig
     {
         public int Capacity { get; set; }
@@ -68,6 +74,9 @@ namespace MarbleSorterGame
         public override string ToString() => $"BucketConfig: Capacity = {Capacity}, Color = {Color}, Weight = {Weight}";
     }
 
+    /// <summary>
+    /// Stores values from config file
+    /// </summary>
     public class MarbleGameConfiguration
     {
         public MarbleGamePreset Preset { get; set; }
@@ -123,11 +132,18 @@ namespace MarbleSorterGame
         }
     }
 
+    /// <summary>
+    /// Stores different "level" presets (combinations of marbles/bucket requirements)
+    /// </summary>
     public class MarbleGamePreset
     {
         public List<MarbleConfig> Marbles { get; set; }
         public List<BucketConfig> Buckets { get; set; }
         
+        /// <summary>
+        /// Shows marble/bucket info
+        /// </summary>
+        /// <returns></returns>
         public override string ToString() => string.Join("\n", new[] 
         {
             "Marbles:", string.Join("\n\t", Marbles), 
