@@ -4,6 +4,7 @@ using System.Runtime.CompilerServices;
 using MarbleSorterGame.Enums;
 using MarbleSorterGame.GameEntities;
 using MarbleSorterGame.Utilities;
+using Newtonsoft.Json;
 using SFML.Graphics;
 using SFML.System;
 using SFML.Window;
@@ -33,43 +34,58 @@ namespace MarbleSorterGame.Screens
         private static Vector2f _marbleSize = new Vector2f(_marbleDimension, _marbleDimension);
         private int _updateCounter = 0;
 
-        /// <summary>
-        /// Constructor for main screen
-        /// </summary>
-        /// <param name="window">Window to draw on to</param>
-        /// <param name="bundle">reference to bundle object containing asset references</param>
+        private Text _errorText;
+        private bool _errorMode;
+
         public MainScreen(RenderWindow window, IAssetBundle bundle)
         {
-            _font = bundle.Font;
-            _window = window;
             var screen = GameLoop.WINDOW_RECT;
-
-            _background = new RectangleShape { Size = screen.Size };
-            
-            _menuTitle = new Label("Marble Sorter Game", screen.Percent(50, 30), 50, SFML.Graphics.Color.Black, _font);
-            _copyright = new Label("Copyright 2021 - Mohawk College", screen.Percent(80, 95), 15, SFML.Graphics.Color.Black, _font);
-
-            Vector2f buttonSize = screen.Percent(15f, 10f); // new Vector2f(window.Size.X / 7, window.Size.Y / 11);
-            _buttonStart = new Button("Start", 1f, _font, screen.Percent(30f, 70f), buttonSize);
-            _buttonSettings = new Button("Settings",1f,  _font, screen.Percent(50f, 70f), buttonSize);
-            _buttonSettings.Disabled = true;
-            _buttonExit = new Button("Exit", 1f, _font, screen.Percent(70f, 70f), buttonSize);
-
-
-            _buttons = new [] { _buttonStart, _buttonSettings, _buttonExit };
-
-            Enums.Color[] colors = {Enums.Color.Red, Enums.Color.Green, Enums.Color.Blue};
-            for (int i = 0; i < 3; i++)
+            if (bundle.Error != null)
             {
-                var marble = new Marble(screen, default, colors[i], Weight.Large);
-                marble.SetState(MarbleState.Rolling);
-                marble.Load(bundle);
-                marble.Size = _marbleSize;
-                marble.Update();
-                _aestheticMarbles.Add(marble);
+                _errorMode = true;
+                _errorText = new Text(string.Join("\n", bundle.Error), BackupFont.LoadBackupFont())
+                {
+                    FillColor = Color.Red,
+                    Position = new Vector2f(0, 0),
+                    CharacterSize = 18
+                };
+                // Shrink the text until it fits the screen resolution
+                while (!screen.GetGlobalBounds().ContainsRect(_errorText.GetGlobalBounds()))
+                {
+                    _errorText.Scale = _errorText.Scale - new Vector2f(0.01f, 0.01f);
+                    _errorText.Position = new Vector2f(1f, 1f);
+                }
+            }
+            else
+            {
+                _errorMode = false;
+                _font = bundle.Font;
+                _window = window;
+
+                _background = new RectangleShape { Size = screen.Size };
+                _menuTitle = new Label("Marble Sorter Game", screen.Percent(50, 30), 50, Color.Black, _font);
+                _copyright = new Label("Copyright 2021 - Mohawk College", screen.Percent(80, 95), 15, Color.Black, _font);
+                
+                Vector2f buttonSize = screen.Percent(15f, 10f); // new Vector2f(window.Size.X / 7, window.Size.Y / 11);
+                _buttonStart = new Button("Start", 1f, _font, screen.Percent(30f, 70f), buttonSize);
+                _buttonSettings = new Button("Settings",1f,  _font, screen.Percent(50f, 70f), buttonSize);
+                _buttonSettings.Disabled = true;
+                _buttonExit = new Button("Exit", 1f, _font, screen.Percent(70f, 70f), buttonSize);
+                _buttons = new [] { _buttonStart, _buttonSettings, _buttonExit };
+
+                Enums.Color[] colors = {Enums.Color.Red, Enums.Color.Green, Enums.Color.Blue};
+                for (int i = 0; i < 3; i++)
+                {
+                    var marble = new Marble(screen, default, colors[i], Weight.Large);
+                    marble.SetState(MarbleState.Rolling);
+                    marble.Load(bundle);
+                    marble.Size = _marbleSize;
+                    marble.Update();
+                    _aestheticMarbles.Add(marble);
+                }
+                SetupInputHandlers();
             }
             
-            SetupInputHandlers();
         }
         /// <summary>
         /// Initializes all event handlers associated with main screen
@@ -150,15 +166,6 @@ namespace MarbleSorterGame.Screens
                     .ShiftX(xOffset);
                 xOffset += _marbleDimension*2;
             }
-            
-            /*
-            _background.FillColor = new Color(
-                (byte) (Math.Sin(_updateCounter * Math.PI/180)*63 + 190),
-                (byte)(Math.Sin(_updateCounter * Math.PI/180)*63 + 190),
-                (byte)(Math.Sin(_updateCounter * Math.PI/180)*63 + 190)
-            );
-            _updateCounter += 5;
-            */
         }
 
         /// <summary>
@@ -167,18 +174,25 @@ namespace MarbleSorterGame.Screens
         /// <param name="window"></param>
         public override void Draw(RenderWindow window)
         {
-            window.Draw(_background);
-            
-            foreach (var marble in _aestheticMarbles)
-                marble.Render(window);
-            
-            _buttonStart.Render(window);
-            _buttonSettings.Render(window);
-            _buttonExit.Render(window);
-
-            // Draw text on-top
-            _menuTitle.Draw(window);
-            _copyright.Draw(window);
+            if (_errorMode)
+            {
+                window.Draw(_errorText);
+            }
+            else
+            {
+                window.Draw(_background);
+                
+                foreach (var marble in _aestheticMarbles)
+                    marble.Render(window);
+                
+                _buttonStart.Render(window);
+                _buttonSettings.Render(window);
+                _buttonExit.Render(window);
+                    
+                // Draw text on-top
+                _menuTitle.Draw(window);
+                _copyright.Draw(window);
+            }
         }
 
         /// <summary>
