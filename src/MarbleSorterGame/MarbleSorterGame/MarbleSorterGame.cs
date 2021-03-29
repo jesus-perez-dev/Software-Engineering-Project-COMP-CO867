@@ -8,9 +8,7 @@ using SFML.Window;
 
 namespace MarbleSorterGame
 {
-    /// <summary>
-    /// The implementation of the abstract game loop 
-    /// </summary>
+    // The implementation of the abstract game loop 
     public class MarbleSorterGame : GameLoop
     {
         private static string WINDOW_TITLE = "PLC Training Simulator - Marble Sorter Game";
@@ -36,12 +34,7 @@ namespace MarbleSorterGame
             ActiveMenu = Menu.Main;
         }
 
-        /// <summary>
-        /// Trigger click event(s) on buttons if a click event occured there
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="buttons">All buttons that could be clicked on</param>
-        /// <param name="mouse">Mouse object</param>
+        // Trigger click event(s) on buttons if a click event occured there
         public static void UpdateButtonsFromClickEvent(object? sender, GameEntities.Button[] buttons, MouseButtonEventArgs mouse)
         {
             foreach (var button in buttons)
@@ -50,12 +43,7 @@ namespace MarbleSorterGame
         }
 
 
-        /// <summary>
-        /// Update the state of buttons/cursor based on mouse event and list of buttons
-        /// </summary>
-        /// <param name="window">Current window to draw</param>
-        /// <param name="buttons">All buttons that could be hovered over on</param>
-        /// <param name="mouse">Mouse object</param>
+        // Update the state of buttons/cursor based on mouse event and list of buttons
         public static void UpdateButtonsFromMouseEvent(RenderWindow window, GameEntities.Button[] buttons, MouseMoveEventArgs mouse)
         {
             window.SetMouseCursor(Cursors.Arrow);
@@ -70,17 +58,13 @@ namespace MarbleSorterGame
             }
         }
 
-        /// <summary>
-        /// Update any data for the game
-        /// </summary>
+        // Update any data for the game
         public override void Update()
         {
             _activeScreen.Update();
         }
 
-        /// <summary>
-        /// Draw method for the game. Each of the screens call their draw method depending on the active menu
-        /// </summary>
+        // Draw method for the game. Each of the screens call their draw method depending on the active menu
         public override void Draw()
         {
             _activeScreen.Draw(WINDOW);

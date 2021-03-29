@@ -9,9 +9,7 @@ using SFML.Window;
 
 namespace MarbleSorterGame
 {
-    /// <summary>
-    /// The general structure of how the game is implemented
-    /// </summary>
+    // The general structure of how the game is implemented
     public abstract class GameLoop
     {
         public static int FPS = 60;
@@ -22,9 +20,7 @@ namespace MarbleSorterGame
         public static RectangleShape WINDOW_RECT;
         protected static RenderWindow WINDOW;
         
-        /// <summary>
-        /// Mouse cursor types
-        /// </summary>
+        // Mouse cursor types
         public static class Cursors
         {
             public static readonly Cursor NotAllowed = new Cursor(Cursor.CursorType.NotAllowed);
@@ -32,22 +28,14 @@ namespace MarbleSorterGame
             public static readonly Cursor Arrow = new Cursor(Cursor.CursorType.Arrow);
         }
         
-        /// <summary>
-        /// Color for when the window get cleared
-        /// </summary>
+        // Color for when the window get cleared
         public  SFML.Graphics.Color WindowClearColor
         {
             get;
             protected set;
         }
 
-        /// <summary>
-        /// Game structure that determines how entities are updated and timed
-        /// </summary>
-        /// <param name="windowWidth"></param>
-        /// <param name="windowHeight"></param>
-        /// <param name="windowTitle"></param>
-        /// <param name="windowClearColor"></param>
+        // Game structure that determines how entities are updated and timed
         protected GameLoop(IAssetBundle bundle, string windowTitle, Color windowClearColor)
         {
             WINDOW_WIDTH = bundle?.GameConfiguration?.ScreenWidth ?? 800;
@@ -66,11 +54,9 @@ namespace MarbleSorterGame
             WINDOW.Resized += WINDOW_Resized;
         }
 
-        /// <summary>
-        /// Structure for the game. Assets are first loaded then objects that do not need to change get initialized. The game then loops.
-        /// Inside the loop events get handled, then data gets updated followed by a window clear, redrawing all the object, and then
-        /// displaying new ones. 
-        /// </summary>
+        // Structure for the game. Assets are first loaded then objects that do not need to change get initialized. The game then loops.
+        // Inside the loop events get handled, then data gets updated followed by a window clear, redrawing all the object, and then
+        // displaying new ones. 
         public void Run()
         {
             while (WINDOW.IsOpen)
@@ -84,27 +70,17 @@ namespace MarbleSorterGame
             }
         }
 
-        /// <summary>
-        /// Abstract method for inheritors to implement
-        /// </summary>
+        // Abstract method for inheritors to implement
         public abstract void Update();
         public abstract void Draw();
 
-        /// <summary>
-        /// Event handler for window closing (through clicking the X button)
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
+        // Event handler for window closing (through clicking the X button)
         private void WINDOW_Closed(object sender, EventArgs e)
         {
             WINDOW.Close();
         }
         
-        /// <summary>
-        /// Event handler for window resizing
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
+        // Event handler for window resizing
         private void WINDOW_Resized(object sender, SizeEventArgs e)
         {
             WINDOW.SetView(new View(new FloatRect(0, 0, e.Width, e.Height)));

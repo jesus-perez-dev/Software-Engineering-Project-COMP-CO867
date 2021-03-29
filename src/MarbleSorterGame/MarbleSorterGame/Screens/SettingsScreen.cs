@@ -5,34 +5,22 @@ using SFML.System;
 
 namespace MarbleSorterGame.Screens
 {
-    /// <summary>
-    /// The settings screen
-    /// </summary>
+    // The settings screen
     public class SettingsScreen : Screen
     {
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        /// <param name="window">Current window to draw</param>
-        /// <param name="bundle">reference to bundle object containing asset references</param>
+        // Constructor
         public SettingsScreen(RenderWindow window, IAssetBundle bundle)
         {
             Font font = bundle.Font;
         }
         
-        /// <summary>
-        /// Updates any game states changed by the setting
-        /// </summary>
+        // Updates any game states changed by the setting
         public override void Update()
         {
             
         }
 
-        /// <summary>
-        /// Method that gets called when the screen is to be redrawn
-        /// </summary>
-        /// <param name="window"></param>
-        /// <param name="font"></param>
+        // Method that gets called when the screen is to be redrawn
         public override void Draw(RenderWindow window)
         {
             //default sizes

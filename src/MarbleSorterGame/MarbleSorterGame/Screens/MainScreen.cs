@@ -12,9 +12,7 @@ using Color = SFML.Graphics.Color;
 
 namespace MarbleSorterGame.Screens
 {
-    /// <summary>
-    /// The main page where users can go to the setting screen or the game
-    /// </summary>
+    // The main page where users can go to the setting screen or the game
     public class MainScreen : Screen, IDisposable
     {
         private Font _font;
@@ -87,9 +85,7 @@ namespace MarbleSorterGame.Screens
             }
             
         }
-        /// <summary>
-        /// Initializes all event handlers associated with main screen
-        /// </summary>
+        // Initializes all event handlers associated with main screen
         private void SetupInputHandlers()
         {
             _window.MouseButtonPressed += MenuMousePressed;
@@ -99,61 +95,39 @@ namespace MarbleSorterGame.Screens
             _buttonExit.ClickEvent += ExitButtonClickHandler;
         }
 
-        /// <summary>
-        /// Event handler for start button click
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="mouse"></param>
+        // Event handler for start button click
         private void StartButtonClickHandler(object? sender, MouseButtonEventArgs mouse)
         {
             MarbleSorterGame.ActiveMenu = Menu.Game;
             Dispose();
         }
 
-        /// <summary>
-        /// Event handler for settings button click
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="mouse"></param>
+        // Event handler for settings button click
         private void SettingsButtonClickHandler(object? sender, MouseButtonEventArgs mouse)
         {
             MarbleSorterGame.ActiveMenu = Menu.Settings;
             Dispose();
         }
 
-        /// <summary>
-        /// Event handler for exit button click
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="mouse"></param>
+        // Event handler for exit button click
         private void ExitButtonClickHandler(object? sender, MouseButtonEventArgs mouse)
         {
             _window.Close();
         }
 
-        /// <summary>
-        /// Event handler for mouse click, check if any of menu buttons were clicked from that
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="mouse"></param>
+        // Event handler for mouse click, check if any of menu buttons were clicked from that
          private void MenuMousePressed(object? sender, MouseButtonEventArgs mouse)
         {
             MarbleSorterGame.UpdateButtonsFromClickEvent(sender, _buttons, mouse);
         }
          
-        /// <summary>
-        /// Event handler for mouse hover-over 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="mouse"></param>
+        // Event handler for mouse hover-over 
         private void MouseHoverOverButton(object? sender, MouseMoveEventArgs mouse)
         {
             MarbleSorterGame.UpdateButtonsFromMouseEvent(_window, _buttons, mouse);
         }
 
-        /// <summary>
-        /// Updates positions of game entities and game state logic
-        /// </summary>
+        // Updates positions of game entities and game state logic
         public override void Update()
         {
             float xOffset = default;
@@ -168,10 +142,7 @@ namespace MarbleSorterGame.Screens
             }
         }
 
-        /// <summary>
-        /// Redraw screen in preparation for next update loop
-        /// </summary>
-        /// <param name="window"></param>
+        // Redraw screen in preparation for next update loop
         public override void Draw(RenderWindow window)
         {
             if (_errorMode)
@@ -195,9 +166,7 @@ namespace MarbleSorterGame.Screens
             }
         }
 
-        /// <summary>
-        /// Dispose all event handlers associated with the menu screen
-        /// </summary>
+        // Dispose all event handlers associated with the menu screen
         public void Dispose()
         {
             _window.MouseButtonPressed -= MenuMousePressed;

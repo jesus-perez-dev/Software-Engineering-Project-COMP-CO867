@@ -4,9 +4,7 @@ using System;
 
 namespace MarbleSorterGame.GameEntities
 {
-    /// <summary>
-    /// Sensor that detects color of marble rolling past it
-    /// </summary>
+    // Sensor that detects color of marble rolling past it
     public class ColorSensor : Sensor
     {
         Color Value;
