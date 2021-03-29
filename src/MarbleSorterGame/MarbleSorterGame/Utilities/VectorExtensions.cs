@@ -9,7 +9,17 @@ namespace MarbleSorterGame.Utilities
         Middle, 
         End     // Bottom if vertical, far-right if horizontal
     }
-    
+
+    public static class FloatRectExtensions
+    {
+        // rectangle "other" fits entirely inside this recangle "self"
+        public static bool ContainsRect(this FloatRect self, FloatRect other)
+        {
+            return self.Contains(other.Left, other.Top) &&
+                   self.Contains(other.Left + other.Width, other.Top + other.Height);
+        }
+    }
+
     public static class ShapeExtensions
     {
         public static Vector2f Percent(this Shape self, float percentX, float percentY) =>

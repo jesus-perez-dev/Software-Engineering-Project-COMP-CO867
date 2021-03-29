@@ -95,12 +95,11 @@ namespace MarbleSorterGame.GameEntities
 				y > buttonBounds.Top && y < buttonBounds.Top + buttonBounds.Height);
 		}
 
-		/// <summary>
-		/// Click event handler for button
-		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="args"></param>
-		public void Click(object? sender, MouseButtonEventArgs args) => ClickEvent?.Invoke(sender, args);
+		public void Click(object? sender, MouseButtonEventArgs args)
+		{
+			 if (!Disabled)
+				 ClickEvent?.Invoke(sender, args);	
+		}
 
 		/// <summary>
 		/// Draws button

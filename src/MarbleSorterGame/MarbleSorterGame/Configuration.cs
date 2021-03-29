@@ -1,11 +1,8 @@
-using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using MarbleSorterGame.Enums;
-using Color = SFML.Graphics.Color;
 
 /* Example Configuration JSON:
 {
@@ -18,8 +15,7 @@ using Color = SFML.Graphics.Color;
   "DriverOptions": {
     "SimulationName": "demo-simulation"
   },
-  "Presets": [
-    {
+  "Presets": {
       "Marbles": [
         { "Color": "Red", "Weight": "Small" },
         { "Color": "Green", "Weight": "Large" },
@@ -30,24 +26,25 @@ using Color = SFML.Graphics.Color;
         { "Capacity": 1, "Weight": "Medium", "Color": null },
         { "Capacity": 1, "Weight": null,     "Color": "Green" }
       ]
-    }
-  ]
+   }
 }
 */
 
 namespace MarbleSorterGame
 {
-
-    //determines how user interacts with game
     public enum DriverType
     {
         Keyboard,
         Simulation
     }
     
-    /// <summary>
-    /// Stores driver type from config file
-    /// </summary>
+    public class MarbleGameConfigException: System.Exception
+    {
+       public MarbleGameConfigException() { }
+       public MarbleGameConfigException(string message): base(message) { }
+    }
+    
+    
     public class SimulationDriverOptions
     {
         public string SimulationName { get; set; }
@@ -59,7 +56,7 @@ namespace MarbleSorterGame
     /// </summary>
     public class MarbleConfig
     {
-        public Enums.Color Color { get; set; }
+        public Color Color { get; set; }
         public Weight Weight { get; set; }
         
         public override string ToString() => $"MarbleConfig: Color = {Color}, Weight = {Weight}";
@@ -71,7 +68,7 @@ namespace MarbleSorterGame
     public class BucketConfig
     {
         public int Capacity { get; set; }
-        public Enums.Color? Color { get; set; }
+        public Color? Color { get; set; }
         public Weight? Weight { get; set; }
         
         public override string ToString() => $"BucketConfig: Capacity = {Capacity}, Color = {Color}, Weight = {Weight}";
@@ -82,7 +79,7 @@ namespace MarbleSorterGame
     /// </summary>
     public class MarbleGameConfiguration
     {
-        public List<MarbleGamePreset> Presets { get; set; }
+        public MarbleGamePreset Preset { get; set; }
         
         public uint ScreenWidth { get; set; }
         public uint ScreenHeight { get; set; }
@@ -110,10 +107,29 @@ namespace MarbleSorterGame
             $"TrapDoorPeriod: {TrapDoorPeriod}",
             $"Driver: {Driver}",
             $"DriverOptions: {DriverOptions}",
-            $"Presets:",
-            string.Join("\n",Presets.Select((p,i) => $"#{i}:\n{p}"))
+            $"Preset: {Preset}"
         });
 
+        // Throw MarbleGameConfigException if anything looks off
+        private void ValidateProperty(bool failCondition, string prop, string message)
+        {
+            if (failCondition)
+                throw new MarbleGameConfigException($"Invalid or missing property '{prop}': {message}");
+        }
+
+        public void Validate()
+        {
+            ValidateProperty(ScreenHeight < 600, "ScreenHeight", "Must be >= 600");
+            ValidateProperty(ScreenWidth < 800, "ScreenWidth", "Must be >= 800");
+            ValidateProperty(MarblePeriod <= 0, "MarblePeriod", "Must be > 0");
+            ValidateProperty(GatePeriod <= 0, "GatePeriod", "Must be > 0");
+            ValidateProperty(TrapDoorPeriod <= 0, "TrapDoorPeriod", "Must be > 0");
+            if (Driver == DriverType.Simulation)
+            {
+                ValidateProperty(DriverOptions == null, "DriverOptions.SimulationName", "Cannot be null when driver is 'Simulation'");
+                ValidateProperty(DriverOptions?.SimulationName == null, "DriverOptions.SimulationName", "Cannot be null");
+            }
+        }
     }
 
     /// <summary>
@@ -135,27 +151,17 @@ namespace MarbleSorterGame
         });
     }
     
-    /// <summary>
-    /// Loads json config file containing game info
-    /// </summary>
     public class ConfigurationLoader
     {
-        /// <summary>
-        /// Converts json strings into their appropriate option
-        /// </summary>
         private static JsonSerializerOptions _options = new JsonSerializerOptions
-        {
-            Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) } 
-        };
+         {
+             // Convert json string "Red" to Color.Red, etc...
+            Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
+         };
 
-        /// <summary>
-        /// Loads in the json config file
-        /// </summary>
-        /// <param name="filePath"></param>
-        /// <returns></returns>
-        public static MarbleGameConfiguration Load(string filePath)
-        {
+         public static MarbleGameConfiguration Load(string filePath)
+         {
             return JsonSerializer.Deserialize<MarbleGameConfiguration>(File.ReadAllText(filePath), _options);
-        }
+         }
     }
 }
