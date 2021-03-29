@@ -4,6 +4,7 @@ using System.IO;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using MarbleSorterGame.Enums;
+using Siemens.Simatic.Simulation.Runtime;
 
 /* Example Configuration JSON:
 {
@@ -70,8 +71,33 @@ namespace MarbleSorterGame
     
     public class MarbleGameConfigException: System.Exception
     {
-       public MarbleGameConfigException() { }
-       public MarbleGameConfigException(string message): base(message) { }
+        public static Weight ToGameWeight(this ConfigWeight self)
+        {
+            return self switch
+            {
+                ConfigWeight.Large => Weight.Large,
+                ConfigWeight.Medium => Weight.Medium,
+                ConfigWeight.Small => Weight.Small,
+                ConfigWeight.Random => new[] {Weight.Large, Weight.Medium, Weight.Small}[new Random().Next(0, 3)],
+            };
+        }
+        
+        public static Color ToGameColor(this ConfigColor self)
+        {
+            return self switch
+            {
+                ConfigColor.Red => Color.Red,
+                ConfigColor.Green => Color.Green,
+                ConfigColor.Blue => Color.Blue,
+                ConfigColor.Random => new[] {Color.Red, Color.Green, Color.Blue}[new Random().Next(0, 3)],
+            };
+        }
+    }
+    
+    public class ConfigValidationException: System.Exception
+    {
+       public ConfigValidationException() { }
+       public ConfigValidationException(string message): base(message) { }
     }
     
     
@@ -81,9 +107,7 @@ namespace MarbleSorterGame
         public override string ToString() => $"SimulationDriverOptions: SimulationName = {SimulationName}";
     }
     
-    /// <summary>
     /// Stores marble types from config file
-    /// </summary>
     public class MarbleConfig
     {
         public ConfigColor Color { get; set; }
@@ -92,9 +116,7 @@ namespace MarbleSorterGame
         public override string ToString() => $"MarbleConfig: Color = {Color}, Weight = {Weight}";
     }
 
-    /// <summary>
     /// Stores bucket requirements from config file
-    /// </summary>
     public class BucketConfig
     {
         public int Capacity { get; set; }
@@ -104,9 +126,7 @@ namespace MarbleSorterGame
         public override string ToString() => $"BucketConfig: Capacity = {Capacity}, Color = {Color}, Weight = {Weight}";
     }
 
-    /// <summary>
     /// Stores values from config file
-    /// </summary>
     public class MarbleGameConfiguration
     {
         public MarbleGamePreset Preset { get; set; }
@@ -144,7 +164,7 @@ namespace MarbleSorterGame
         private void ValidateProperty(bool failCondition, string prop, string message)
         {
             if (failCondition)
-                throw new MarbleGameConfigException($"Invalid or missing property '{prop}': {message}");
+                throw new ConfigValidationException($"Invalid or missing property '{prop}': {message}");
         }
 
         public void Validate()
@@ -161,19 +181,28 @@ namespace MarbleSorterGame
             }
         }
     }
+    
+    public enum SimulationMemoryArea { Q, I }
 
-    /// <summary>
-    /// Stores different "level" presets (combinations of marbles/bucket requirements)
-    /// </summary>
+    // single item read from array of JSON objects in iomap.json
+    public class IoMapConfiguration
+    {
+        public string EntityName { get; set; }
+        public SimulationMemoryArea MemoryArea { get; set; }
+        public uint Byte { get; set; }
+        public byte Bit { get; set; }
+        public string Type { get; set; }
+        public byte BitSize { get; set; }
+        public string Description { get; set; }
+    }
+
+    // Represent a marble/bucket game configuration
     public class MarbleGamePreset
     {
         public List<MarbleConfig> Marbles { get; set; }
         public List<BucketConfig> Buckets { get; set; }
         
-        /// <summary>
-        /// Shows marble/bucket info
-        /// </summary>
-        /// <returns></returns>
+        // shows marble/bucket info
         public override string ToString() => string.Join("\n", new[] 
         {
             "Marbles:", string.Join("\n\t", Marbles), 
@@ -189,9 +218,14 @@ namespace MarbleSorterGame
             Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
          };
 
-         public static MarbleGameConfiguration Load(string filePath)
+         public static MarbleGameConfiguration LoadGameConfiguration(string filePath)
          {
             return JsonSerializer.Deserialize<MarbleGameConfiguration>(File.ReadAllText(filePath), _options);
+         }
+         
+         public static List<IoMapConfiguration> LoadIoMapConfiguration(string filePath)
+         {
+            return JsonSerializer.Deserialize<List<IoMapConfiguration>>(File.ReadAllText(filePath), _options);
          }
     }
 }

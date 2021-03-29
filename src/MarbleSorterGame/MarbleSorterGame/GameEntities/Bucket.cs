@@ -28,14 +28,6 @@ namespace MarbleSorterGame.GameEntities
         public int Capacity;
 
 
-        /// <summary>
-        /// Constructor for bucket
-        /// </summary>
-        /// <param name="position">Global vector position</param>
-        /// <param name="size">Global vector size</param>
-        /// <param name="requiredColor">Marble color that is accepted as requirement</param>
-        /// <param name="requiredWeight">Marble weight that is accepted as requirement</param>
-        /// <param name="capacity">Any marbles dropped over capacity is counted as incorrectly dropped</param>
         public Bucket(Vector2f position, Vector2f size, Color? requiredColor, Weight? requiredWeight, int capacity) :  base (position, size)
         {
             _requiredColor = requiredColor;
