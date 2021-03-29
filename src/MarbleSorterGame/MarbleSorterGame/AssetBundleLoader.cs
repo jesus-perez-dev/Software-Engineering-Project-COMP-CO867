@@ -25,7 +25,7 @@ namespace MarbleSorterGame
         public Texture MarbleGreenTexture { get; set; }
         public Texture SensorTexture { get; set; }
         public MarbleGameConfiguration GameConfiguration { get; set; }
-
+        public List<IoMapConfiguration> IoMapConfiguration { get; set; }
         public Font Font { get; set; }
 
         public string Error { get;  }
@@ -33,11 +33,17 @@ namespace MarbleSorterGame
         public AssetBundleLoader(String assetDirectoryPath)
         {
             _assetDirectoryPath = Path.Join(Directory.GetCurrentDirectory(), assetDirectoryPath);
+            string configFile = "";
             try
             {
-                // Load + Validate Configuration
-                GameConfiguration = ConfigurationLoader.Load(Path.Join(_assetDirectoryPath + "Config", "game.json"));
+                // Load + Validate Game Configuration
+                // TODO: Validate IOMap configuration
+                string GetConfig(string file) => Path.Join(_assetDirectoryPath, "Config", file);
+                configFile = "game.json";
+                GameConfiguration = ConfigurationLoader.LoadGameConfiguration(GetConfig(configFile));
                 GameConfiguration.Validate(); // May throw MarbleGameConfigException
+                configFile = "iomap.json";
+                IoMapConfiguration = ConfigurationLoader.LoadIoMapConfiguration(GetConfig(configFile)); 
 
                 // Load Fonts
                 Font = new Font(Path.Join(_assetDirectoryPath, "Fonts", "DejaVuSansMono.ttf"));
@@ -71,16 +77,17 @@ namespace MarbleSorterGame
                 lines["Exception"] = e.GetType().FullName;
                 lines["LineNumber"] = e.LineNumber.ToString();
                 lines["Message"] = e.Message;
-                lines["Asset Path"] = _assetDirectoryPath;
-                Error = FormatErrorString("Failed to load 'game.json' configuration file", lines);
+                lines["File"] = Path.Join(_assetDirectoryPath, configFile);
+                Error = FormatErrorString($"Error loading '{configFile}'", lines);
             }
-            catch (MarbleGameConfigException e)
+            catch (ConfigValidationException e)
             {
                 Console.WriteLine(e);
                 var lines = new Dictionary<string, string>();
                 lines["Exception"] = e.GetType().FullName;
                 lines["Message"] = e.Message;
-                Error = FormatErrorString("Error found in 'game.json' configuration file", lines);
+                lines["File"] = Path.Join(_assetDirectoryPath, configFile);
+                Error = FormatErrorString($"Validation error found in '{configFile}'", lines);
             }
         }
     
