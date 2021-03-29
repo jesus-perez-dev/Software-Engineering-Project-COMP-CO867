@@ -1,5 +1,6 @@
 ﻿using System;
 using MarbleSorterGame.Enums;
+using MarbleSorterGame.Utilities;
 using SFML.Audio;
 using SFML.Graphics;
 using SFML.System;
@@ -42,7 +43,7 @@ namespace MarbleSorterGame.GameEntities
             {
                 FillColor = requiredColor?.ToSfmlColor() ?? SFML.Graphics.Color.White,
                 OutlineColor = SFML.Graphics.Color.Black,
-                OutlineThickness = (requiredColor == null) ? 0 : 3,
+                OutlineThickness = (requiredColor == null) ? 0 : 2,
                 Position = new Vector2f(Position.X + Size.X / 2, Position.Y - Size.Y / 2),
                 Radius = Size.X / 8
             };
@@ -69,11 +70,7 @@ namespace MarbleSorterGame.GameEntities
             }
         }
 
-        /// <summary>
         /// Insert marble into the bucket, return true/false depening on whether marble meets its requirements
-        /// </summary>
-        /// <param name="m">Marble to be inserted into</param>
-        /// <returns>Whether marble that was inserted was correctly dropped</returns>
         public bool InsertMarble(Marble m)
         {
             bool marbleOk = ValidateMarble(m);
@@ -93,11 +90,7 @@ namespace MarbleSorterGame.GameEntities
             return marbleOk;
         }
 
-        /// <summary>
         /// Checks if marble that was dropped met the requirements
-        /// </summary>
-        /// <param name="m">Marble to be validated</param>
-        /// <returns>If marble was valid</returns>
         public bool ValidateMarble(Marble m)
         {
             return (_requiredColor == null || m.Color == _requiredColor)  &&
@@ -105,10 +98,7 @@ namespace MarbleSorterGame.GameEntities
                     TotalMarbles < Capacity;
         }
 
-        /// <summary>
         /// Draws the bucket onto render target RenderWindow
-        /// </summary>
-        /// <param name="window">Current window to draw</param>
         public override void Render(RenderWindow window)
         {
            // base.Render(window);
@@ -121,20 +111,21 @@ namespace MarbleSorterGame.GameEntities
             window.Draw(_capacityLabel);
         }
         
-        /// <summary>
         /// Extracts bucket assets, such as texture and sound, from bundle
-        /// </summary>
-        /// <param name="bundle">reference to bundle object containing asset references</param>
         public override void Load(IAssetBundle bundle)
         {
             _capacityLabel = new Text($"0/{Capacity}", bundle.Font);
-            // TODO: Find a better place for this
-            _capacityLabel.Position = Position + new Vector2f(-1 * _capacityLabel.GetGlobalBounds().Width, (Size.Y/3f));
+            _capacityLabel.Scale -= new Vector2f(0.1f, 0.1f);
             _capacityLabel.FillColor = SFML.Graphics.Color.Black;
+            _capacityLabel.Position = Box.PositionRelative(Joint.Start, Joint.Start)
+                .ShiftX(-_capacityLabel.GetGlobalBounds().Width - 10);
             
             _requiredSizeLabel = new Text(_requiredWeight?.ToGameLabel() ?? "", bundle.Font);
-            _requiredSizeLabel.Position = Position + new Vector2f((-1) *_capacityLabel.GetGlobalBounds().Width, (Size.Y/3f) + _capacityLabel.GetGlobalBounds().Height + 5);
+            _requiredSizeLabel.Scale -= new Vector2f(0.4f, 0.4f);
             _requiredSizeLabel.FillColor = SFML.Graphics.Color.Black;
+            _requiredSizeLabel.Position = Box.PositionRelative(Joint.Start, Joint.End)
+                .ShiftX(-_requiredSizeLabel.GetGlobalBounds().Width - 10)
+                .ShiftY(-_requiredSizeLabel.GetGlobalBounds().Height - 10);
             
             // _dropSound = bundle.BucketDrop;
             _successSound = bundle.BucketDropSuccess;
