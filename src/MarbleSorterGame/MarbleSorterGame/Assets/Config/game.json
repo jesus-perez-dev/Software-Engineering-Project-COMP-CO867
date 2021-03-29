@@ -6,18 +6,23 @@
   "TrapDoorPeriod": 0.5,
   "Driver": "Keyboard",
   "DriverOptions": { "SimulationName":  "test" },
-  "Presets": [
-    {
-      "Marbles": [
-        { "Color": "Red", "Weight": "Small" },
-        { "Color": "Green", "Weight": "Large" },
-        { "Color": "Blue", "Weight": "Medium" }
-      ],
-      "Buckets": [
-        { "Capacity": 1, "Weight": null,     "Color": "blue" },
-        { "Capacity": 1, "Weight": "Medium", "Color": null },
-        { "Capacity": 1, "Weight": null,     "Color": "Green" }
-      ]
-    }
-  ]
+  "Preset": {
+    "Marbles": [
+      { "Color": "Random", "Weight": "Random" },
+      { "Color": "Random", "Weight": "Random" },
+      { "Color": "Random", "Weight": "Random" },
+      { "Color": "Random", "Weight": "Random" },
+      { "Color": "Random", "Weight": "Random" },
+      { "Color": "Random", "Weight": "Random" },
+      { "Color": "Random", "Weight": "Random" },
+      { "Color": "Random", "Weight": "Random" },
+      { "Color": "Random", "Weight": "Random" },
+      { "Color": "Random", "Weight": "Random" }
+    ],
+    "Buckets": [
+      { "Capacity": 1, "Weight": "Random", "Color": "Random" },
+      { "Capacity": 1, "Weight": "Random", "Color": "Random" },
+      { "Capacity": 1, "Weight": "Random", "Color": "Random" }
+    ]
+  }
 }

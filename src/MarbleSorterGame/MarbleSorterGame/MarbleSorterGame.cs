@@ -16,7 +16,6 @@ namespace MarbleSorterGame
         private static string WINDOW_TITLE = "PLC Training Simulator - Marble Sorter Game";
         private static Screen _activeScreen;
         private static IAssetBundle _bundle;
-        private static IIODriver _driver;
 
         public static Menu ActiveMenu
         {
@@ -24,23 +23,16 @@ namespace MarbleSorterGame
             {
                 _activeScreen = value switch
                 {
-                    Menu.Game => new GameScreen(WINDOW, _bundle, _driver, 0),
+                    Menu.Game => new GameScreen(WINDOW, _bundle),
                     Menu.Main => new MainScreen(WINDOW, _bundle),
                     Menu.Settings => new SettingsScreen(WINDOW, _bundle) 
                 };
             }
         }
         
-        public MarbleSorterGame(IAssetBundle bundle) : base(bundle.GameConfiguration.ScreenWidth, bundle.GameConfiguration.ScreenHeight, WINDOW_TITLE, SFML.Graphics.Color.White)
+        public MarbleSorterGame(IAssetBundle bundle) : base(bundle, WINDOW_TITLE, SFML.Graphics.Color.White)
         {
             _bundle = bundle;
-            _driver = bundle.GameConfiguration.Driver switch
-            {
-                DriverType.Keyboard => new KeyboardIODriver(),
-                DriverType.Simulation => new S7IODriver(bundle.GameConfiguration.DriverOptions),
-                _ => throw new ArgumentException($"Unknown IO driver: {bundle.GameConfiguration.Driver}")
-            };
-
             ActiveMenu = Menu.Main;
         }
 
