@@ -39,7 +39,7 @@ namespace MarbleSorterGame.Screens
             var buttonSize = screen.Percent(20, 8);
             var buttonPosition = screen.PositionRelative(Joint.End, Joint.Start).ShiftX(-buttonSize.X).ShiftY(buttonSize.Y);
             
-            _returnButton = new Button("Return to Menu", 0.7f, bundle.Font, buttonPosition, buttonSize);
+            _returnButton = new Button("Return to Menu", 0.5f, bundle.Font, buttonPosition, buttonSize);
             _returnButton.ClickEvent += ReturnButtonClickHandler;
             _buttons = new[] { _returnButton } ;
 
@@ -47,8 +47,8 @@ namespace MarbleSorterGame.Screens
             string gamePath = Path.Join(dirPath, "game.json");
             var editNotePosition = screen
                 .PositionRelative(Joint.Middle, Joint.Start)
-                .ShiftY(_returnButton.Box.Position.Y + 30 + buttonSize.Y);
-            _editNote = new Label($"Edit the following file to change game settings:\n\n{gamePath.ColumnWrap(80).Replace("\t", "")}", editNotePosition, 24, Color.Red, bundle.Font);
+                .ShiftY(_returnButton.Box.Position.Y + 60 + buttonSize.Y);
+            _editNote = new Label($"Edit the following file to change game settings:\n\n{gamePath.ColumnWrap(60).Replace("\t", "")}", editNotePosition, 16, Color.Red, bundle.Font);
             
             var conf = bundle.GameConfiguration;
             string settingsText = string.Join("\n", new[]
@@ -66,7 +66,7 @@ namespace MarbleSorterGame.Screens
             
             var settingsPosition = screen.PositionRelative(Joint.Middle, Joint.Middle);
             settingsPosition.Y = _editNote.LabelText.Position.Y + _editNote.LabelText.GetGlobalBounds().Height + 30;
-            _settings = new Label(settingsText, settingsPosition, 32, Color.Black, bundle.Font);
+            _settings = new Label(settingsText, settingsPosition, 26, Color.Black, bundle.Font);
             _settings.LabelText.Position += new Vector2f(0, _settings.LabelText.GetGlobalBounds().Height / 2);
         }
 
