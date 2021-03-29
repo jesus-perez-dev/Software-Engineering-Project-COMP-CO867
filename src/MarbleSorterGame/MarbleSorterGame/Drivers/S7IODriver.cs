@@ -145,10 +145,15 @@ namespace MarbleSorterGame
             set => _colorSensor.UInt8 = value;
         }
 
+        private ulong _updateCount;
+        private readonly uint _updateInterval;
+
         // Defines the addresses for the S7IO PLC Driver
         public S7IODriver(SimulationDriverOptions options, IList<IoMapConfiguration> iomaps)
         {
             _client = new SimulationClient(options.SimulationName);
+            _updateCount = 0;
+            _updateInterval = Math.Max(1, options.UpdateInterval);
 
             foreach (var map in iomaps)
             {
@@ -173,23 +178,27 @@ namespace MarbleSorterGame
         // Updates driver values by writing/reading from the game state
         public void Update()
         {
-            // Write simulation outputs
-            _client.IAddress[IKeys.TrapDoor1Open].Write(_trapDoor1Open);
-            _client.IAddress[IKeys.TrapDoor2Open].Write(_trapDoor2);
-            _client.IAddress[IKeys.TrapDoor3Open].Write(_trapDoor3);
-            _client.IAddress[IKeys.BucketMotionSensor].Write(_bucketMotionSensor);
-            _client.IAddress[IKeys.GateOpen].Write(_gateOpen);
-            _client.IAddress[IKeys.GateClosed].Write(_gateClosed);
-            _client.IAddress[IKeys.ConveyorMotionSensor].Write(_conveyorMotionSensor);
-            _client.IAddress[IKeys.WeightSensor].Write(_weightSensor);
-            _client.IAddress[IKeys.ColorSensor].Write(_colorSensor);
+            if (_updateCount % _updateInterval == 0)
+            {
+                // Write simulation outputs
+                _client.IAddress[IKeys.TrapDoor1Open].Write(_trapDoor1Open);
+                _client.IAddress[IKeys.TrapDoor2Open].Write(_trapDoor2);
+                _client.IAddress[IKeys.TrapDoor3Open].Write(_trapDoor3);
+                _client.IAddress[IKeys.BucketMotionSensor].Write(_bucketMotionSensor);
+                _client.IAddress[IKeys.GateOpen].Write(_gateOpen);
+                _client.IAddress[IKeys.GateClosed].Write(_gateClosed);
+                _client.IAddress[IKeys.ConveyorMotionSensor].Write(_conveyorMotionSensor);
+                _client.IAddress[IKeys.WeightSensor].Write(_weightSensor);
+                _client.IAddress[IKeys.ColorSensor].Write(_colorSensor);
 
-            // Read simulation inputs
-            _trapDoor1 = _client.QAddress[QKeys.TrapDoor1].Read();
-            _trapDoor2 = _client.QAddress[QKeys.TrapDoor2].Read();
-            _trapDoor3 = _client.QAddress[QKeys.TrapDoor3].Read();
-            _gate = _client.QAddress[QKeys.Gate].Read();
-            _conveyor = _client.QAddress[QKeys.Conveyor].Read();
+                // Read simulation inputs
+                _trapDoor1 = _client.QAddress[QKeys.TrapDoor1].Read();
+                _trapDoor2 = _client.QAddress[QKeys.TrapDoor2].Read();
+                _trapDoor3 = _client.QAddress[QKeys.TrapDoor3].Read();
+                _gate = _client.QAddress[QKeys.Gate].Read();
+                _conveyor = _client.QAddress[QKeys.Conveyor].Read();
+            }
+            _updateCount++;
         }
     }
 }
