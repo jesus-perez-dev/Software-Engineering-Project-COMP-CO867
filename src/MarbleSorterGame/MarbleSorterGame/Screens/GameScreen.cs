@@ -181,7 +181,7 @@ namespace MarbleSorterGame.Screens
             _conveyor = new Conveyor(screen.Percent(0, 60), screen.Percent(100, 1), new Vector2f(1, 0));
 
             _marbles = preset.Marbles
-                .Select(mc => new Marble(screen, new Vector2f(40, _conveyor.Position.Y), mc.Color, mc.Weight))
+                .Select(mc => new Marble(screen, new Vector2f(40, _conveyor.Position.Y), mc.Color.ToGameColor(), mc.Weight.ToGameWeight()))
                 .Reverse()
                 .ToArray();
 
@@ -203,8 +203,8 @@ namespace MarbleSorterGame.Screens
                 .Select((bc, i) => new Bucket(
                     screen.Percent(bucketHorizontalSpaceIncrement * (i + 1), 100),
                     screen.Percent(10, 20),
-                    bc.Color,
-                    bc.Weight,
+                    bc.Color?.ToGameColor(),
+                    bc.Weight?.ToGameWeight(),
                     bc.Capacity
                 ))
                 .ToArray();

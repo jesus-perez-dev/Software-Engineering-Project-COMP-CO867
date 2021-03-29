@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
@@ -38,6 +39,35 @@ namespace MarbleSorterGame
         Simulation
     }
     
+    // Mirror 'Color' and 'Weight' enum except it also allows random
+    public enum ConfigColor { Red, Green, Blue, Random }
+    public enum ConfigWeight { Small, Medium, Large, Random }
+
+    public static class ConfigExtensions
+    {
+        public static Weight ToGameWeight(this ConfigWeight self)
+        {
+            return self switch
+            {
+                ConfigWeight.Large => Weight.Large,
+                ConfigWeight.Medium => Weight.Medium,
+                ConfigWeight.Small => Weight.Small,
+                ConfigWeight.Random => new[] {Weight.Large, Weight.Medium, Weight.Small}[new Random().Next(0, 3)],
+            };
+        }
+        
+        public static Color ToGameColor(this ConfigColor self)
+        {
+            return self switch
+            {
+                ConfigColor.Red => Color.Red,
+                ConfigColor.Green => Color.Green,
+                ConfigColor.Blue => Color.Blue,
+                ConfigColor.Random => new[] {Color.Red, Color.Green, Color.Blue}[new Random().Next(0, 3)],
+            };
+        }
+    }
+    
     public class MarbleGameConfigException: System.Exception
     {
        public MarbleGameConfigException() { }
@@ -56,8 +86,8 @@ namespace MarbleSorterGame
     /// </summary>
     public class MarbleConfig
     {
-        public Color Color { get; set; }
-        public Weight Weight { get; set; }
+        public ConfigColor Color { get; set; }
+        public ConfigWeight Weight { get; set; }
         
         public override string ToString() => $"MarbleConfig: Color = {Color}, Weight = {Weight}";
     }
@@ -68,8 +98,8 @@ namespace MarbleSorterGame
     public class BucketConfig
     {
         public int Capacity { get; set; }
-        public Color? Color { get; set; }
-        public Weight? Weight { get; set; }
+        public ConfigColor? Color { get; set; }
+        public ConfigWeight? Weight { get; set; }
         
         public override string ToString() => $"BucketConfig: Capacity = {Capacity}, Color = {Color}, Weight = {Weight}";
     }
