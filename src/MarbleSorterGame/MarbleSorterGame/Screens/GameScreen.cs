@@ -70,16 +70,14 @@ namespace MarbleSorterGame.Screens
             _driver = bundle.GameConfiguration.Driver switch
             {
                 DriverType.Keyboard => new KeyboardIODriver(),
-                DriverType.Simulation => new S7IODriver(bundle.GameConfiguration.DriverOptions),
+                DriverType.Simulation => new S7IODriver(bundle.GameConfiguration.DriverOptions, bundle.IoMapConfiguration),
                 _ => throw new ArgumentException($"Unknown IO driver: {bundle.GameConfiguration.Driver}")
             };
             
             Reset();
         }
 
-        /// <summary>
         // Initialize all game entity objects and reset values to default states
-        /// </summary>
         private void Reset()
         {
             // Used for positioning by percentage relative to screen

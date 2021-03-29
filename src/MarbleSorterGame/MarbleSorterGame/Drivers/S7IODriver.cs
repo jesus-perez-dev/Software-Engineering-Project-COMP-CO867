@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using S7PLCSIM_Library;
 using Siemens.Simatic.Simulation.Runtime;
 
@@ -5,9 +7,7 @@ namespace MarbleSorterGame
 {
     public class S7IODriver : IIODriver
     {
-        /// <summary>
-        /// Defines output keys of game entities
-        /// </summary>
+        // Defines output keys of game entities
         static class QKeys
         {
             public const string TrapDoor1 = "TrapDoor1";
@@ -17,9 +17,7 @@ namespace MarbleSorterGame
             public const string Conveyor = "Conveyor";
         }
 
-        /// <summary>
-        /// Defines input keys of game entities
-        /// </summary>
+        // Defines input keys of game entities
         static class IKeys
         {
             public const string TrapDoor1Open = "TrapDoor1Open";
@@ -147,39 +145,23 @@ namespace MarbleSorterGame
             set => _colorSensor.UInt8 = value;
         }
 
-        /// <summary>
-        /// Defines the addresses for the S7IO PLC Driver
-        /// </summary>
-        /// <param name="options"></param>
-        public S7IODriver(SimulationDriverOptions options)
+        // Defines the addresses for the S7IO PLC Driver
+        public S7IODriver(SimulationDriverOptions options, IList<IoMapConfiguration> iomaps)
         {
             _client = new SimulationClient(options.SimulationName);
 
-            // Inputs to the simulation (game *Writes* these values)
-            _client.IAddress.Add(IKeys.TrapDoor1Open, 0, 0, EPrimitiveDataType.Bool);
-            _client.IAddress.Add(IKeys.TrapDoor2Open, 0, 1, EPrimitiveDataType.Bool);
-            _client.IAddress.Add(IKeys.TrapDoor3Open, 0, 2, EPrimitiveDataType.Bool);
-            _client.IAddress.Add(IKeys.BucketMotionSensor, 1, 0, EPrimitiveDataType.Bool);
-            _client.IAddress.Add(IKeys.GateOpen, 2, 0, EPrimitiveDataType.Bool);
-            _client.IAddress.Add(IKeys.GateClosed, 2, 1, EPrimitiveDataType.Bool);
-            _client.IAddress.Add(IKeys.ConveyorMotionSensor, 3, 0, EPrimitiveDataType.Bool);
-            _client.IAddress.Add(IKeys.WeightSensor, 3, 1, EPrimitiveDataType.UInt8, 2);
-            _client.IAddress.Add(IKeys.ColorSensor, 3, 3, EPrimitiveDataType.UInt8, 2);
-
-            // Outputs from the simulation (game *Reads* these values)
-            _client.QAddress.Add(QKeys.TrapDoor1, 0, 0, EPrimitiveDataType.Bool);
-            _client.QAddress.Add(QKeys.TrapDoor2, 0, 1, EPrimitiveDataType.Bool);
-            _client.QAddress.Add(QKeys.TrapDoor3, 0, 2, EPrimitiveDataType.Bool);
-            _client.QAddress.Add(QKeys.Gate, 0, 3, EPrimitiveDataType.Bool);
-            _client.QAddress.Add(QKeys.Conveyor, 0, 4, EPrimitiveDataType.Bool);
-
+            foreach (var map in iomaps)
+            {
+                if (map.MemoryArea == SimulationMemoryArea.I)
+                    _client.IAddress.Add(map.EntityName, map.Byte, map.Bit, Enum.Parse<EPrimitiveDataType>(map.Type), map.BitSize);
+                else if (map.MemoryArea == SimulationMemoryArea.Q)
+                    _client.QAddress.Add(map.EntityName, map.Byte, map.Bit, Enum.Parse<EPrimitiveDataType>(map.Type), map.BitSize);
+            }
+            
             //_client.PowerOn();
         }
         
-        /// <summary>
-        /// Sets run state of the client
-        /// </summary>
-        /// <param name="run"></param>
+        // Sets run state of the client
         public void SetRunState(bool run)
         {
             if (run)
@@ -188,9 +170,7 @@ namespace MarbleSorterGame
                 _client.Stop();
         }
         
-        /// <summary>
-        /// Updates driver values by writing/reading from the game state
-        /// </summary>
+        // Updates driver values by writing/reading from the game state
         public void Update()
         {
             // Write simulation outputs
