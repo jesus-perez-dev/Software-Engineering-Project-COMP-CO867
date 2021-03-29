@@ -2,6 +2,10 @@ using SFML.Window;
 
 namespace MarbleSorterGame
 {
+    /// <summary>
+    /// Driver for communicating with the game through a keyboard.
+    /// Full game will use the S7IO Driver class, this driver is for early debug purposes.
+    /// </summary>
     public class KeyboardIODriver : IIODriver
     {
         public bool TrapDoor1 { get; set;  }
@@ -19,11 +23,17 @@ namespace MarbleSorterGame
         public byte PressureSensor { get; set; }
         public byte ColorSensor { get; set; }
 
+        /// <summary>
+        /// This implementation does not update programatically, it uses keyboard input. See: UpdateByKey()
+        /// </summary>
         public void Update()
         {
-            // This implementation does not update programatically, it uses keyboard input. See: UpdateByKey()
         }
 
+        /// <summary>
+        /// Associates and Updates keyboard inputs to game inputs
+        /// </summary>
+        /// <param name="key"></param>
         public void UpdateByKey(KeyEventArgs key)
         {
             // Outputs: TrapDoor1, TrapDoor2, TrapDoor3, Gate, Conveyer
@@ -43,6 +53,10 @@ namespace MarbleSorterGame
                 TrapDoor3 = !TrapDoor3;
         }
         
+        /// <summary>
+        /// Shows overall game state
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             return string.Join("\n", new string[]

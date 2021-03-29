@@ -5,6 +5,9 @@ namespace MarbleSorterGame
 {
     public class S7IODriver : IIODriver
     {
+        /// <summary>
+        /// Defines output keys of game entities
+        /// </summary>
         static class QKeys
         {
             public const string TrapDoor1 = "TrapDoor1";
@@ -14,6 +17,9 @@ namespace MarbleSorterGame
             public const string Conveyor = "Conveyor";
         }
 
+        /// <summary>
+        /// Defines input keys of game entities
+        /// </summary>
         static class IKeys
         {
             public const string TrapDoor1Open = "TrapDoor1Open";
@@ -141,6 +147,10 @@ namespace MarbleSorterGame
             set => _colorSensor.UInt8 = value;
         }
 
+        /// <summary>
+        /// Defines the addresses for the S7IO PLC Driver
+        /// </summary>
+        /// <param name="options"></param>
         public S7IODriver(SimulationDriverOptions options)
         {
             _client = new SimulationClient(options.SimulationName);
@@ -166,6 +176,10 @@ namespace MarbleSorterGame
             //_client.PowerOn();
         }
         
+        /// <summary>
+        /// Sets run state of the client
+        /// </summary>
+        /// <param name="run"></param>
         public void SetRunState(bool run)
         {
             if (run)
@@ -174,6 +188,9 @@ namespace MarbleSorterGame
                 _client.Stop();
         }
         
+        /// <summary>
+        /// Updates driver values by writing/reading from the game state
+        /// </summary>
         public void Update()
         {
             // Write simulation outputs
