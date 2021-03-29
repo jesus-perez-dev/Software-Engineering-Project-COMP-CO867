@@ -1,0 +1,17 @@
+[
+  { "EntityName": "TrapDoor1Open",        "MemoryArea": "I", "Byte": 0, "Bit": 0, "Type": "Bool", "BitSize": 1, "Description": "" },
+  { "EntityName": "TrapDoor2Open",        "MemoryArea": "I", "Byte": 0, "Bit": 1, "Type": "Bool", "BitSize": 1, "Description": "" },
+  { "EntityName": "TrapDoor3Open",        "MemoryArea": "I", "Byte": 0, "Bit": 2, "Type": "Bool", "BitSize": 1, "Description": "" },
+  { "EntityName": "BucketMotionSensor",   "MemoryArea": "I", "Byte": 1, "Bit": 0, "Type": "Bool", "BitSize": 1, "Description": "" },
+  { "EntityName": "GateOpen",             "MemoryArea": "I", "Byte": 2, "Bit": 0, "Type": "Bool", "BitSize": 1, "Description": "" },
+  { "EntityName": "GateClosed",           "MemoryArea": "I", "Byte": 2, "Bit": 1, "Type": "Bool", "BitSize": 1, "Description": "" },
+  { "EntityName": "ConveyorMotionSensor", "MemoryArea": "I", "Byte": 3, "Bit": 0, "Type": "Bool", "BitSize": 1, "Description": "" },
+  { "EntityName": "WeightSensor",         "MemoryArea": "I", "Byte": 3, "Bit": 1, "Type": "UInt8", "BitSize": 2, "Description": "" },
+  { "EntityName": "ColorSensor",          "MemoryArea": "I", "Byte": 3, "Bit": 3, "Type": "UInt8", "BitSize": 2, "Description": "" },
+
+  { "EntityName": "TrapDoor1",            "MemoryArea": "Q", "Byte": 0, "Bit": 0, "Type": "Bool", "BitSize": 1, "Description": "" },
+  { "EntityName": "TrapDoor2",            "MemoryArea": "Q", "Byte": 0, "Bit": 1, "Type": "Bool", "BitSize": 1, "Description": "" },
+  { "EntityName": "TrapDoor3",            "MemoryArea": "Q", "Byte": 0, "Bit": 2, "Type": "Bool", "BitSize": 1, "Description": "" },
+  { "EntityName": "Gate",                 "MemoryArea": "Q", "Byte": 0, "Bit": 3, "Type": "Bool", "BitSize": 1, "Description": "" },
+  { "EntityName": "Conveyor",             "MemoryArea": "Q", "Byte": 0, "Bit": 4, "Type": "Bool", "BitSize": 1, "Description": "" }
+]
