@@ -2,6 +2,11 @@
 using SFML.Audio;
 using SFML.Graphics;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Cryptography;
+using System.Text.Json;
+using MarbleSorterGame.Utilities;
 
 namespace MarbleSorterGame
 {
@@ -26,32 +31,74 @@ namespace MarbleSorterGame
 
         public Font Font { get; set; }
 
+        public string Error { get;  }
+        
         public AssetBundleLoader(String assetDirectoryPath)
         {
-            _assetDirectoryPath = assetDirectoryPath;
-
+            _assetDirectoryPath = Path.Join(Directory.GetCurrentDirectory(), assetDirectoryPath);
             try
             {
-                GameConfiguration = ConfigurationLoader.Load(assetDirectoryPath + "Config/game.json");
-                Font = new Font(assetDirectoryPath + "Fonts/DejaVuSansMono.ttf");
-                BucketTexture = new Texture(assetDirectoryPath + "Images/bucket3.png");
-                BucketDropSuccess = new Sound(new SoundBuffer(assetDirectoryPath + "Sounds/bucketDropSuccess.ogg"));
-                BucketDropFail = new Sound(new SoundBuffer(assetDirectoryPath + "Sounds/bucketDropFail.ogg"));
+                // Load + Validate Configuration
+                GameConfiguration = ConfigurationLoader.Load(Path.Join(_assetDirectoryPath + "Config", "game.json"));
+                GameConfiguration.Validate(); // May throw MarbleGameConfigException
 
-                SensorTexture = new Texture(assetDirectoryPath + "Images/sensor.png");
-                SensorSignalOffTexture = new Texture(assetDirectoryPath + "Images/sensorSignalOff1.png");
-                SensorSignalOnTexture = new Texture(assetDirectoryPath + "Images/sensorSignalOn1.png");
-                SensorActivate = new Sound(new SoundBuffer(assetDirectoryPath + "Sounds/sensorActivate.ogg"));
+                // Load Fonts
+                Font = new Font(Path.Join(_assetDirectoryPath, "Fonts", "DejaVuSansMono.ttf"));
 
-                MarbleRedTexture = new Texture(assetDirectoryPath + "Images/marbleRed.png");
-                MarbleGreenTexture = new Texture(assetDirectoryPath + "Images/marbleGreen.png");
-                MarbleBlueTexture = new Texture(assetDirectoryPath + "Images/marbleBlue.png");
+                // Load Sounds
+                string GetSound(string file) => Path.Join(_assetDirectoryPath, "Sounds", file);
+                BucketDropSuccess = new Sound(new SoundBuffer(GetSound("bucketDropSuccess.ogg")));
+                BucketDropFail = new Sound(new SoundBuffer(GetSound("bucketDropFail.ogg")));
+                SensorActivate = new Sound(new SoundBuffer(GetSound("sensorActivate.ogg")));
 
+                // Load Images
+                string GetImage(string file) => Path.Join(_assetDirectoryPath, "Images", file);
+                BucketTexture = new Texture(GetImage("bucket3.png"));
+                SensorTexture = new Texture(GetImage("sensor.png"));
+                SensorSignalOffTexture = new Texture(GetImage("sensorSignalOff1.png"));
+                SensorSignalOnTexture = new Texture(GetImage("sensorSignalOn1.png"));
+                MarbleRedTexture = new Texture(GetImage("marbleRed.png"));
+                MarbleGreenTexture = new Texture(GetImage("marbleGreen.png"));
+                MarbleBlueTexture = new Texture(GetImage("marbleBlue.png"));
             }
-            catch (SFML.System.LoadingFailedException e)
+            catch (SFML.LoadingFailedException e)
             {
-                Console.Write(e.Message);
+                Console.WriteLine(e);
+                var lines = new Dictionary<string, string>();
+                lines["Exception"] = e.GetType().FullName;
+                lines["Message"] = e.Message;
+                lines["Asset Path"] = _assetDirectoryPath;
+                Error = FormatErrorString("Failed to load game resources", lines);
             }
+            catch (JsonException e)
+            {
+                Console.WriteLine(e);
+                var lines = new Dictionary<string, string>();
+                lines["Exception"] = e.GetType().FullName;
+                lines["LineNumber"] = e.LineNumber.ToString();
+                lines["Message"] = e.Message;
+                lines["Asset Path"] = _assetDirectoryPath;
+                Error = FormatErrorString("Failed to load 'game.json' configuration file", lines);
+            }
+            catch (MarbleGameConfigException e)
+            {
+                Console.WriteLine(e);
+                var lines = new Dictionary<string, string>();
+                lines["Exception"] = e.GetType().FullName;
+                lines["Message"] = e.Message;
+                Error = FormatErrorString("Error found in 'game.json' configuration file", lines);
+            }
+        }
+    
+        private static string FormatErrorString(string title, Dictionary<string, string> errorFields)
+        {
+            int columns = 120;
+            List<string> lines = new List<string>();
+            lines.Add(title);
+            lines.Add(new String('=', columns-1));
+            foreach (var (key, value) in errorFields)
+                lines.Add($"- {key}: {value}");
+            return string.Join("\n", lines).ColumnWrap(columns);
         }
     }
 }
