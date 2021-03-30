@@ -5,7 +5,10 @@
   "GatePeriod": 0.5,
   "TrapDoorPeriod": 0.5,
   "Driver": "Keyboard",
-  "DriverOptions": { "SimulationName":  "test" },
+  "DriverOptions": { 
+    "SimulationName":  "test",
+    "UpdateInterval": 5
+  },
   "Preset": {
     "Marbles": [
       { "Color": "Random", "Weight": "Random" },

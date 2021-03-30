@@ -58,6 +58,7 @@ namespace MarbleSorterGame.Screens
                 "",
                 $"Driver: {conf.Driver}",
                 $"Simulation Name: {conf.DriverOptions?.SimulationName}",
+                $"Update Interval: {conf.DriverOptions?.UpdateInterval}",
                 "",
                 $"Gate Period: {conf.GatePeriod}",
                 $"Marble Period: {conf.MarblePeriod}",
