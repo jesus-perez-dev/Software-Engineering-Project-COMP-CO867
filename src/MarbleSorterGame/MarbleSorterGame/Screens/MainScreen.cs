@@ -67,14 +67,14 @@ namespace MarbleSorterGame.Screens
                 Vector2f buttonSize = screen.Percent(15f, 10f); // new Vector2f(window.Size.X / 7, window.Size.Y / 11);
                 _buttonStart = new Button("Start", 0.7f, _font, screen.Percent(30f, 70f), buttonSize);
                 _buttonSettings = new Button("Settings",0.7f,  _font, screen.Percent(50f, 70f), buttonSize);
-                _buttonSettings.Disabled = true;
+                //_buttonSettings.Disabled = true;
                 _buttonExit = new Button("Exit", 0.7f, _font, screen.Percent(70f, 70f), buttonSize);
                 _buttons = new [] { _buttonStart, _buttonSettings, _buttonExit };
 
                 Enums.Color[] colors = {Enums.Color.Red, Enums.Color.Green, Enums.Color.Blue};
                 for (int i = 0; i < 3; i++)
                 {
-                    var marble = new Marble(screen, default, colors[i], Weight.Large);
+                    var marble = new Marble(screen, new Vector2f(-1000, -1000), colors[i], Weight.Large);
                     marble.SetState(MarbleState.Rolling);
                     marble.Load(bundle);
                     marble.Size = _marbleSize;
