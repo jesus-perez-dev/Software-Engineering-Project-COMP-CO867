@@ -8,6 +8,7 @@ using SFML.Graphics;
 using SFML.System;
 using SFML.Window;
 using Color = SFML.Graphics.Color;
+using MarbleSorterGame.Drivers;
 
 namespace MarbleSorterGame.Screens
 {
@@ -31,26 +32,42 @@ namespace MarbleSorterGame.Screens
         private SignalLight _gateOpen;
         private SignalLight _gateClosed;
         private Conveyor _conveyor;
-        private Label _legend;
         private Marble[] _marbles;
         private Trapdoor[] _trapDoors;
         private SignalLight[] _trapDoorsOpen;
         private SignalLight[] _trapDoorsClosed;
         private Bucket[] _buckets;
-        private GameEntities.Sensor[] _sensors;
+        private List<GameEntity> _sensors;
+        private List<GameEntity> _hoverable;
+        private List<GameEntity> _mappable;
+        private List<GameEntity> _signalLights;
 
         // UI Buttons
-        private Button _winPopup;
-        private Button _losePopup;
         private Button _buttonPause;
         private Button _buttonReset;
         private Button _buttonMainMenu;
         private Button[] _buttons;
-        private RectangleShape _legendBackground;
 
-        // Legend helper text
+        // Win/Lose boxes
+        private RectangleShape _winPopupBox;
+        private RectangleShape _losePopupBox;
+        private Label _winPopup;
+        private Label _losePopup;
+
+        // Infobox helper text
         private GameEntity _hoveredEntity;
-        private Dictionary<string, string> _legendData;
+        private RectangleShape _infoBoxBackground;
+        private Label _infoLabel;
+        private Dictionary<string, string> _infoData;
+
+        // Legend area
+        private Dictionary<string, string> _IOMapping;
+        private Label _legendGame;
+        private Label _legendMapping;
+        private RectangleShape _legendGameBackground;
+        private RectangleShape _legendMappingBackground;
+        private Dictionary<string, string> _legendGameData;
+        private Dictionary<string, string> _legendMappingData;
         private readonly float _legendPadding = 5;
         
         // Game screen state
@@ -83,20 +100,23 @@ namespace MarbleSorterGame.Screens
             var font = _bundle.Font;
             var preset = _bundle.GameConfiguration.Preset;
 
-            _legendData = new Dictionary<string, string>();
+            _IOMapping = new Dictionary<string, string>();
+            _legendGameData = new Dictionary<string, string>();
             _marblesTotal = preset.Marbles.Count;
             _marblesRemaining = _marblesTotal;
             _gameState = GameState.Progress;
+
+            _infoData = new Dictionary<string, string>();
 
             //================= Event Handlers ====================//
             _window.MouseButtonPressed += GameMouseClickEventHandler;
             _window.KeyPressed += GameKeyEventHandler;
             _window.MouseMoved += GameMouseMoveEventHandler;
-            
+
+            //================= Background widgets ====================//
             // Color of the menu and legend background
             var chromeColor = new SFML.Graphics.Color(218, 224, 226);
 
-            //================= Background widgets ====================//
             // Menu bar background (slight gray recantgle behind buttons)
             RectangleShape menuBarBackground = new RectangleShape
             {
@@ -107,22 +127,10 @@ namespace MarbleSorterGame.Screens
                 OutlineThickness = 2
             };
 
-            Vector2f popupSize = screen.Percent(15f, 10f);
-            Vector2f popupPosition = screen.Percent(15f, 10f);
-            
-            _winPopup = new Button("YOU WIN!", 20f, font, popupPosition, popupSize);
-            _winPopup.FillColor = new SFML.Graphics.Color(102, 255, 51); // green
-            
-            _losePopup = new Button ("YOU LOSE!", 20f, font, popupPosition, popupSize);
-            _losePopup.FillColor = new SFML.Graphics.Color(255, 80, 80); // red
-
             //================= Buttons ====================//
 
             Vector2f menuButtonSize = screen.Percent(8, 4);
             float menuButtonFontScale = 0.4f;
-            //_buttonPause = new Button("Pause", menuButtonFontScale, font, screen.Percent(60, 3), menuButtonSize);
-            //_buttonReset = new Button("Reset Game", menuButtonFontScale, font, screen.Percent(75, 3), menuButtonSize);
-            //_buttonMainMenu = new Button("Main Menu", menuButtonFontScale, font, screen.Percent(90, 3), menuButtonSize);
             
             _buttonPause = new Button("Pause", menuButtonFontScale, font, default, menuButtonSize);
             _buttonReset = new Button("Reset Game", menuButtonFontScale, font, default, menuButtonSize);
@@ -149,7 +157,7 @@ namespace MarbleSorterGame.Screens
             _buttonReset.ClickEvent += ResetButtonClickHandler;
             _buttonMainMenu.ClickEvent += MainMenuButtonClickHandler;
             
-            _buttons = new[] { _buttonMainMenu, _buttonPause, _buttonReset, _winPopup, _losePopup };
+            _buttons = new[] { _buttonMainMenu, _buttonPause, _buttonReset};
 
             //================= Labels ====================//
             // string instructionsText = "Use the Input/Output Addresses shown below to create a working \nPLC for the marble sorter, based on the requirements on the buckets below.";
@@ -159,7 +167,7 @@ namespace MarbleSorterGame.Screens
             // var gameScreenTitle = QuickShape.Label("Marble Sorter", new Vector2f(0, 0), font, Color.Black);
 
             var legendBackgroundSize = screen.Percent(50f, 40f);
-            _legendBackground = new RectangleShape
+            _legendGameBackground = new RectangleShape
             {
                 Size = legendBackgroundSize,
                 FillColor = chromeColor,
@@ -170,8 +178,57 @@ namespace MarbleSorterGame.Screens
                     .ShiftX(screen.Percent(0, 1).Y)
                     .ShiftY(screen.Percent(0, 1).Y)
             };
+            _legendGame = new Label(string.Empty, _legendGameBackground.Position.Shift(new Vector2f(_legendPadding, _legendPadding)), 14, SFML.Graphics.Color.Black, font);
 
-            _legend = new Label(String.Empty, _legendBackground.Position.Shift(new Vector2f(_legendPadding, _legendPadding)), 14, SFML.Graphics.Color.Black, font);
+            _legendMappingBackground = new RectangleShape
+            {
+                Size = legendBackgroundSize,
+                FillColor = chromeColor,
+                OutlineColor = Color.Black,
+                OutlineThickness = 2,
+                Position = _legendGameBackground.PositionRelative(Joint.End, Joint.Start)
+            };
+            _legendMapping = new Label(string.Empty, _legendMappingBackground.Position.Shift(new Vector2f(_legendPadding, _legendPadding)), 14, SFML.Graphics.Color.Black, font);
+
+            var infoBoxBackgroundSize = screen.Percent(30f, 15f);
+            _infoBoxBackground = new RectangleShape
+            {
+                Size = infoBoxBackgroundSize,
+                FillColor = chromeColor,
+                OutlineColor = Color.Black,
+                OutlineThickness = 2,
+                //Position = menuBarBackground.PositionRelative(Joint.End, Joint.End).ShiftX(-legendBackgroundSize.X)
+                Position = menuBarBackground.PositionRelative(Joint.End, Joint.End)
+                    .ShiftX(-infoBoxBackgroundSize.X - _legendPadding * 2)
+                    .ShiftY(_legendPadding)
+            };
+            _infoLabel = new Label(string.Empty, _infoBoxBackground.Position.Shift(new Vector2f(_legendPadding, _legendPadding)), 14, SFML.Graphics.Color.Black, font);
+
+            //win/lose screens
+            Vector2f popupSize = screen.Percent(15f, 10f);
+
+            _winPopupBox = new RectangleShape
+            {
+                Size = new Vector2f(0f, 0f),
+                FillColor = SFML.Graphics.Color.Green,
+                OutlineColor = Color.Black,
+                OutlineThickness = 2,
+                Position = _infoBoxBackground.PositionRelative(Joint.Start, Joint.End)
+                    .ShiftY(_legendPadding)
+            };
+
+            _losePopupBox = new RectangleShape
+            {
+                Size = new Vector2f(0f, 0f),
+                FillColor = SFML.Graphics.Color.Red,
+                OutlineColor = Color.Black,
+                OutlineThickness = 2,
+                Position = _infoBoxBackground.PositionRelative(Joint.Start, Joint.End)
+                    .ShiftY(_legendPadding)
+            };
+
+            _winPopup = new Label(string.Empty, _winPopupBox.Position.Shift(new Vector2f(_legendPadding, _legendPadding)), 14, SFML.Graphics.Color.Black, font);
+            _losePopup = new Label(string.Empty, _losePopupBox.Position.Shift(new Vector2f(_legendPadding, _legendPadding)), 14, SFML.Graphics.Color.Black, font);
 
             //================= Game Entities ====================//
             _conveyor = new Conveyor(screen.Percent(0, 60), screen.Percent(100, 1), new Vector2f(1, 0));
@@ -212,6 +269,10 @@ namespace MarbleSorterGame.Screens
                         new Vector2f(b.Size.X, _conveyor.Size.Y)))
                 .ToArray();
 
+            _trapDoors[0].Name = IOKeys.Q.TrapDoor1;
+            _trapDoors[1].Name = IOKeys.Q.TrapDoor2;
+            _trapDoors[2].Name = IOKeys.Q.TrapDoor3;
+
             // Adjust bucket positions to be at very bottom of screen
             foreach (var bucket in _buckets)
             {
@@ -242,73 +303,124 @@ namespace MarbleSorterGame.Screens
             float motionSensorLaserRange = (_gateEntrance.Position.X + _gateEntrance.Size.X) - (motionSensorXPosition + sensorSize.X / 2);
             _motionSensorConveyor = new MotionSensor(motionSensorLaserRange, new Vector2f(motionSensorXPosition, gateSensorPosition.Y), sensorSize);
 
-            PressureSensor sensorPressureStart = new PressureSensor(screen.Percent(3, 55), sensorSize);
-            ColorSensor sensorColorStart = new ColorSensor(screen.Percent(6, 55), sensorSize);
-
-            // Position half-way between conveyor and top of buckets
+            // Position half-way between conveyer and top of buckets
             Vector2f motionSensorPosition = new Vector2f(MarbleSorterGame.WINDOW_WIDTH - sensorSize.X, _buckets[0].Position.Y - sensorSize.Y);
             _motionSensorBucket = new MotionSensor(motionSensorLaserRange, motionSensorPosition, sensorSize);
 
-            Vector2f signalSize = screen.Percent(3, 8);
-            var signalColor1 = new SignalLight(screen.Percent(30, 20), signalSize );
-            var signalColor2 = new SignalLight(new Vector2f(signalColor1.Position.X + signalSize.X + 10, signalColor1.Position.Y), signalSize );
-            var signalPressure1 = new SignalLight(new Vector2f(signalColor2.Position.X + signalSize.X + 10, signalColor1.Position.Y), signalSize );
-            var signalMotion1 = new SignalLight(screen.Percent(95, 50), signalSize );
-            _gateOpen = new SignalLight(new Vector2f(_gateEntrance.Position.X + gateEntranceSize.X + 10, _trapDoors[0].Position.Y - 50), signalSize);
-            _gateClosed = new SignalLight(new Vector2f(_gateEntrance.Position.X + gateEntranceSize.X + 10, _trapDoors[0].Position.Y + 25), signalSize);
-            var conveyorOn = new SignalLight(screen.Percent(5, 75), signalSize );
-            var bucketDropped = new SignalLight(screen.Percent(115, 100), signalSize );
-            
+            // Signal Lights
+            var temp = screen.Percent(2f, 2f);
+            Vector2f signalSize = new Vector2f(temp.X, temp.X);
             var trapDoorSizeX = _trapDoors[0].Size.X;
-            
+            var signalColor1 = new SignalLight(_gateEntrance.Box.PositionRelative(Joint.Start, Joint.Start).Shift(-signalSize * 1.5f).ShiftX(-signalSize.X * 2f), signalSize);
+            var signalColor2 = new SignalLight(signalColor1.Position.ShiftX(-signalSize.X * 2f), signalSize);
+            var signalPressure1 = new SignalLight(signalColor1.Position.ShiftY(-signalSize.Y * 1.5f), signalSize);
+            var signalPressure2 = new SignalLight(signalColor2.Position.ShiftY(-signalSize.Y * 1.5f), signalSize);
+            var bucketDropped = new SignalLight(screen.Percent(115, 100), signalSize );
             var trapdoorOpen1 = new SignalLight(new Vector2f(_trapDoors[0].Position.X + trapDoorSizeX, _trapDoors[0].Position.Y - 50), signalSize);
             var trapdoorOpen2 = new SignalLight(new Vector2f(_trapDoors[1].Position.X + trapDoorSizeX, _trapDoors[1].Position.Y - 50), signalSize);
             var trapdoorOpen3 = new SignalLight(new Vector2f(_trapDoors[2].Position.X + trapDoorSizeX, _trapDoors[2].Position.Y - 50), signalSize);
-            _trapDoorsOpen = new[] {trapdoorOpen1, trapdoorOpen2, trapdoorOpen3};
-            
             var trapdoorClosed1 = new SignalLight(new Vector2f(_trapDoors[0].Position.X - signalSize.X, _trapDoors[0].Position.Y + 50), signalSize);
             var trapdoorClosed2 = new SignalLight(new Vector2f(_trapDoors[1].Position.X - signalSize.X, _trapDoors[1].Position.Y + 50), signalSize);
             var trapdoorClosed3 = new SignalLight(new Vector2f(_trapDoors[2].Position.X - signalSize.X, _trapDoors[2].Position.Y + 50), signalSize);
+            _gateOpen = new SignalLight(new Vector2f(_gateEntrance.Position.X + gateEntranceSize.X + 10, _trapDoors[0].Position.Y - 50), signalSize);
+            _gateClosed = new SignalLight(new Vector2f(_gateEntrance.Position.X + gateEntranceSize.X + 10, _trapDoors[0].Position.Y + 25), signalSize);
+
+            signalColor1.Name = IOKeys.I.ColorSensor;
+            signalColor2.Name = IOKeys.I.ColorSensor;
+            signalPressure1.Name = IOKeys.I.WeightSensor;
+            signalPressure2.Name = IOKeys.I.WeightSensor;
+            trapdoorOpen1.Name = IOKeys.I.TrapDoor1Open;
+            trapdoorOpen2.Name = IOKeys.I.TrapDoor2Open;
+            trapdoorOpen3.Name = IOKeys.I.TrapDoor3Open;
+            trapdoorClosed1.Name = IOKeys.I.TrapDoor1Closed;
+            trapdoorClosed2.Name = IOKeys.I.TrapDoor2Closed;
+            trapdoorClosed3.Name = IOKeys.I.TrapDoor3Closed;
+            bucketDropped.Name = IOKeys.I.BucketMotionSensor;
+            _pressureSensor.Name = IOKeys.I.WeightSensor;
+            _colorSensor.Name = IOKeys.I.ColorSensor;
+            _motionSensorBucket.Name = IOKeys.I.BucketMotionSensor;
+            _motionSensorConveyor.Name = IOKeys.I.ConveyorMotionSensor;
+            _gateOpen.Name = IOKeys.I.GateOpen;
+            _gateClosed.Name = IOKeys.I.GateClosed;
+            _gateEntrance.Name = IOKeys.Q.Gate;
+            _conveyor.Name = IOKeys.Q.Conveyor;
+
+            _trapDoorsOpen = new[] {trapdoorOpen1, trapdoorOpen2, trapdoorOpen3};
             _trapDoorsClosed = new[] {trapdoorClosed1, trapdoorClosed2, trapdoorClosed3};
+
+            _sensors = new List<GameEntity>
+            {
+                _motionSensorBucket,
+                _motionSensorConveyor,
+                _pressureSensor,
+                _colorSensor
+            };
+
+            _signalLights = new List<GameEntity>
+            {
+                trapdoorOpen1,
+                trapdoorOpen2,
+                trapdoorOpen3,
+                trapdoorClosed1,
+                trapdoorClosed2,
+                trapdoorClosed3,
+                bucketDropped,
+                _gateOpen,
+                _gateClosed,
+                signalColor1,
+                signalColor2,
+                signalPressure1,
+                signalPressure2,
+            };
 
             _entities = new GameEntity[]
             {
                 _buttonPause,
                 _buttonReset,
                 _buttonMainMenu,
-                /**
-                _winPopup,
-                _losePopup,
-                */
                 _conveyor,
                 _pressureSensor,
                 _colorSensor,
-                /*
-                signalColor1,
-                signalColor2,
-                signalPressure1,
-                */
                 _motionSensorBucket,
                 _motionSensorConveyor,
                 _gateOpen,
                 _gateClosed,
-                // conveyorOn,
                 bucketDropped,
                 trapdoorOpen1,
-                trapdoorClosed1,
                 trapdoorOpen2,
-                trapdoorClosed2,
                 trapdoorOpen3,
+                trapdoorClosed1,
+                trapdoorClosed2,
                 trapdoorClosed3,
-                // signalMotion1,
             };
 
             _entities = _entities.ToList()
+                .Concat(_signalLights)
+                .Concat(_marbles)
                 .Concat(_trapDoors)
                 .Concat(_marbles)
                 .Concat(_buckets)
                 .Concat(new[] { _gateEntrance })
                 .ToArray();
+
+            _hoverable = new List<GameEntity>() { };
+            _hoverable.AddRange(_trapDoors);
+            _hoverable.AddRange(_signalLights);
+            _hoverable.AddRange(_sensors);
+
+            _mappable = new List<GameEntity>() { };
+            _mappable.AddRange(_trapDoors);
+            _mappable.Add(_gateEntrance);
+            _mappable.Add(_conveyor);
+
+            _mappable.AddRange(_trapDoorsOpen);
+            _mappable.AddRange(_trapDoorsClosed);
+            _mappable.Add(_motionSensorBucket);
+            _mappable.Add(_gateOpen);
+            _mappable.Add(_gateClosed);
+            _mappable.Add(_motionSensorConveyor);
+            _mappable.Add(_pressureSensor);
+            _mappable.Add(_colorSensor);
 
             //load assets for all entities
             foreach (GameEntity entity in _entities)
@@ -316,31 +428,27 @@ namespace MarbleSorterGame.Screens
 
             _drawables = new Drawable[]
             {
-                menuBarBackground,
-                _legendBackground,
                 //instructions,
                 //gameScreenTitle,
-                _legend
+                menuBarBackground,
+                _legendGameBackground,
+                _legendGame,
+                _legendMappingBackground,
+                _legendMapping,
+                _infoBoxBackground,
+                _infoLabel,
+                _winPopupBox,
+                _winPopup,
+                _losePopupBox,
+                _losePopup
             };
-
-            //gameentity addresses infotext
-            _trapDoors[0].InfoText = "Trapdoor 1 \n %Q0.0 Bool";
-            _trapDoors[1].InfoText = "Trapdoor 2 \n %Q0.1 Bool";
-            _trapDoors[2].InfoText = "Trapdoor 3 \n %Q0.2 Bool";
-            sensorColorStart.InfoText = "Color Sensor \n %Q0.2 Bool";
-            sensorPressureStart.InfoText = "Pressure Sensor \n %Q0.2 Bool";
-            _motionSensorBucket.InfoText = "Motion Sensor \n %Q0.2 Bool";
-
-            sensorColorStart.InfoText = "Color Sensor \n %Q0.2 Bool";
-            _buckets[0].InfoText = "Bucket 1 \n %I1.0 Bool";
-            _buckets[1].InfoText = "Bucket 2 \n %I1.0 Bool";
-            _buckets[2].InfoText = "Bucket 3 \n %I1.0 Bool";
         }
 
         // Mouse movement event handler for features involving hover-over
         private void GameMouseMoveEventHandler(object? sender, MouseMoveEventArgs mouse)
         {
             MarbleSorterGame.UpdateButtonsFromMouseEvent(_window, _buttons, mouse);
+            UpdateHoveredEntityMouseEvent(_window, _entities, mouse);
         }
 
         // Mouse click event handler for button clicking
@@ -354,6 +462,20 @@ namespace MarbleSorterGame.Screens
         {
             if (_driver is KeyboardIODriver kbdriver)
                 kbdriver.UpdateByKey(key);
+        }
+
+        // Mouse move event for any entity that is hovered over
+        public void UpdateHoveredEntityMouseEvent(RenderWindow window, GameEntity[] entities, MouseMoveEventArgs mouse)
+        {
+            _hoveredEntity = null;
+            foreach (GameEntity entity in _hoverable)
+            {
+                if (entity.MouseHovered(new Vector2f(mouse.X, mouse.Y)))
+                {
+                    _hoveredEntity = entity;
+                    break;
+                }
+            }
         }
 
         // Writes driver values to the game and reads in game state 
@@ -489,25 +611,92 @@ namespace MarbleSorterGame.Screens
         // Update legend text
         private void UpdateLegend()
         {
-            _legendData["Currently Hovered Item"] = _hoveredEntity == null ? "N/A" : _hoveredEntity.InfoText;
-            _legendData["Marbles Remaining Total"] = _marblesRemaining.ToString();
-            _legendData["Marbles Correctly Dropped"] = _buckets.Select(b => b.TotalCorrect).Sum().ToString();
-            _legendData["Marbles Incorrectly Dropped"] = _buckets.Select(b => b.TotalIncorrect).Sum().ToString();
-            _legendData["PLC Devices I/O"] = "";
-            _legendData["Conveyor State"] = _driver.Conveyor.ToString();
-            _legendData["Trapdoor 1 Opening"] = _driver.TrapDoor1.ToString();
-            _legendData["Trapdoor 2 Opening"] = _driver.TrapDoor2.ToString();
-            _legendData["Trapdoor 3 Opening"] = _driver.TrapDoor3.ToString();
-            _legendData["Entrance Gate Opening"] = _driver.Gate.ToString();
+            //IoMapConfiguration config = _bundle.IoMapConfiguration();
+            _legendGameData["Marbles Remaining Total"] = _marblesRemaining.ToString();
+            _legendGameData["Marbles Correctly Dropped"] = _buckets.Select(b => b.TotalCorrect).Sum().ToString();
+            _legendGameData["Marbles Incorrectly Dropped"] = _buckets.Select(b => b.TotalIncorrect).Sum().ToString();
+
+            _IOMapping[IOKeys.I.TrapDoor1Open.ToString()] = _driver.TrapDoor1Open.ToString();
+            _IOMapping[IOKeys.I.TrapDoor2Open.ToString()] = _driver.TrapDoor2Open.ToString();
+            _IOMapping[IOKeys.I.TrapDoor3Open.ToString()] = _driver.TrapDoor2Open.ToString();
+            _IOMapping[IOKeys.I.TrapDoor1Closed.ToString()] = _driver.TrapDoor1Open.ToString();
+            _IOMapping[IOKeys.I.TrapDoor2Closed.ToString()] = _driver.TrapDoor2Open.ToString();
+            _IOMapping[IOKeys.I.TrapDoor3Closed.ToString()] = _driver.TrapDoor2Open.ToString();
+            _IOMapping[IOKeys.I.BucketMotionSensor.ToString()] = _driver.BucketMotionSensor.ToString();
+            _IOMapping[IOKeys.I.WeightSensor.ToString()] = _driver.PressureSensor.ToString();
+            _IOMapping[IOKeys.I.ColorSensor.ToString()] = _driver.ColorSensor.ToString();
+            _IOMapping[IOKeys.I.ConveyorMotionSensor.ToString()] = _driver.ConveyorMotionSensor.ToString();
+            _IOMapping[IOKeys.I.GateClosed.ToString()] = _driver.GateClosed.ToString();
+            _IOMapping[IOKeys.I.GateOpen.ToString()] = _driver.GateOpen.ToString();
+            _IOMapping[IOKeys.Q.TrapDoor1.ToString()] = _driver.TrapDoor1.ToString();
+            _IOMapping[IOKeys.Q.TrapDoor2.ToString()] = _driver.TrapDoor2.ToString();
+            _IOMapping[IOKeys.Q.TrapDoor3.ToString()] = _driver.TrapDoor3.ToString();
+            _IOMapping[IOKeys.Q.Gate.ToString()] = _driver.Gate.ToString();
+            _IOMapping[IOKeys.Q.Conveyor.ToString()] = _driver.Conveyor.ToString();
+
+            var legendGameBuilder = new System.Text.StringBuilder();
+            var legendMappingBuilder = new System.Text.StringBuilder();
+
+            foreach (var stat in _legendGameData)
+                legendGameBuilder.AppendLine(string.Format("{0,-40}: {1}", stat.Key, stat.Value));
+
+            foreach (var entity in _mappable)
+            {
+                IoMapConfiguration entityConfig = _bundle.IoMapConfiguration.Find(e => e.EntityName == entity.Name);
+
+                legendMappingBuilder.AppendLine(string.Format("{0}-{1,-30}: {2}",
+                    "%" + entityConfig.MemoryArea + entityConfig.Byte.ToString() + "." + entityConfig.Bit.ToString(),
+                    entityConfig.Description,
+                    _IOMapping[entity.Name] 
+                    ));
+
+            }
+            
+            _legendGame.Text = legendGameBuilder.ToString();
+            _legendMapping.Text = legendMappingBuilder.ToString();
+
+            // Automatically adjust background height and width according to height of the text label
+            var legendBounds = _legendGame.LabelText.GetGlobalBounds();
+            _legendGameBackground.Size = new Vector2f(legendBounds.Width + _legendPadding*4, legendBounds.Height + _legendPadding*2);
+            legendBounds = _legendMapping.LabelText.GetGlobalBounds();
+            _legendMappingBackground.Size = new Vector2f(legendBounds.Width + _legendPadding*4, legendBounds.Height + _legendPadding*2);
+            _legendMappingBackground.Position = _legendGameBackground.PositionRelative(Joint.End, Joint.Start).ShiftX(_legendPadding);
+
+            _legendMapping.LabelPosition = _legendMappingBackground.Position.Shift(new Vector2f(_legendPadding, _legendPadding));
+
+        }
+
+        // Update info box data for hover-over entities
+        private void UpdateInfoBox()
+        {
+            if (_hoveredEntity == null)
+            {
+                _infoLabel.Text = string.Empty;
+                return;
+            }
+
+            Console.WriteLine(_hoveredEntity.Name);
+            string hoveredEntityAddress = null;
+            string hoveredEntityDescription = null;
+
+            IoMapConfiguration hoveredEntityConfig = _bundle.IoMapConfiguration.Find(entity => entity.EntityName == _hoveredEntity.Name);
+
+            if (hoveredEntityConfig != null)
+            {
+                hoveredEntityAddress = hoveredEntityConfig.MemoryArea + hoveredEntityConfig.Byte.ToString() + hoveredEntityConfig.Bit.ToString();
+                hoveredEntityDescription = hoveredEntityConfig.Description;
+            }
+
+            _infoData["Currently Hovered Item"] = _hoveredEntity == null ? "N/A" : hoveredEntityDescription;
+            _infoData["Item Address"] = _hoveredEntity == null ? "N/A" : hoveredEntityAddress;
 
             var legendBuilder = new System.Text.StringBuilder();
-            foreach (var stat in _legendData)
-                legendBuilder.AppendLine(String.Format("{0,-40}: {1}", stat.Key, stat.Value));
+            foreach (var stat in _infoData)
+                legendBuilder.AppendLine(string.Format("{0,-20}: {1}", stat.Key, stat.Value));
             
-            _legend.Text = legendBuilder.ToString();
+            _infoLabel.Text = legendBuilder.ToString();
             // Automatically adjust background height and width according to height of the text label
-            var legendBounds = _legend.LabelText.GetGlobalBounds();
-            _legendBackground.Size = new Vector2f(legendBounds.Width + _legendPadding*4, legendBounds.Height + _legendPadding*2);
+            var bounds = _infoLabel.LabelText.GetGlobalBounds();
         }
 
         // Update game state from key events such as bucket handling and win state
@@ -542,6 +731,7 @@ namespace MarbleSorterGame.Screens
         public override void Update()
         {
             UpdateLegend();
+            UpdateInfoBox();
 
             if (_gameState == GameState.Progress)
             {
@@ -550,6 +740,26 @@ namespace MarbleSorterGame.Screens
                 UpdateDoors();
                 UpdateGameState(); // Win, lose, or pause
             }
+
+            UpdateWinState();
+        }
+
+        //show win/lose popup box if win/lose
+        public void UpdateWinState()
+        {
+            Vector2f popupSize = new Vector2f(100f, 30f);
+
+            if (_gameState == GameState.Win)
+            {
+                _winPopupBox.Size = popupSize;
+                _winPopup.Text = "YOU WIN";
+            } 
+            else if (_gameState == GameState.Lose)
+            {
+                _losePopupBox.Size = popupSize;
+                _losePopup.Text = "YOU LOSE";
+            }
+
         }
         
         // Redraw screen in preparation for next update loop
