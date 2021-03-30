@@ -23,10 +23,8 @@ namespace MarbleSorterGame.GameEntities
         public bool IsOpen => RotationAngle > _DROP_ANGLE && RotationAngle <= _OPEN_MAX_ANGLE + 1f;
         public bool IsFullyOpen => RotationAngle == 0;
         public bool IsFullyClosed => RotationAngle == 90;
-
-        public float RotationAngle => _trapdoor.Rotation;
+        private float RotationAngle => _trapdoor.Rotation;
         
-
         // Sets state of signal light to be turned on or off
         public void SetState(bool opening)
         {
@@ -52,13 +50,21 @@ namespace MarbleSorterGame.GameEntities
         public Trapdoor(Vector2f position, Vector2f size) : base(position, size)
         {
             _trapdoor = Box;
-            _trapdoor.Size = Size;
-            _trapdoor.FillColor = SFML.Graphics.Color.Red;
-            _trapdoor.Position = position;
+            var sizeWithoutOutline = Size;
+            sizeWithoutOutline.Y -= 4;
+            _trapdoor.Size = sizeWithoutOutline;
+            _trapdoor.FillColor = Color.Red;
+            _trapdoor.OutlineColor = Color.Black;
+            _trapdoor.OutlineThickness = 2;
+            var centeringWithOutline = position;
+            centeringWithOutline.Y += 2;
+            _trapdoor.Position = centeringWithOutline;
 
             _indicateConveyorDrop = new RectangleShape();
-            _indicateConveyorDrop.Size = Size;
-            _indicateConveyorDrop.FillColor = new SFML.Graphics.Color(181, 181, 181);
+            var sizeIncludingOutline = Size;
+            sizeIncludingOutline.Y += 4;
+            _indicateConveyorDrop.Size = sizeIncludingOutline;
+            _indicateConveyorDrop.FillColor = Color.White;
             _indicateConveyorDrop.Position = position;
         }
 
@@ -75,10 +81,10 @@ namespace MarbleSorterGame.GameEntities
             //base.Render(window);
             if (_trapdoor == null)
                 return;
-            
-            window.Draw(_trapdoor);
             if (IsOpen)
                 window.Draw(_indicateConveyorDrop);
+            
+            window.Draw(_trapdoor);
         }
 
         // Loads assets for trapdoor
