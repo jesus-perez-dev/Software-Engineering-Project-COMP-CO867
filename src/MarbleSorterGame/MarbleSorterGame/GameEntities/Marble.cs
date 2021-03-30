@@ -87,9 +87,11 @@ namespace MarbleSorterGame
         // Render method for marble
         public override void Render(RenderWindow window)
         {
-            //base.Render(window);
-            //Box.OutlineColor = SFML.Graphics.Color.Green;
-            //Box.OutlineThickness = 2;
+            /**
+            base.Render(window);
+            Box.OutlineColor = SFML.Graphics.Color.Green;
+            Box.OutlineThickness = 2;
+            */
             window.Draw(_sprite);
         }
 

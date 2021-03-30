@@ -80,14 +80,6 @@ namespace MarbleSorterGame.GameEntities
         {
             return _rect.GetGlobalBounds().Intersects(entity.GlobalBounds);
         }
-
-        // Checks to see if marble entity overlaps bounding box of other game entity
-        public bool MarbleOverlaps(GameEntity entity)
-        {
-            var entityWithLeftPadding = entity.GlobalBounds;
-            entityWithLeftPadding.Left -= entity.Size.X;
-            return _rect.GetGlobalBounds().Intersects(entityWithLeftPadding);
-        }
         
         // Check to see if entity at any X position intersects this entities Y position (IE a horizontal straight line touches both)
         public bool OverlapsVertical(GameEntity entity)
