@@ -401,10 +401,6 @@ namespace MarbleSorterGame.Screens
                 _motionSensorConveyor,
                 _gateOpen,
                 _gateClosed,
-<<<<<<< HEAD
-=======
-                // conveyorOn,
->>>>>>> main
                 bucketDropped,
                 trapdoorOpen1,
                 trapdoorOpen2,
@@ -415,11 +411,8 @@ namespace MarbleSorterGame.Screens
             };
 
             _entities = _entities.ToList()
-<<<<<<< HEAD
                 .Concat(_signalLights)
                 .Concat(_marbles)
-=======
->>>>>>> main
                 .Concat(_trapDoors)
                 .Concat(_marbles)
                 .Concat(_buckets)
