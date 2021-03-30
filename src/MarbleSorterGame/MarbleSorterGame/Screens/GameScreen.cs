@@ -41,8 +41,6 @@ namespace MarbleSorterGame.Screens
         private List<GameEntity> _hoverable;
         private List<GameEntity> _mappable;
         private List<GameEntity> _signalLights;
-        private SignalLight[] _signalLightsColors;
-        private SignalLight[] _signalLightsWeights;
 
         // UI Buttons
         private Button _buttonPause;
@@ -315,8 +313,8 @@ namespace MarbleSorterGame.Screens
             var trapDoorSizeX = _trapDoors[0].Size.X;
             var signalColor1 = new SignalLight(_gateEntrance.Box.PositionRelative(Joint.Start, Joint.Start).Shift(-signalSize * 1.5f).ShiftX(-signalSize.X * 2f), signalSize);
             var signalColor2 = new SignalLight(signalColor1.Position.ShiftX(-signalSize.X * 2f), signalSize);
-            var signalPressure1 = new SignalLight(signalColor1.Position.ShiftY(-signalSize.Y * 3f), signalSize);
-            var signalPressure2 = new SignalLight(signalColor2.Position.ShiftY(-signalSize.Y * 3f), signalSize);
+            var signalPressure1 = new SignalLight(signalColor1.Position.ShiftY(-signalSize.Y * 1.5f), signalSize);
+            var signalPressure2 = new SignalLight(signalColor2.Position.ShiftY(-signalSize.Y * 1.5f), signalSize);
             var bucketDropped = new SignalLight(screen.Percent(115, 100), signalSize );
             var trapdoorOpen1 = new SignalLight(new Vector2f(_trapDoors[0].Position.X + trapDoorSizeX, _trapDoors[0].Position.Y - 50), signalSize);
             var trapdoorOpen2 = new SignalLight(new Vector2f(_trapDoors[1].Position.X + trapDoorSizeX, _trapDoors[1].Position.Y - 50), signalSize);
@@ -375,19 +373,6 @@ namespace MarbleSorterGame.Screens
                 signalPressure2,
             };
 
-            _signalLightsColors = new []
-            {
-                signalColor1,
-                signalColor2,
-            };
-
-            _signalLightsWeights = new []
-            {
-                signalPressure1,
-                signalPressure2,
-            };
-
-
             _entities = new GameEntity[]
             {
                 _buttonPause,
@@ -413,6 +398,7 @@ namespace MarbleSorterGame.Screens
                 .Concat(_signalLights)
                 .Concat(_marbles)
                 .Concat(_trapDoors)
+                .Concat(_marbles)
                 .Concat(_buckets)
                 .Concat(new[] { _gateEntrance })
                 .ToArray();
@@ -482,26 +468,25 @@ namespace MarbleSorterGame.Screens
         public void UpdateHoveredEntityMouseEvent(RenderWindow window, GameEntity[] entities, MouseMoveEventArgs mouse)
         {
             _hoveredEntity = null;
-            window.SetMouseCursor(MarbleSorterGame.Cursors.Arrow);
-
             foreach (GameEntity entity in _hoverable)
             {
                 if (entity.MouseHovered(new Vector2f(mouse.X, mouse.Y)))
                 {
                     _hoveredEntity = entity;
-                    window.SetMouseCursor(MarbleSorterGame.Cursors.Help);
                     break;
                 }
             }
         }
 
-        //sets signal state from driver
-        public void UpdateSignals()
+        // Writes driver values to the game and reads in game state 
+        private void UpdateDriver()
         {
             _gateEntrance.SetState(_driver.Gate);
             
             _gateOpen.SetState(_gateEntrance.IsFullyOpen);
             _gateClosed.SetState(_gateEntrance.IsFullyClosed);
+            
+            _conveyor.SetState(_driver.Conveyor);
 
             _trapDoors[0].SetState(_driver.TrapDoor1);
             _trapDoors[1].SetState(_driver.TrapDoor2);
@@ -510,32 +495,11 @@ namespace MarbleSorterGame.Screens
             _trapDoorsOpen[0].SetState(_trapDoors[0].IsFullyOpen);
             _trapDoorsOpen[1].SetState(_trapDoors[1].IsFullyOpen);
             _trapDoorsOpen[2].SetState(_trapDoors[2].IsFullyOpen);
-
+            
             _trapDoorsClosed[0].SetState(_trapDoors[0].IsFullyClosed);
             _trapDoorsClosed[1].SetState(_trapDoors[1].IsFullyClosed);
             _trapDoorsClosed[2].SetState(_trapDoors[2].IsFullyClosed);
-
-            //set weight/color sensor lights
-            var c = _driver.ColorSensor;
-            _signalLightsColors[0].SetState(c == (int)Enums.Color.Blue || c == (int)Enums.Color.Red);
-            _signalLightsColors[1].SetState(c == (int)Enums.Color.Blue || c == (int)Enums.Color.Green);
-
-            var w = _driver.PressureSensor;
-            _signalLightsWeights[0].SetState(w == (int)Enums.Weight.Large || w == (int)Enums.Weight.Small);
-            _signalLightsWeights[1].SetState(w == (int)Enums.Weight.Large || w == (int)Enums.Weight.Medium);
-        }
-
-        // Writes driver values to the game and reads in game state 
-        private void UpdateDriver()
-        {
-            _driver.TrapDoor1Open = _trapDoors[0].IsFullyOpen;
-            _driver.TrapDoor2Open = _trapDoors[1].IsFullyOpen;
-            _driver.TrapDoor3Open = _trapDoors[2].IsFullyOpen;
-
-            _driver.TrapDoor1Closed = _trapDoors[0].IsFullyClosed;
-            _driver.TrapDoor2Closed = _trapDoors[1].IsFullyClosed;
-            _driver.TrapDoor3Closed = _trapDoors[2].IsFullyClosed;
-
+            
             //////////////////////////////////////// 
             ///// BEGIN: TODO FIXME HACK
 
@@ -558,8 +522,8 @@ namespace MarbleSorterGame.Screens
                     _driver.PressureSensor = (byte) marble.Weight;
             }
             
-            // If marble position is past the gate and its X-value is on the conveyer belt (not falling)
-            // write to the conveyer motion sensor
+            // If marble position is past the gate and its X-value is on the conveyor belt (not falling)
+            // write to the conveyor motion sensor
             _motionSensorConveyor.Update(_marbles);
             _driver.ConveyorMotionSensor |= _motionSensorConveyor.Detected;
 
@@ -584,9 +548,6 @@ namespace MarbleSorterGame.Screens
 
                 // If marble is touching gate and gate is closed, do not move
                 // Marble can clip through if more than half of marble is past gate
-                //if (!_gateEntrance.IsFullyOpen && _gateEntrance.Overlaps(marble) 
-                //                               && marble.Position.X + marble.Size.X/2 < _gateEntrance.Position.X)
-                
                 if (!_gateEntrance.IsFullyOpen && _gateEntrance.Overlaps(marble) 
                                                && marble.Position.X < _gateEntrance.Position.X)
                 {
@@ -597,22 +558,20 @@ namespace MarbleSorterGame.Screens
                 if (marble.Position.X + (marble.Size.X) > _gateEntrance.Position.X + _gateEntrance.Size.X)
                     marble.SetState(MarbleState.Rolling);
                 
+                // If conveyor is off, marbles stay still
+                if (!_conveyor.ConveyorOn)
+                    marble.SetState(MarbleState.Still);
+                
                 // If marble has started falling, keep it falling
                 if (marble.Position.Y + marble.Size.Y > _conveyor.Position.Y)
                     marble.SetState(MarbleState.Falling);
             }
-
+            
             // If marbles are touching/overlapping each other, the marble farthest to left should stop moving
             // NOTE: This assumes marble order is placed from left-to-right!
             for (int i = 0; i < _marbles.Length - 1; i++)
-            {
-                float spacing = Marble.MarbleSizeSmall * 2;
-                float prevMarbleEdge = _marbles[i].GlobalBounds.Left + _marbles[i].GlobalBounds.Width;
-                if (prevMarbleEdge + spacing > _marbles[i + 1].GlobalBounds.Left)
+                if (_marbles[i].MarbleOverlaps(_marbles[i + 1]))
                     _marbles[i].SetState(MarbleState.Still);
-
-            }
-                
             
             // If marble is overtop a trap-door, and the trap door is open, switch velocity to falling
             foreach (var marble in _marbles)
@@ -659,10 +618,10 @@ namespace MarbleSorterGame.Screens
 
             _IOMapping[IOKeys.I.TrapDoor1Open.ToString()] = _driver.TrapDoor1Open.ToString();
             _IOMapping[IOKeys.I.TrapDoor2Open.ToString()] = _driver.TrapDoor2Open.ToString();
-            _IOMapping[IOKeys.I.TrapDoor3Open.ToString()] = _driver.TrapDoor3Open.ToString();
-            _IOMapping[IOKeys.I.TrapDoor1Closed.ToString()] = _driver.TrapDoor1Closed.ToString();
-            _IOMapping[IOKeys.I.TrapDoor2Closed.ToString()] = _driver.TrapDoor2Closed.ToString();
-            _IOMapping[IOKeys.I.TrapDoor3Closed.ToString()] = _driver.TrapDoor3Closed.ToString();
+            _IOMapping[IOKeys.I.TrapDoor3Open.ToString()] = _driver.TrapDoor2Open.ToString();
+            _IOMapping[IOKeys.I.TrapDoor1Closed.ToString()] = _driver.TrapDoor1Open.ToString();
+            _IOMapping[IOKeys.I.TrapDoor2Closed.ToString()] = _driver.TrapDoor2Open.ToString();
+            _IOMapping[IOKeys.I.TrapDoor3Closed.ToString()] = _driver.TrapDoor2Open.ToString();
             _IOMapping[IOKeys.I.BucketMotionSensor.ToString()] = _driver.BucketMotionSensor.ToString();
             _IOMapping[IOKeys.I.WeightSensor.ToString()] = _driver.PressureSensor.ToString();
             _IOMapping[IOKeys.I.ColorSensor.ToString()] = _driver.ColorSensor.ToString();
@@ -716,6 +675,7 @@ namespace MarbleSorterGame.Screens
                 return;
             }
 
+            Console.WriteLine(_hoveredEntity.Name);
             string hoveredEntityAddress = null;
             string hoveredEntityDescription = null;
 
@@ -723,7 +683,7 @@ namespace MarbleSorterGame.Screens
 
             if (hoveredEntityConfig != null)
             {
-                hoveredEntityAddress = "%" + hoveredEntityConfig.MemoryArea + hoveredEntityConfig.Byte.ToString() + "." + hoveredEntityConfig.Bit.ToString();
+                hoveredEntityAddress = hoveredEntityConfig.MemoryArea + hoveredEntityConfig.Byte.ToString() + hoveredEntityConfig.Bit.ToString();
                 hoveredEntityDescription = hoveredEntityConfig.Description;
             }
 
@@ -732,7 +692,7 @@ namespace MarbleSorterGame.Screens
 
             var legendBuilder = new System.Text.StringBuilder();
             foreach (var stat in _infoData)
-                legendBuilder.AppendLine(string.Format("{0,-23}: {1}", stat.Key, stat.Value));
+                legendBuilder.AppendLine(string.Format("{0,-20}: {1}", stat.Key, stat.Value));
             
             _infoLabel.Text = legendBuilder.ToString();
             // Automatically adjust background height and width according to height of the text label
@@ -776,7 +736,6 @@ namespace MarbleSorterGame.Screens
             if (_gameState == GameState.Progress)
             {
                 UpdateDriver();
-                UpdateSignals();
                 UpdateMarbles();
                 UpdateDoors();
                 UpdateGameState(); // Win, lose, or pause
