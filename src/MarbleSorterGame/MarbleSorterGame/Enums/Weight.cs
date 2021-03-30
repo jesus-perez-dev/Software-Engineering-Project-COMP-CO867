@@ -14,9 +14,9 @@
         {
             return weight switch
             {
-                Weight.Small => "S",
-                Weight.Medium => "M",
-                Weight.Large => "L",
+                Weight.Small => "Small",
+                Weight.Medium => "Medium",
+                Weight.Large => "Large",
             };
         }
     }
