@@ -1,5 +1,6 @@
 ﻿using System;
 using MarbleSorterGame.Enums;
+using MarbleSorterGame.Utilities;
 using SFML.Audio;
 using SFML.Graphics;
 using SFML.System;
@@ -40,7 +41,7 @@ namespace MarbleSorterGame.GameEntities
             {
                 FillColor = requiredColor?.ToSfmlColor() ?? SFML.Graphics.Color.White,
                 OutlineColor = SFML.Graphics.Color.Black,
-                OutlineThickness = (requiredColor == null) ? 0 : 3,
+                OutlineThickness = (requiredColor == null) ? 0 : 2,
                 Position = new Vector2f(Position.X + Size.X / 2, Position.Y - Size.Y / 2),
                 Radius = Size.X / 8
             };
@@ -112,13 +113,17 @@ namespace MarbleSorterGame.GameEntities
         public override void Load(IAssetBundle bundle)
         {
             _capacityLabel = new Text($"0/{Capacity}", bundle.Font);
-            // TODO: Find a better place for this
-            _capacityLabel.Position = Position + new Vector2f(-1 * _capacityLabel.GetGlobalBounds().Width, (Size.Y/3f));
+            _capacityLabel.Scale -= new Vector2f(0.1f, 0.1f);
             _capacityLabel.FillColor = SFML.Graphics.Color.Black;
+            _capacityLabel.Position = Box.PositionRelative(Joint.Start, Joint.Start)
+                .ShiftX(-_capacityLabel.GetGlobalBounds().Width - 10);
             
             _requiredSizeLabel = new Text(_requiredWeight?.ToGameLabel() ?? "", bundle.Font);
-            _requiredSizeLabel.Position = Position + new Vector2f((-1) *_capacityLabel.GetGlobalBounds().Width, (Size.Y/3f) + _capacityLabel.GetGlobalBounds().Height + 5);
+            _requiredSizeLabel.Scale -= new Vector2f(0.4f, 0.4f);
             _requiredSizeLabel.FillColor = SFML.Graphics.Color.Black;
+            _requiredSizeLabel.Position = Box.PositionRelative(Joint.Start, Joint.End)
+                .ShiftX(-_requiredSizeLabel.GetGlobalBounds().Width - 10)
+                .ShiftY(-_requiredSizeLabel.GetGlobalBounds().Height - 10);
             
             // _dropSound = bundle.BucketDrop;
             _successSound = bundle.BucketDropSuccess;
