@@ -8,9 +8,7 @@ using Color = MarbleSorterGame.Enums.Color;
 
 namespace MarbleSorterGame.GameEntities
 {
-    /// <summary>
-    /// Container for marbles to drop onto, contains requirements that must be fulfilled to complete the marble sorter game
-    /// </summary>
+    // Container for marbles to drop onto, contains requirements that must be fulfilled to complete the marble sorter game
     public class Bucket : GameEntity
     {
         private Sprite _bucket;
@@ -70,7 +68,7 @@ namespace MarbleSorterGame.GameEntities
             }
         }
 
-        /// Insert marble into the bucket, return true/false depening on whether marble meets its requirements
+        // Insert marble into the bucket, return true/false depening on whether marble meets its requirements
         public bool InsertMarble(Marble m)
         {
             bool marbleOk = ValidateMarble(m);
@@ -90,7 +88,7 @@ namespace MarbleSorterGame.GameEntities
             return marbleOk;
         }
 
-        /// Checks if marble that was dropped met the requirements
+        // Checks if marble that was dropped met the requirements
         public bool ValidateMarble(Marble m)
         {
             return (_requiredColor == null || m.Color == _requiredColor)  &&
@@ -98,7 +96,7 @@ namespace MarbleSorterGame.GameEntities
                     TotalMarbles < Capacity;
         }
 
-        /// Draws the bucket onto render target RenderWindow
+        // Draws the bucket onto render target RenderWindow
         public override void Render(RenderWindow window)
         {
            // base.Render(window);
@@ -111,7 +109,7 @@ namespace MarbleSorterGame.GameEntities
             window.Draw(_capacityLabel);
         }
         
-        /// Extracts bucket assets, such as texture and sound, from bundle
+        // Extracts bucket assets, such as texture and sound, from bundle
         public override void Load(IAssetBundle bundle)
         {
             _capacityLabel = new Text($"0/{Capacity}", bundle.Font);

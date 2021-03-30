@@ -5,10 +5,8 @@ using SFML.Graphics;
 
 namespace MarbleSorterGame.GameEntities
 {
-	/// <summary>
-	/// label is simply a centered text
-	/// Centered text
-	/// </summary>
+	// label is simply a centered text
+	// Centered text
 	public class Label : Drawable
 	{
 		public String Text
@@ -25,14 +23,7 @@ namespace MarbleSorterGame.GameEntities
 		private SFML.Graphics.Color _labelColor;
 		private Font _labelFont;
 
-		/// <summary>
-		/// Constructor for label
-		/// </summary>
-		/// <param name="labelText">String value of what label will output</param>
-		/// <param name="labelPosition">Global vector position</param>
-		/// <param name="labelSize">Global vector size</param>
-		/// <param name="labelColor">Background color of label</param>
-		/// <param name="labelFont">Font of label</param>
+		// Constructor for label
 		public Label(String labelText, Vector2f? labelPosition, int labelSize, SFML.Graphics.Color labelColor, Font labelFont)
 		{
 			_labelText = labelText;
@@ -52,20 +43,13 @@ namespace MarbleSorterGame.GameEntities
 			_text.Position = _labelPosition;
 		}
 
-		/// <summary>
-		/// Draw method of label
-		/// </summary>
-		/// <param name="window">Current drawn window</param>
+		// Draw method of label
 		public void Draw(RenderWindow window)
 		{
 			window.Draw(_text);
 		}
 
-		/// <summary>
-		/// Draw method of label
-		/// </summary>
-		/// <param name="target"></param>
-		/// <param name="states"></param>
+		// Draw method of label
 		public void Draw(RenderTarget target, RenderStates states)
 		{
 			target.Draw(_text);

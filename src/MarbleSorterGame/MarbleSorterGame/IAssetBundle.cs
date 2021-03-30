@@ -6,9 +6,7 @@ using SFML.Window;
 
 namespace MarbleSorterGame
 {
-    /// <summary>
-    /// interface for all available bundled assets required for game
-    /// </summary>
+    // interface for all available bundled assets required for game
     public interface IAssetBundle
     {
         public Sound BucketDrop { get; set; }

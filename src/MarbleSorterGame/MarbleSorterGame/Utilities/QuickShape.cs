@@ -3,9 +3,7 @@ using SFML.System;
 
 namespace MarbleSorterGame.Utilities
 {
-    /// <summary>
-    /// Contains convenience methods for constructing commonly use game shapes/drawables
-    /// </summary>
+    // Contains convenience methods for constructing commonly use game shapes/drawables
     public static class QuickShape
     {
         public static Text Label(string displayString, Vector2f position, Font font, SFML.Graphics.Color color)
