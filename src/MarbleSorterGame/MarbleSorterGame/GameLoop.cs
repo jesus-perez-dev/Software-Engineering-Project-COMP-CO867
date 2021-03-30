@@ -26,6 +26,7 @@ namespace MarbleSorterGame
             public static readonly Cursor NotAllowed = new Cursor(Cursor.CursorType.NotAllowed);
             public static readonly Cursor Hand = new Cursor(Cursor.CursorType.Hand);
             public static readonly Cursor Arrow = new Cursor(Cursor.CursorType.Arrow);
+            public static readonly Cursor Help = new Cursor(Cursor.CursorType.Help);
         }
         
         // Color for when the window get cleared

@@ -21,8 +21,8 @@ namespace MarbleSorterGame.GameEntities
         private RectangleShape _indicateConveyorDrop;
         
         public bool IsOpen => RotationAngle > _DROP_ANGLE && RotationAngle <= _OPEN_MAX_ANGLE + 1f;
-        public bool IsFullyOpen => RotationAngle == 0;
-        public bool IsFullyClosed => RotationAngle == 90;
+        public bool IsFullyOpen => RotationAngle == 90;
+        public bool IsFullyClosed => RotationAngle == 0;
 
         public float RotationAngle => _trapdoor.Rotation;
         
