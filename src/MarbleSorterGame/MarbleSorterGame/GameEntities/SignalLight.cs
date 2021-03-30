@@ -10,20 +10,37 @@ namespace MarbleSorterGame.GameEntities
         // The circle to display on the window
         private readonly CircleShape _signalLight;
         
+        private readonly static int outlineThickness = 5;
+
         // Whether the light should be on or off
         private bool SignalState { get; set; }
+        public override Vector2f Size
+        {
+            get => Box.Size;
+            set
+            {
+                Box.Size = value;
+                _signalLight.Radius = value.X / 2f - outlineThickness / 2f;
+            }
+        }
+
+        public override Vector2f Position
+        {
+            get => Box.Position;
+            set => Box.Position = _signalLight.Position = value;
+        }
 
         // Constructor for signal light
         public SignalLight(Vector2f position, Vector2f size) : base(position, size)
         {
             SignalState = true;
 
-            _signalLight = new CircleShape(10.0f)
+            _signalLight = new CircleShape(size.X / 2 - outlineThickness / 2f)
             {
-                Position = position, 
-                FillColor = Color.Black, 
-                OutlineColor = Color.Black, 
-                OutlineThickness = 5
+                Position = position,
+                FillColor = Color.Black,
+                OutlineColor = Color.Black,
+                OutlineThickness = outlineThickness
             };
         }
 

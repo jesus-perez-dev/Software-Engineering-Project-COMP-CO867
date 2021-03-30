@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using MarbleSorterGame.Drivers;
 using S7PLCSIM_Library;
 using Siemens.Simatic.Simulation.Runtime;
 
@@ -7,31 +8,15 @@ namespace MarbleSorterGame
 {
     public class S7IODriver : IIODriver
     {
-        // Defines output keys of game entities
-        static class QKeys
-        {
-            public const string TrapDoor1 = "TrapDoor1";
-            public const string TrapDoor2 = "TrapDoor2";
-            public const string TrapDoor3 = "TrapDoor3";
-            public const string Gate = "Gate";
-            public const string Conveyor = "Conveyor";
-        }
-
-        // Defines input keys of game entities
-        static class IKeys
-        {
-            public const string TrapDoor1Open = "TrapDoor1Open";
-            public const string TrapDoor2Open = "TrapDoor2Open";
-            public const string TrapDoor3Open = "TrapDoor3Open";
-            public const string BucketMotionSensor = "BucketMotionSensor";
-            public const string GateOpen = "GateOpen";
-            public const string GateClosed = "GateClosed";
-            public const string ConveyorMotionSensor = "ConveyorMotionSensor";
-            public const string WeightSensor = "WeightSensor";
-            public const string ColorSensor = "ColorSensor";
-        }
-
         private SimulationClient _client;
+
+        private SDataValue _trapDoor1;
+
+        public bool TrapDoor1
+        {
+            get => _trapDoor1.Bool;
+            set => _trapDoor1.Bool = value;
+        }
 
         private SDataValue _trapDoor1Open;
 
@@ -41,12 +26,12 @@ namespace MarbleSorterGame
             set => _trapDoor1Open.Bool = value;
         }
 
-        private SDataValue _trapDoor1;
+        private SDataValue _trapDoor1Closed;
 
-        public bool TrapDoor1
+        public bool TrapDoor1Closed
         {
-            get => _trapDoor1.Bool;
-            set => _trapDoor1.Bool = value;
+            get => _trapDoor1Closed.Bool;
+            set => _trapDoor1Closed.Bool = value;
         }
         
         private SDataValue _trapDoor2;
@@ -65,6 +50,14 @@ namespace MarbleSorterGame
             set => _trapDoor2Open.Bool = value;
         }
 
+        private SDataValue _trapDoor2Closed;
+
+        public bool TrapDoor2Closed
+        {
+            get => _trapDoor2Closed.Bool;
+            set => _trapDoor2Closed.Bool = value;
+        }
+
         private SDataValue _trapDoor3;
 
         public bool TrapDoor3
@@ -79,6 +72,14 @@ namespace MarbleSorterGame
         {
             get => _trapDoor3Open.Bool;
             set => _trapDoor3Open.Bool = value;
+        }
+
+        private SDataValue _trapDoor3Closed;
+
+        public bool TrapDoor3Closed
+        {
+            get => _trapDoor3Closed.Bool;
+            set => _trapDoor3Closed.Bool = value;
         }
 
         private SDataValue _bucketMotionSensor;
@@ -181,22 +182,25 @@ namespace MarbleSorterGame
             if (_updateCount % _updateInterval == 0)
             {
                 // Write simulation outputs
-                _client.IAddress[IKeys.TrapDoor1Open].Write(_trapDoor1Open);
-                _client.IAddress[IKeys.TrapDoor2Open].Write(_trapDoor2);
-                _client.IAddress[IKeys.TrapDoor3Open].Write(_trapDoor3);
-                _client.IAddress[IKeys.BucketMotionSensor].Write(_bucketMotionSensor);
-                _client.IAddress[IKeys.GateOpen].Write(_gateOpen);
-                _client.IAddress[IKeys.GateClosed].Write(_gateClosed);
-                _client.IAddress[IKeys.ConveyorMotionSensor].Write(_conveyorMotionSensor);
-                _client.IAddress[IKeys.WeightSensor].Write(_weightSensor);
-                _client.IAddress[IKeys.ColorSensor].Write(_colorSensor);
+                _client.IAddress[IOKeys.I.TrapDoor1Open].Write(_trapDoor1Open);
+                _client.IAddress[IOKeys.I.TrapDoor2Open].Write(_trapDoor2Open);
+                _client.IAddress[IOKeys.I.TrapDoor3Open].Write(_trapDoor3Open);
+                _client.IAddress[IOKeys.I.TrapDoor1Closed].Write(_trapDoor1Closed);
+                _client.IAddress[IOKeys.I.TrapDoor2Closed].Write(_trapDoor2Closed);
+                _client.IAddress[IOKeys.I.TrapDoor3Closed].Write(_trapDoor3Closed);
+                _client.IAddress[IOKeys.I.BucketMotionSensor].Write(_bucketMotionSensor);
+                _client.IAddress[IOKeys.I.GateOpen].Write(_gateOpen);
+                _client.IAddress[IOKeys.I.GateClosed].Write(_gateClosed);
+                _client.IAddress[IOKeys.I.ConveyorMotionSensor].Write(_conveyorMotionSensor);
+                _client.IAddress[IOKeys.I.WeightSensor].Write(_weightSensor);
+                _client.IAddress[IOKeys.I.ColorSensor].Write(_colorSensor);
 
                 // Read simulation inputs
-                _trapDoor1 = _client.QAddress[QKeys.TrapDoor1].Read();
-                _trapDoor2 = _client.QAddress[QKeys.TrapDoor2].Read();
-                _trapDoor3 = _client.QAddress[QKeys.TrapDoor3].Read();
-                _gate = _client.QAddress[QKeys.Gate].Read();
-                _conveyor = _client.QAddress[QKeys.Conveyor].Read();
+                _trapDoor1 = _client.QAddress[IOKeys.Q.TrapDoor1].Read();
+                _trapDoor2 = _client.QAddress[IOKeys.Q.TrapDoor2].Read();
+                _trapDoor3 = _client.QAddress[IOKeys.Q.TrapDoor3].Read();
+                _gate = _client.QAddress[IOKeys.Q.Gate].Read();
+                _conveyor = _client.QAddress[IOKeys.Q.Conveyor].Read();
             }
             _updateCount++;
         }

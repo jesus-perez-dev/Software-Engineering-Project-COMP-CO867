@@ -8,10 +8,13 @@ namespace MarbleSorterGame
     {
         public bool TrapDoor1 { get; set;  }
         public bool TrapDoor1Open { get; set; }
+        public bool TrapDoor1Closed { get; set; }
         public bool TrapDoor2 { get; set;  }
         public bool TrapDoor2Open { get; set; }
+        public bool TrapDoor2Closed { get; set; }
         public bool TrapDoor3 { get; set;  }
         public bool TrapDoor3Open { get; set; }
+        public bool TrapDoor3Closed { get; set; }
         public bool BucketMotionSensor { get; set; }
         public bool Gate { get; set; }
         public bool GateOpen { get; set; }

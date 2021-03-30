@@ -6,18 +6,27 @@ namespace MarbleSorterGame
     {
         // Input: Sensor to determine if trap door 1 has completely opened
         public bool TrapDoor1Open { get; set;  }
-        
+
+        // Input: Sensor to determine if trap door 1 has completely closed
+        public bool TrapDoor1Closed { get; set;  }
+
         // Output: 1 opens trap door, 0 closes trap door. Automatically closes
         public bool TrapDoor1 { get; set;  }
 
         // Input: Sensor to determine if trap door 2 has completely opened
         public bool TrapDoor2Open { get; set; }
+
+        // Input: Sensor to determine if trap door 2 has completely closed
+        public bool TrapDoor2Closed { get; set;  }
        
         // Output: 1 opens trap door, 0 closes trap door. Automatically closes
         public bool TrapDoor2 { get; set; }
 
         // Input: Sensor to determine if trap door 3 has completely opened
         public bool TrapDoor3Open { get; set; }
+
+        // Input: Sensor to determine if trap door 3 has completely closed
+        public bool TrapDoor3Closed { get; set;  }
         
         // Output: 1 opens trap door, 0 closes trap door. Automatically closes
         public bool TrapDoor3 { get; set; }
