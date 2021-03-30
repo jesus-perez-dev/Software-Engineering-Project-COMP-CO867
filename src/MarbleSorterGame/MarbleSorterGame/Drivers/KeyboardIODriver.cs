@@ -16,7 +16,7 @@ namespace MarbleSorterGame
         public bool Gate { get; set; }
         public bool GateOpen { get; set; }
         public bool GateClosed { get; set; }
-        public bool Conveyor { get; set; }
+        public bool Conveyor { get; set; } = true;
         public bool ConveyorMotionSensor { get; set; }
         public byte PressureSensor { get; set; }
         public byte ColorSensor { get; set; }
