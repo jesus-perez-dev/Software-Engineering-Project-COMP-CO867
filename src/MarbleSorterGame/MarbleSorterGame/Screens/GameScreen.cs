@@ -312,6 +312,7 @@ namespace MarbleSorterGame.Screens
             // Signal Lights
             var temp = screen.Percent(2f, 2f);
             Vector2f signalSize = new Vector2f(temp.X, temp.X);
+
             var trapDoorSizeX = _trapDoors[0].Size.X;
             var signalColor1 = new SignalLight(_gateEntrance.Box.PositionRelative(Joint.Start, Joint.Start).Shift(-signalSize * 1.5f).ShiftX(-signalSize.X * 2f), signalSize);
             var signalColor2 = new SignalLight(signalColor1.Position.ShiftX(-signalSize.X * 2f), signalSize);
@@ -400,6 +401,10 @@ namespace MarbleSorterGame.Screens
                 _motionSensorConveyor,
                 _gateOpen,
                 _gateClosed,
+<<<<<<< HEAD
+=======
+                // conveyorOn,
+>>>>>>> main
                 bucketDropped,
                 trapdoorOpen1,
                 trapdoorOpen2,
@@ -410,9 +415,13 @@ namespace MarbleSorterGame.Screens
             };
 
             _entities = _entities.ToList()
+<<<<<<< HEAD
                 .Concat(_signalLights)
                 .Concat(_marbles)
+=======
+>>>>>>> main
                 .Concat(_trapDoors)
+                .Concat(_marbles)
                 .Concat(_buckets)
                 .Concat(new[] { _gateEntrance })
                 .ToArray();
@@ -502,6 +511,8 @@ namespace MarbleSorterGame.Screens
             
             _gateOpen.SetState(_gateEntrance.IsFullyOpen);
             _gateClosed.SetState(_gateEntrance.IsFullyClosed);
+            
+            _conveyor.SetState(_driver.Conveyor);
 
             _trapDoors[0].SetState(_driver.TrapDoor1);
             _trapDoors[1].SetState(_driver.TrapDoor2);
@@ -558,8 +569,8 @@ namespace MarbleSorterGame.Screens
                     _driver.PressureSensor = (byte) marble.Weight;
             }
             
-            // If marble position is past the gate and its X-value is on the conveyer belt (not falling)
-            // write to the conveyer motion sensor
+            // If marble position is past the gate and its X-value is on the conveyor belt (not falling)
+            // write to the conveyor motion sensor
             _motionSensorConveyor.Update(_marbles);
             _driver.ConveyorMotionSensor |= _motionSensorConveyor.Detected;
 
@@ -584,9 +595,6 @@ namespace MarbleSorterGame.Screens
 
                 // If marble is touching gate and gate is closed, do not move
                 // Marble can clip through if more than half of marble is past gate
-                //if (!_gateEntrance.IsFullyOpen && _gateEntrance.Overlaps(marble) 
-                //                               && marble.Position.X + marble.Size.X/2 < _gateEntrance.Position.X)
-                
                 if (!_gateEntrance.IsFullyOpen && _gateEntrance.Overlaps(marble) 
                                                && marble.Position.X < _gateEntrance.Position.X)
                 {
@@ -596,6 +604,10 @@ namespace MarbleSorterGame.Screens
                 // If the right edge of the marble is passed the left edge of the gate, keep it going
                 if (marble.Position.X + (marble.Size.X) > _gateEntrance.Position.X + _gateEntrance.Size.X)
                     marble.SetState(MarbleState.Rolling);
+                
+                // If conveyor is off, marbles stay still
+                if (!_conveyor.ConveyorOn)
+                    marble.SetState(MarbleState.Still);
                 
                 // If marble has started falling, keep it falling
                 if (marble.Position.Y + marble.Size.Y > _conveyor.Position.Y)
