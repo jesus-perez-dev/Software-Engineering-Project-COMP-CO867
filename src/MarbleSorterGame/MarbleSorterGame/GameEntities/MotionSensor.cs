@@ -10,9 +10,7 @@ using MarbleSorterGame.Utilities;
 
 namespace MarbleSorterGame.GameEntities
 {
-    /// <summary>
-    /// Sensor that detects movement of any marble that passes through it
-    /// </summary>
+    // Sensor that detects movement of any marble that passes through it
     public class MotionSensor : Sensor
     {
         public bool Detected { get; set; }
@@ -25,12 +23,7 @@ namespace MarbleSorterGame.GameEntities
         // Note: If laserRange, is negative it detects marbles from the left, vice-versa if positive
         private float _laserRange;
         
-        /// <summary>
-        /// constructor for motion sensor
-        /// </summary>
-        /// <param name="maxLaserRange"></param>
-        /// <param name="position"></param>
-        /// <param name="size"></param>
+        // constructor for motion sensor
         public MotionSensor(float maxLaserRange, Vector2f position, Vector2f size): base(position, size)
         {
             //_sensorSprite.Position = position;
@@ -50,20 +43,14 @@ namespace MarbleSorterGame.GameEntities
                 throw new ArgumentException("Motion Sensor: Detecting motion to right sensor not currently supported!");
         }
 
-        /// <summary>
-        /// Render method for motion sensor
-        /// </summary>
-        /// <param name="window"></param>
+        // Render method for motion sensor
         public override void Render(RenderWindow window)
         {
             base.Render(window);
             window.Draw(_laser);
         }
 
-        /// <summary>
-        /// Perform marble detection and adjust the appearance of the laser
-        /// </summary>
-        /// <param name="marbles">List of all marbles that could be detected by the laser</param>
+        // Perform marble detection and adjust the appearance of the laser
         public void Update(IEnumerable<Marble> marbles)
         {
             if (marbles.Any(m => m.GlobalBounds.Intersects(_laser.GetGlobalBounds())))

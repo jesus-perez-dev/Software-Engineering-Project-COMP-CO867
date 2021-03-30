@@ -10,9 +10,7 @@ using MarbleSorterGame.Utilities;
 
 namespace MarbleSorterGame
 {
-    /// <summary>
-    /// Organizes and stores paths to required assets
-    /// </summary>
+    // Organizes and stores paths to required assets
     public class AssetBundleLoader : IAssetBundle
     {
         public Sound BucketDrop { get; set; }

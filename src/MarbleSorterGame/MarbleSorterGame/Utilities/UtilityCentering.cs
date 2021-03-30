@@ -3,9 +3,7 @@ using SFML.Graphics;
 
 namespace MarbleSorterGame.Utilities
 {
-    /// <summary>
-    /// sets transformable origin of shape/text to its rectangular center
-    /// </summary>
+    // sets transformable origin of shape/text to its rectangular center
     public static class UtilityCentering
     {
         public static Vector2f CenterOrigin(this Shape entity)
