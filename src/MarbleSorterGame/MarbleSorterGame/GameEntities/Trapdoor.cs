@@ -26,7 +26,6 @@ namespace MarbleSorterGame.GameEntities
 
         public float RotationAngle => _trapdoor.Rotation;
         
-
         // Sets state of signal light to be turned on or off
         public void SetState(bool opening)
         {

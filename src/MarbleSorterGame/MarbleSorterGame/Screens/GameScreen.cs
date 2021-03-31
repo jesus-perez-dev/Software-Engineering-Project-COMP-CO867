@@ -310,6 +310,7 @@ namespace MarbleSorterGame.Screens
             // Signal Lights
             var temp = screen.Percent(2f, 2f);
             Vector2f signalSize = new Vector2f(temp.X, temp.X);
+
             var trapDoorSizeX = _trapDoors[0].Size.X;
             var signalColor1 = new SignalLight(_gateEntrance.Box.PositionRelative(Joint.Start, Joint.Start).Shift(-signalSize * 1.5f).ShiftX(-signalSize.X * 2f), signalSize);
             var signalColor2 = new SignalLight(signalColor1.Position.ShiftX(-signalSize.X * 2f), signalSize);
