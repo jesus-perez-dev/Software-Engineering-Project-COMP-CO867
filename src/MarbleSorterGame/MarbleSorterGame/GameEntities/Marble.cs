@@ -129,5 +129,10 @@ namespace MarbleSorterGame
             //scale texture to correct dimensions
             _sprite.Scale = ScaleEntity(texture);
         }
+
+        public override string ToString()
+        {
+            return Weight.ToString() + " " + Color.ToString() + " Marble";
+        }
     }
 }
