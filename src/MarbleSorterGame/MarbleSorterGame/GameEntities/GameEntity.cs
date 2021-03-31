@@ -76,8 +76,15 @@ namespace MarbleSorterGame.GameEntities
         }
 
         // Checks to see if game entity overlaps bounding box of current game entity
+        // Marbles have padding around them to check if they overlap
         public bool Overlaps(GameEntity entity)
         {
+            if (entity.GetType() == typeof(Marble) && this.GetType() == typeof(Marble))
+            {
+                var entityWithLeftPadding = entity.GlobalBounds;
+                entityWithLeftPadding.Left -= entity.Size.X;
+                return _rect.GetGlobalBounds().Intersects(entityWithLeftPadding);
+            }
             return _rect.GetGlobalBounds().Intersects(entity.GlobalBounds);
         }
         
