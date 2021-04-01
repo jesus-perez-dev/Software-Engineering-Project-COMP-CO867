@@ -57,6 +57,7 @@ namespace MarbleSorterGame.Screens
         private Label _losePopup;
 
         // Infobox helper text
+        private Vector2f _infoBoxBackgroundSize;
         private GameEntity _hoveredEntity;
         private RectangleShape _infoBoxBackground;
         private Label _infoLabel;
@@ -192,16 +193,15 @@ namespace MarbleSorterGame.Screens
             };
             _legendMapping = new Label(string.Empty, _legendMappingBackground.Position.Shift(new Vector2f(_legendPadding, _legendPadding)), 14, SFML.Graphics.Color.Black, font);
 
-            var infoBoxBackgroundSize = screen.Percent(30f, 15f);
+            _infoBoxBackgroundSize = screen.Percent(30f, 15f);
             _infoBoxBackground = new RectangleShape
             {
-                Size = infoBoxBackgroundSize,
+                Size = new Vector2f(0,0),
                 FillColor = chromeColor,
                 OutlineColor = Color.Black,
                 OutlineThickness = 2,
-                //Position = menuBarBackground.PositionRelative(Joint.End, Joint.End).ShiftX(-legendBackgroundSize.X)
                 Position = menuBarBackground.PositionRelative(Joint.End, Joint.End)
-                    .ShiftX(-infoBoxBackgroundSize.X - _legendPadding * 2)
+                    .ShiftX(-_infoBoxBackgroundSize.X - _legendPadding * 2)
                     .ShiftY(_legendPadding)
             };
             _infoLabel = new Label(string.Empty, _infoBoxBackground.Position.Shift(new Vector2f(_legendPadding, _legendPadding)), 14, SFML.Graphics.Color.Black, font);
@@ -719,6 +719,7 @@ namespace MarbleSorterGame.Screens
             if (_hoveredEntity == null)
             {
                 _infoLabel.Text = string.Empty;
+                _infoBoxBackground.Size = default;
                 return;
             }
 
@@ -748,6 +749,9 @@ namespace MarbleSorterGame.Screens
             _infoLabel.Text = legendBuilder.ToString();
             // Automatically adjust background height and width according to height of the text label
             var bounds = _infoLabel.LabelText.GetGlobalBounds();
+
+            //show info box background
+            _infoBoxBackground.Size = _infoBoxBackgroundSize;
         }
 
         // Update game state from key events such as bucket handling and win state
