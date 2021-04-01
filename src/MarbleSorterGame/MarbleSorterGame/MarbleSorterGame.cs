@@ -1,7 +1,9 @@
+#nullable enable
 using System;
 using System.Collections.Generic;
 using MarbleSorterGame.Enums;
 using MarbleSorterGame.Screens;
+using MarbleSorterGame.Utilities;
 using SFML.Graphics;
 using SFML.System;
 using SFML.Window;
@@ -12,62 +14,60 @@ namespace MarbleSorterGame
     public class MarbleSorterGame : GameLoop
     {
         private static string WINDOW_TITLE = "PLC Training Simulator - Marble Sorter Game";
-        private static Screen _activeScreen;
-        private static IAssetBundle _bundle;
+        private static GameScreen _activeGameScreen;
+        private static IAssetBundle? _bundle;
+        private static IIODriver? _driver;
+        public static string? Error;
 
         public static Menu ActiveMenu
         {
             set
             {
-                _activeScreen = value switch
+                _activeGameScreen = value switch
                 {
-                    Menu.Game => new GameScreen(WINDOW, _bundle),
-                    Menu.Main => new MainScreen(WINDOW, _bundle),
-                    Menu.Settings => new SettingsScreen(WINDOW, _bundle) 
+                    Menu.Game => new MarbleSorterGameScreen(WINDOW, _bundle, _driver),
+                    Menu.Main => new MainMenuGameScreen(WINDOW, _bundle),
+                    Menu.Settings => new SettingsGameScreen(WINDOW, _bundle),
+                    Menu.Error => new ErrorGameScreen(WINDOW, Error) 
                 };
             }
         }
         
-        public MarbleSorterGame(IAssetBundle bundle) : base(bundle, WINDOW_TITLE, SFML.Graphics.Color.White)
+        public MarbleSorterGame(IAssetBundle? bundle, IIODriver? driver, Exception? maybeLoadException) : base(bundle, WINDOW_TITLE, SFML.Graphics.Color.White)
         {
             _bundle = bundle;
-            ActiveMenu = Menu.Main;
+            _driver = driver;
+
+            if (maybeLoadException == null)
+                ActiveMenu = Menu.Main;
+            else 
+                ShowErrorScreen(maybeLoadException);
         }
 
-        // Trigger click event(s) on buttons if a click event occured there
-        public static void UpdateButtonsFromClickEvent(object? sender, GameEntities.Button[] buttons, MouseButtonEventArgs mouse)
+        private void ShowErrorScreen(Exception exception)
         {
-            foreach (var button in buttons)
-                if (button.MouseInButton(mouse.X, mouse.Y))
-                    button.Click(sender, mouse);
-        }
-
-
-        // Update the state of buttons/cursor based on mouse event and list of buttons
-        public static void UpdateButtonsFromMouseEvent(RenderWindow window, GameEntities.Button[] buttons, MouseMoveEventArgs mouse)
-        {
-            window.SetMouseCursor(Cursors.Arrow);
-            foreach (var button in buttons)
-            {
-                button.Hovered = false;
-                if (button.MouseInButton(mouse.X, mouse.Y))
-                {
-                    button.Hovered = true;
-                    window.SetMouseCursor(button.Disabled ? Cursors.NotAllowed : Cursors.Hand);
-                }
-            }
+            Console.WriteLine(exception);
+            Error = exception.ToString();
+            ActiveMenu = Menu.Error;
         }
 
         // Update any data for the game
         public override void Update()
         {
-            _activeScreen.Update();
+            try
+            {
+                _activeGameScreen.Update();
+            }
+            catch (Exception exception)
+            {
+                ShowErrorScreen(exception);
+            }
         }
 
         // Draw method for the game. Each of the screens call their draw method depending on the active menu
         public override void Draw()
         {
-            _activeScreen.Draw(WINDOW);
+            _activeGameScreen.Draw(WINDOW);
         }
     }
 }
