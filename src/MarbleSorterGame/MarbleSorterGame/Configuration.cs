@@ -151,8 +151,8 @@ namespace MarbleSorterGame
 
         public void Validate()
         {
-            ValidateProperty(ScreenHeight < 600, "ScreenHeight", "Must be >= 600");
-            ValidateProperty(ScreenWidth < 800, "ScreenWidth", "Must be >= 800");
+            ValidateProperty(ScreenHeight < 720, "ScreenHeight", "Must be >= 720");
+            ValidateProperty(ScreenWidth < 1280, "ScreenWidth", "Must be >= 1280");
             ValidateProperty(MarblePeriod <= 0, "MarblePeriod", "Must be > 0");
             ValidateProperty(GatePeriod <= 0, "GatePeriod", "Must be > 0");
             ValidateProperty(TrapDoorPeriod <= 0, "TrapDoorPeriod", "Must be > 0");
