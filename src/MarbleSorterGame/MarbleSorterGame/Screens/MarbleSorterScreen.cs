@@ -411,6 +411,7 @@ namespace MarbleSorterGame.Screens
             _hoverable.AddRange(_signalLights);
             _hoverable.AddRange(_sensors);
             _hoverable.AddRange(_marbles);
+            _hoverable.Add(_gateEntrance);
 
             _mappable = new List<GameEntity>() { };
             _mappable.AddRange(_trapDoors);
