@@ -4,6 +4,7 @@
     {
         Main,
         Settings,
-        Game
+        Game,
+        Error
     };
 }
