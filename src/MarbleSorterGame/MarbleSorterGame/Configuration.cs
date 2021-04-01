@@ -146,7 +146,7 @@ namespace MarbleSorterGame
         private void ValidateProperty(bool failCondition, string prop, string message)
         {
             if (failCondition)
-                throw new ConfigValidationException($"Invalid or missing property '{prop}': {message}");
+                throw new ConfigValidationException($"Invalid (or missing) property '{prop}': {message}");
         }
 
         public void Validate()
@@ -156,6 +156,7 @@ namespace MarbleSorterGame
             ValidateProperty(MarblePeriod <= 0, "MarblePeriod", "Must be > 0");
             ValidateProperty(GatePeriod <= 0, "GatePeriod", "Must be > 0");
             ValidateProperty(TrapDoorPeriod <= 0, "TrapDoorPeriod", "Must be > 0");
+            ValidateProperty(Preset.Buckets.Count != 3, "Preset.Buckets", "Must be exactly 3 buckets");
             if (Driver == DriverType.Simulation)
             {
                 ValidateProperty(DriverOptions == null, "DriverOptions.SimulationName", "Cannot be null when driver is 'Simulation'");

@@ -24,23 +24,23 @@ namespace MarbleSorterGame
         public MarbleGameConfiguration GameConfiguration { get; set; }
         public List<IoMapConfiguration> IoMapConfiguration { get; set; }
         public Font Font { get; set; }
-        public string Error { get;  }
         public string AbsoluteAssetDirectoryPath { get; }
         
         public AssetBundleLoader(String assetDirectoryRelativePath)
         {
             AbsoluteAssetDirectoryPath = Path.Join(Directory.GetCurrentDirectory(), assetDirectoryRelativePath);
             string configFile = "";
-            try
+            try 
             {
                 // Load + Validate Game Configuration
-                // TODO: Validate IOMap configuration
                 string GetConfig(string file) => Path.Join(AbsoluteAssetDirectoryPath, "Config", file);
-                configFile = "game.json";
-                GameConfiguration = ConfigurationLoader.LoadGameConfiguration(GetConfig(configFile));
+                configFile = GetConfig("game.json");
+                GameConfiguration = ConfigurationLoader.LoadGameConfiguration(configFile);
                 GameConfiguration.Validate(); // May throw MarbleGameConfigException
-                configFile = "iomap.json";
-                IoMapConfiguration = ConfigurationLoader.LoadIoMapConfiguration(GetConfig(configFile)); 
+                
+                // TODO: Validate IOMap configuration
+                configFile = GetConfig("iomap.json");
+                IoMapConfiguration = ConfigurationLoader.LoadIoMapConfiguration(configFile); 
 
                 // Load Fonts
                 Font = new Font(Path.Join(AbsoluteAssetDirectoryPath, "Fonts", "DejaVuSansMono.ttf"));
@@ -58,15 +58,6 @@ namespace MarbleSorterGame
                 MarbleGreenTexture = new Texture(GetImage("marbleGreen.png"));
                 MarbleBlueTexture = new Texture(GetImage("marbleBlue.png"));
             }
-            catch (SFML.LoadingFailedException e)
-            {
-                Console.WriteLine(e);
-                var lines = new Dictionary<string, string>();
-                lines["Exception"] = e.GetType().FullName;
-                lines["Message"] = e.Message;
-                lines["Asset Path"] = AbsoluteAssetDirectoryPath;
-                Error = FormatErrorString("Failed to load game resources", lines);
-            }
             catch (JsonException e)
             {
                 Console.WriteLine(e);
@@ -74,8 +65,18 @@ namespace MarbleSorterGame
                 lines["Exception"] = e.GetType().FullName;
                 lines["LineNumber"] = e.LineNumber.ToString();
                 lines["Message"] = e.Message;
-                lines["File"] = Path.Join(AbsoluteAssetDirectoryPath, configFile);
-                Error = FormatErrorString($"Error loading '{configFile}'", lines);
+                lines["File"] = configFile;
+                throw new JsonException(FormatErrorString($"Error loading '{configFile}'", lines));
+            }
+            
+            catch (SFML.LoadingFailedException e)
+            {
+                Console.WriteLine(e);
+                var lines = new Dictionary<string, string>();
+                lines["Exception"] = e.GetType().FullName;
+                lines["Message"] = e.Message;
+                lines["Asset Path"] = AbsoluteAssetDirectoryPath;
+                throw new SFML.LoadingFailedException(FormatErrorString("Failed to load game resources", lines));
             }
             catch (ConfigValidationException e)
             {
@@ -83,20 +84,20 @@ namespace MarbleSorterGame
                 var lines = new Dictionary<string, string>();
                 lines["Exception"] = e.GetType().FullName;
                 lines["Message"] = e.Message;
-                lines["File"] = Path.Join(AbsoluteAssetDirectoryPath, configFile);
-                Error = FormatErrorString($"Validation error found in '{configFile}'", lines);
+                lines["File"] = configFile;
+                throw new ConfigValidationException(FormatErrorString($"Validation error found in '{configFile}'", lines));
             }
         }
     
         private static string FormatErrorString(string title, Dictionary<string, string> errorFields)
         {
-            int columns = 120;
             List<string> lines = new List<string>();
             lines.Add(title);
-            lines.Add(new String('=', columns-1));
+            //lines.Add(new String('=', title.Length));
+            //lines.Add(new String('=', columns-1));
             foreach (var (key, value) in errorFields)
-                lines.Add($"- {key}: {value}");
-            return string.Join("\n", lines).ColumnWrap(columns);
+                lines.Add($"- {key}: {value}\n");
+            return string.Join("\n", lines);
         }
     }
 }
