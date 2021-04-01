@@ -11,7 +11,7 @@ namespace MarbleSorterGame.Utilities
             {
                 if (col >= maxColumn)
                 {
-                    sb.Append("\n\t");
+                    sb.Append("\n");
                     col = 0;
                 }
                 
