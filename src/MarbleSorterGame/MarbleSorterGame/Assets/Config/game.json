@@ -11,19 +11,10 @@
   },
   "Preset": {
     "Marbles": [
-      { "Color": "Random", "Weight": "Random" },
-      { "Color": "Random", "Weight": "Random" },
-      { "Color": "Random", "Weight": "Random" },
-      { "Color": "Random", "Weight": "Random" },
-      { "Color": "Random", "Weight": "Random" },
-      { "Color": "Random", "Weight": "Random" },
-      { "Color": "Random", "Weight": "Random" },
-      { "Color": "Random", "Weight": "Random" },
-      { "Color": "Random", "Weight": "Random" },
-      { "Color": "Random", "Weight": "Random" }
+      { "Color": "Green", "Weight": "Small" }
     ],
     "Buckets": [
-      { "Capacity": 1, "Weight": "Random", "Color": "Random" },
+      { "Capacity": 1, "Weight": null, "Color": "Green" },
       { "Capacity": 1, "Weight": "Random", "Color": "Random" },
       { "Capacity": 1, "Weight": "Random", "Color": "Random" }
     ]

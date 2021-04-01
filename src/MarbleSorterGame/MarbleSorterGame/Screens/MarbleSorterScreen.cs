@@ -202,7 +202,7 @@ namespace MarbleSorterGame.Screens
                 FillColor = SFML.Graphics.Color.Green,
                 OutlineColor = Color.Black,
                 OutlineThickness = 2,
-                Position = _infoBoxBackground.PositionRelative(Joint.Start, Joint.End)
+                Position = _legendMappingBackground.PositionRelative(Joint.Start, Joint.End)
                     .ShiftY(_legendPadding)
             };
 
@@ -212,7 +212,7 @@ namespace MarbleSorterGame.Screens
                 FillColor = SFML.Graphics.Color.Red,
                 OutlineColor = Color.Black,
                 OutlineThickness = 2,
-                Position = _infoBoxBackground.PositionRelative(Joint.Start, Joint.End)
+                Position = _legendMappingBackground.PositionRelative(Joint.Start, Joint.End)
                     .ShiftY(_legendPadding)
             };
 
@@ -755,9 +755,12 @@ namespace MarbleSorterGame.Screens
                 if (marble.Position.X - marble.Radius > Window.Size.X)
                 {
                     if (_buckets.Any(b => b.ValidateMarble(marble)))
-                        marblesCorrectDrop++;
-                    else
+                    {
                         marblesIncorrectDrop++;
+                    } else
+                    {
+                        marblesCorrectDrop++;
+                    }
 
                     _marblesRemaining--;
                 }
@@ -776,7 +779,7 @@ namespace MarbleSorterGame.Screens
             UpdateLegend();
             UpdateInfoBox();
 
-            if (_gameState == GameState.Progress)
+            if (_gameState != GameState.Pause)
             {
                 UpdateDriver();
                 UpdateSignals();
