@@ -57,12 +57,28 @@ namespace MarbleSorterGame
         // Sets state of movement, whether it is moving/falling/stopped
         public void SetState(MarbleState state)
         {
-            if (state == MarbleState.Still)
-                _velocity = new Vector2f(0,0);
-            if (state == MarbleState.Rolling)
-                _velocity = new Vector2f(StepX,0);
-            if (state == MarbleState.Falling)
-                _velocity = new Vector2f(0,StepY);
+            switch (state)
+            {
+                case MarbleState.Still:
+                    _velocity = new Vector2f(0,0);
+                    break;
+                case MarbleState.Rolling:
+                    _velocity = new Vector2f(StepX,0);
+                    break;
+                case MarbleState.Falling:
+                    _velocity = new Vector2f(0,StepY);
+                    break;
+            }
+        }
+        
+        // Gets state of movement, whether it is moving/falling/stopped
+        public MarbleState GetState()
+        {
+            if (_velocity == new Vector2f(0,StepY))
+                return MarbleState.Falling;
+            if (_velocity == new Vector2f(StepX, 0))
+                return MarbleState.Rolling;
+            return MarbleState.Still;
         }
         
         // Sets marble size

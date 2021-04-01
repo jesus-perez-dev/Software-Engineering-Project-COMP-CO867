@@ -598,13 +598,12 @@ namespace MarbleSorterGame.Screens
 
             // If marbles are touching/overlapping each other, the marble farthest to left should stop moving
             // NOTE: This assumes marble order is placed from left-to-right!
-            for (int i = 0; i < _marbles.Length - 1; i++)
+            for (var i = 0; i < _marbles.Length - 1; i++)
             {
-                float spacing = Marble.MarbleSizeSmall * 2;
-                float prevMarbleEdge = _marbles[i].GlobalBounds.Left + _marbles[i].GlobalBounds.Width;
-                if (prevMarbleEdge + spacing > _marbles[i + 1].GlobalBounds.Left)
+                var spacing = Marble.MarbleSizeSmall * 2;
+                var prevMarbleEdge = _marbles[i].GlobalBounds.Left + _marbles[i].GlobalBounds.Width;
+                if (prevMarbleEdge + spacing > _marbles[i + 1].GlobalBounds.Left && _marbles[i+1].GetState() != MarbleState.Falling)
                     _marbles[i].SetState(MarbleState.Still);
-
             }
                 
             
