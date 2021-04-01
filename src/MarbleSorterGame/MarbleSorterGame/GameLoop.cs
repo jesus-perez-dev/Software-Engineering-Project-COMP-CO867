@@ -1,3 +1,4 @@
+#nullable enable
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -37,7 +38,7 @@ namespace MarbleSorterGame
         }
 
         // Game structure that determines how entities are updated and timed
-        protected GameLoop(IAssetBundle bundle, string windowTitle, Color windowClearColor)
+        protected GameLoop(IAssetBundle? bundle, string windowTitle, Color windowClearColor)
         {
             WINDOW_WIDTH = bundle?.GameConfiguration?.ScreenWidth ?? 800;
             WINDOW_HEIGHT = bundle?.GameConfiguration?.ScreenHeight ?? 600;

@@ -20,6 +20,5 @@ namespace MarbleSorterGame
         public MarbleGameConfiguration GameConfiguration { get; set; }
         public List<IoMapConfiguration> IoMapConfiguration { get; set; }
         public Font Font { get; set;  }
-        public string Error { get;  }
     }
 }
