@@ -31,9 +31,8 @@ namespace MarbleSorterGame
         public static readonly float MarbleSizeMedium = GameLoop.WINDOW_WIDTH / 30f;
         public static readonly float MarbleSizeSmall = GameLoop.WINDOW_WIDTH / 40f;
 
-
         // Constructor for marble
-        public Marble(RectangleShape screen, Vector2f position, Color color, Weight weight)//: base(position, size)
+        public Marble(Vector2f position, Color color, Weight weight)//: base(position, size)
         {
             Color = color;
             Weight = weight;
@@ -52,6 +51,8 @@ namespace MarbleSorterGame
             Position = position;
             Radius = size.X / 2;
             base.Size = size;
+
+            Name = $"{weight} {color} Marble";
         }
 
         // Sets state of movement, whether it is moving/falling/stopped
