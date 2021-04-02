@@ -553,11 +553,11 @@ namespace MarbleSorterGame.Screens
             
             // If marble position is past the gate and its X-value is on the conveyor belt (not falling)
             // write to the conveyor motion sensor
-            _motionSensorConveyor.Update(_marbles);
+            _motionSensorConveyor.Update(_marbles, _gateEntrance);
             _driver.ConveyorMotionSensor |= _motionSensorConveyor.Detected;
 
             // If a straight horizontal line drawn from the marble across the screen touches the bucket motion sensor, fire-off the sensor
-            _motionSensorBucket.Update(_marbles);
+            _motionSensorBucket.Update(_marbles, _gateEntrance);
             _driver.BucketMotionSensor |= _motionSensorBucket.Detected;
             
             ////// END: TODO FIXME HACK
