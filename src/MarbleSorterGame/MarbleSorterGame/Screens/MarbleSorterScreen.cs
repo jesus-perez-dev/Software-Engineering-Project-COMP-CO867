@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using System.Text;
 using MarbleSorterGame.Enums;
 using MarbleSorterGame.GameEntities;
 using MarbleSorterGame.Utilities;
@@ -157,8 +158,8 @@ namespace MarbleSorterGame.Screens
                 //.ShiftX(-_infoBoxBackgroundSize.X - _legendPadding * 2)
                 .ShiftY(-_legendSpacing);
 
-            _legendHovered = new Legend(string.Empty, 14, _legendPadding, chromeColor, Color.Black, 2, Bundle.Font, legendHoveredEntityPosition);
-
+            _legendHovered = new Legend(string.Empty, 18, _legendPadding, chromeColor, Color.Black, 2, Bundle.Font, legendHoveredEntityPosition);
+            
             _legendGameState = new Legend(_gameState.ToHumanString(), 18, 24, Color.Green, Color.Black, 2, Bundle.Font, default);
             _legendGameState.Position = _menuBarBackground.PositionRelative(Joint.End, Joint.End)
                 .ShiftX(-_legendGameState.Box.GetGlobalBounds().Width - _legendSpacing)
@@ -213,8 +214,8 @@ namespace MarbleSorterGame.Screens
             foreach (var bucket in _buckets)
                 bucket.Position -= new Vector2f(0, bucket.Size.Y);
             
-            Vector2f gateEntranceSize = Screen.Percent(0.5f, 0);
-            gateEntranceSize.Y = Marble.MarbleSizeLarge;
+            Vector2f gateEntranceSize = Screen.Percent(0.75f, 0);
+            gateEntranceSize.Y = Marble.MarbleSizeLarge * 1.25f;
             // screen.Percent(13, 52)
             _gateEntrance = new Gate(
                 _conveyor.Box
@@ -604,8 +605,8 @@ namespace MarbleSorterGame.Screens
             _ioMapData[IOKeys.Q.Gate] = _driver.Gate.ToString();
             _ioMapData[IOKeys.Q.Conveyor] = _driver.Conveyor.ToString();
 
-            var legendGameBuilder = new System.Text.StringBuilder();
-            var legendMappingBuilder = new System.Text.StringBuilder();
+            var legendGameBuilder = new StringBuilder();
+            var legendMappingBuilder = new StringBuilder();
 
             foreach (var stat in _legendGameData)
                 legendGameBuilder.AppendLine(string.Format("{0,-40}: {1}", stat.Key, stat.Value));
@@ -627,14 +628,14 @@ namespace MarbleSorterGame.Screens
             _legendHovered.Hidden = true;
             if (_hoveredEntity != null)
             {
-                var hoveredItemStringBuilder = new System.Text.StringBuilder();
+                var hoveredItemStringBuilder = new StringBuilder();
                 var config = Bundle.IoMapConfiguration.Find(e => e.EntityName == _hoveredEntity.Name);
-                _hoveredEntityData["Currently Hovered Item"] = config?.Description ?? _hoveredEntity.Name;
-                _hoveredEntityData["Item Address"] = config?.ToAddressString();
+                _hoveredEntityData["Description"] = config?.Description ?? _hoveredEntity.Name;
+                _hoveredEntityData["IO Address"] = config?.ToAddressString();
                 
                 foreach (var (key,value) in _hoveredEntityData) 
                     if (!string.IsNullOrEmpty(value))
-                        hoveredItemStringBuilder.AppendLine(string.Format("{0,-23}: {1}", key, value));
+                        hoveredItemStringBuilder.AppendLine($"{key}: {value}");
                 
                 _legendHovered.DisplayedText = hoveredItemStringBuilder.ToString();
                 _legendHovered.Hidden = false;
