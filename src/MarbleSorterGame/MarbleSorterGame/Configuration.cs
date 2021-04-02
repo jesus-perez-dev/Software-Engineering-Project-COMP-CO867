@@ -177,6 +177,10 @@ namespace MarbleSorterGame
         public string Type { get; set; }
         public byte BitSize { get; set; }
         public string Description { get; set; }
+        public string ToAddressString()
+        {
+            return $"%{MemoryArea}{Byte}.{Bit}"; // Eg. %Q1.0
+        }
     }
 
     // Represent a marble/bucket game configuration
