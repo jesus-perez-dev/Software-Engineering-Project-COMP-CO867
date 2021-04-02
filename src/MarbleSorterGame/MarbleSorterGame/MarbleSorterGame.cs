@@ -1,12 +1,7 @@
 #nullable enable
 using System;
-using System.Collections.Generic;
 using MarbleSorterGame.Enums;
 using MarbleSorterGame.Screens;
-using MarbleSorterGame.Utilities;
-using SFML.Graphics;
-using SFML.System;
-using SFML.Window;
 
 namespace MarbleSorterGame
 {
