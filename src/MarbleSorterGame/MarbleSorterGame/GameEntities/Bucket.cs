@@ -50,6 +50,9 @@ namespace MarbleSorterGame.GameEntities
 
             TotalCorrect = 0;
             TotalIncorrect = 0;
+
+            string plural = capacity > 1 ? "s" : "";
+            Name = $"Bucket Requires {capacity} {requiredColor} {requiredWeight} Marble{plural}".Replace("  ", " ");
         }
 
         public override Vector2f Position
