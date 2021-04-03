@@ -9,7 +9,7 @@ namespace MarbleSorterGame.GameEntities
     public class Gate : GameEntity
     {
         // normal color of gate
-        private static readonly Color DefaultGateColor = Color.Black;
+        private static readonly Color DefaultGateColor = new Color(61, 66, 87); // Color.Black;
         // Color of gate when a marble is stuck underneath
         private static readonly Color JammedGateColor = Color.Red;
 

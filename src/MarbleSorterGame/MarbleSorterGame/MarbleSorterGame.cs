@@ -1,12 +1,7 @@
 #nullable enable
 using System;
-using System.Collections.Generic;
 using MarbleSorterGame.Enums;
 using MarbleSorterGame.Screens;
-using MarbleSorterGame.Utilities;
-using SFML.Graphics;
-using SFML.System;
-using SFML.Window;
 
 namespace MarbleSorterGame
 {
@@ -23,13 +18,22 @@ namespace MarbleSorterGame
         {
             set
             {
-                _activeGameScreen = value switch
+                try
                 {
-                    Menu.Game => new MarbleSorterGameScreen(WINDOW, _bundle, _driver),
-                    Menu.Main => new MainMenuGameScreen(WINDOW, _bundle),
-                    Menu.Settings => new SettingsGameScreen(WINDOW, _bundle),
-                    Menu.Error => new ErrorGameScreen(WINDOW, Error) 
-                };
+                    _activeGameScreen = value switch
+                    {
+                        Menu.Game => new MarbleSorterGameScreen(WINDOW, _bundle, _driver),
+                        Menu.Main => new MainMenuGameScreen(WINDOW, _bundle),
+                        Menu.Settings => new SettingsGameScreen(WINDOW, _bundle),
+                        Menu.Error => new ErrorGameScreen(WINDOW, Error) 
+                    };
+                }
+                catch (Exception exception)
+                {
+                    Console.WriteLine(exception);
+                    Error = exception.ToString();
+                    _activeGameScreen = new ErrorGameScreen(WINDOW, Error);
+                }
             }
         }
         

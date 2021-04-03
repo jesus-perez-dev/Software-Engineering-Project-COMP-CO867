@@ -46,7 +46,7 @@ namespace MarbleSorterGame.Screens
             Enums.Color[] colors = {Enums.Color.Red, Enums.Color.Green, Enums.Color.Blue};
             for (int i = 0; i < 3; i++)
             {
-                var marble = new Marble(Screen, new Vector2f(-1000, -1000), colors[i], Weight.Large);
+                var marble = new Marble(new Vector2f(-1000, -1000), colors[i], Weight.Large);
                 marble.SetState(MarbleState.Rolling);
                 marble.Load(bundle);
                 marble.Size = _marbleSize;
