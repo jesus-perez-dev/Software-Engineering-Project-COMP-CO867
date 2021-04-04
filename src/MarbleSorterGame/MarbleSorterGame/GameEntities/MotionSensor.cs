@@ -23,8 +23,9 @@ namespace MarbleSorterGame.GameEntities
         // Note: If laserRange, is negative it detects marbles from the left, vice-versa if positive
         private float _laserRange;
 
-        private Vector2f defaultSize;
-        private Vector2f defaultPosition;
+        private readonly Vector2f _defaultSize;
+        private readonly Vector2f _defaultPosition;
+        private readonly FloatRect _defaultLaserGlobalBounds;
         
         // constructor for motion sensor
         public MotionSensor(float maxLaserRange, Vector2f position, Vector2f size): base(position, size)
@@ -35,19 +36,21 @@ namespace MarbleSorterGame.GameEntities
             _left = maxLaserRange < 0;
             
             // height will be 10% of the motion detector box
-            defaultSize = new Vector2f(_laserRange, size.Y * 0.1f);
-            _laser.Size = defaultSize;
+            _defaultSize = new Vector2f(_laserRange, size.Y * 0.1f);
+            _laser.Size = _defaultSize;
             _laser.FillColor = Color.Red;
 
             float laserY = position.Y + (size.Y/2) - (_laser.Size.Y/2);
 
             if (_left)
             {
-                defaultPosition = new Vector2f(position.X - _laserRange + size.X / 2, laserY);
-                _laser.Position = defaultPosition;
+                _defaultPosition = new Vector2f(position.X - _laserRange + size.X / 2, laserY);
+                _laser.Position = _defaultPosition;
             }
             else
                 throw new ArgumentException("Motion Sensor: Detecting motion to right sensor not currently supported!");
+
+            _defaultLaserGlobalBounds = _laser.GetGlobalBounds();
         }
 
         // Render method for motion sensor
@@ -61,32 +64,25 @@ namespace MarbleSorterGame.GameEntities
         // Gate needed to get proper laser size
         public void Update(IEnumerable<Marble> marbles, Gate gate)
         {
-            var endOfLaser = _laser.Position.X + _laser.Size.X;
-            if (marbles.Where(m => m.Position.X < endOfLaser).Any(m => m.GlobalBounds.Intersects(_laser.GetGlobalBounds())))
+            float endOfLaser = _laser.Position.X + _laser.Size.X;
+            
+            // Find rightmost intersecting marble that does not pass the sensor and intersects laser default bounds
+            Marble? intersectingMarble = marbles.OrderByDescending(m => m.Position.X)
+                .Where(m => m.GlobalBounds.Intersects(_defaultLaserGlobalBounds))
+                .FirstOrDefault(m => m.Position.X < endOfLaser);
+            
+            Detected = false;
+            _laser.FillColor = Color.Red;
+            _laser.Size = _defaultSize;
+            _laser.Position = _defaultPosition;
+
+            if (intersectingMarble != null)
             {
                 Detected = true;
                 _laser.FillColor = Color.Green;
-                
-                // Find rightmost intersecting marble that does not pass the sensor and intersects laser
-                var intersectingMarble = marbles.OrderByDescending(m => m.Position.X)
-                    .Where(m => m.Position.X < endOfLaser)
-                    .FirstOrDefault(m => m.GlobalBounds.Intersects(_laser.GetGlobalBounds()));
-                
-                if (intersectingMarble != null)
-                {
-                    // Change laser size and position to rightmost intersecting marble
-                    _laser.Size = new Vector2f(_laserRange - intersectingMarble.Position.X + gate.Position.X, _laser.Size.Y);
-                    _laser.Position = new Vector2f(defaultPosition.X + intersectingMarble.Position.X - gate.Position.X, _laser.Position.Y);
-                }
-            }
-            else
-            {
-                Detected = false;
-                _laser.FillColor = Color.Red;
-                
-                // Reset laser to default size and position to check again
-                _laser.Size = defaultSize;
-                _laser.Position = defaultPosition;
+                // Change laser size and position to rightmost intersecting marble
+                _laser.Size = new Vector2f(_laserRange - intersectingMarble.Position.X + gate.Position.X, _laser.Size.Y);
+                _laser.Position = new Vector2f(_defaultPosition.X + intersectingMarble.Position.X - gate.Position.X, _laser.Position.Y);
             }
         }
     }
