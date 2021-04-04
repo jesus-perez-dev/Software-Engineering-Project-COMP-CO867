@@ -229,9 +229,13 @@ namespace MarbleSorterGame.Screens
                 .PositionRelative(Joint.Start, Joint.End)
                 .ShiftY(-sensorSize.Y)
                 .ShiftX(-sensorSize.X);
+            var pressureSensorPosition = gateSensorPosition;
+            pressureSensorPosition.Y += sensorSize.Y/2;
+            var colorSensorPosition = gateSensorPosition;
+            colorSensorPosition.Y -= 2;
             
-            _pressureSensor = new PressureSensor(gateSensorPosition, sensorSize);
-            _colorSensor = new ColorSensor(gateSensorPosition, sensorSize);
+            _pressureSensor = new PressureSensor(pressureSensorPosition, sensorSize/2);
+            _colorSensor = new ColorSensor(colorSensorPosition, sensorSize/2);
             
             // Difference between middle of motion sensor and right-edge of gate
             float motionSensorXPosition = MarbleSorterGame.WINDOW_WIDTH - sensorSize.X;
