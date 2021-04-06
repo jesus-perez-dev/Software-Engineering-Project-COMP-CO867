@@ -392,7 +392,7 @@ namespace MarbleSorterGame.Screens
         private void GameMouseMoveEventHandler(object? sender, MouseMoveEventArgs mouse)
         {
             UpdateButtonsFromMouseEvent(Window, _buttons, mouse);
-            UpdateHoveredEntityMouseEvent(Window, _entities, mouse);
+            UpdateHoveredEntityMouseEvent(Window, mouse);
         }
 
         // Mouse click event handler for button clicking
@@ -409,7 +409,7 @@ namespace MarbleSorterGame.Screens
         }
 
         // Mouse move event for any entity that is hovered over
-        public void UpdateHoveredEntityMouseEvent(RenderWindow window, GameEntity[] entities, MouseMoveEventArgs mouse)
+        private void UpdateHoveredEntityMouseEvent(RenderWindow window, MouseMoveEventArgs mouse)
         {
             _hoveredEntity = null;
             window.SetMouseCursor(MarbleSorterGame.Cursors.Arrow);
@@ -420,6 +420,16 @@ namespace MarbleSorterGame.Screens
                 {
                     _hoveredEntity = entity;
                     window.SetMouseCursor(MarbleSorterGame.Cursors.Help);
+                    break;
+                }
+            }
+            
+            foreach (Button button in _buttons)
+            {
+                if (button.MouseHovered(new Vector2f(mouse.X, mouse.Y)))
+                {
+                    _hoveredEntity = null;
+                    window.SetMouseCursor(MarbleSorterGame.Cursors.Hand);
                     break;
                 }
             }
