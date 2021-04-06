@@ -4,40 +4,55 @@ using Siemens.Simatic.Simulation.Runtime;
 
 namespace S7PLCSIM_Library
 {
+    /// Abstract class representing a region of simulation memory.
+    /// Library users should access properties of this class via one of the derived classes listed below.
+    ///
+    /// The actual PLC "Memory Area" (ie. %I or %Q addresses) are determined by the subclasses SimulationInput and SimulationOutput respectively.
+    ///
+    /// See Also:
+    ///     - <SimulationInput>
+    ///     - <SimulationOutput>
     public abstract class SimulationAddress
     {
-        /// S7-PLCSim instance of the address
-        public IInstance Instance { get; }
+        // S7-PLCSIM instance of the address.
+        internal IInstance Instance { get; }
 
-        /// Data type at address
+        /// Human friendly name to reference or identify the simulation memory address.
+        public string Name { get; }
+        
+        /// Type of data stored at this simulation memory address. Examples: UInt64, Bool, Int16, Char, Double ...
+        ///
+        /// Remarks:
+        ///     EPrimitiveDataType is an enum provided by the official Siemens C# simulation library.
         public EPrimitiveDataType DataType { get; }
 
-        /// Byte value in Q{Byte}.{Bit}
+        /// Byte value location of the address, as in "%Q{Byte}.{Bit}"
         public uint ByteOffset { get; }
 
-        /// Bit value in Q{Byte}.{Bit}
+        /// Bit value location of the address, as in "%Q{Byte}.{Bit}"
         public byte BitOffset { get; }
 
-        /// Number of bits taken up by primitive type 'type'
+        /// Total number of bits occupied by the simulation address.
         public byte BitSize { get; }
         
-        /// Bit offset where this address object begins in memory
+        /// Bit offset where this address begins in memory.
         public uint StartBit => ByteOffset * 8 + BitOffset;
 
-        /// Bit offset where this address object ends in memory
+        /// Bit offset where this address ends in memory.
         public uint EndBit => StartBit + BitSize - 1;
         
-        /// Minimum number of bytes to read from simulation memory to retrieve full value
+        /// Minimum number of bytes occupied in simulation memory by this address object.
+        ///
+        /// Remarks:
+        ///     This is considered a "minimum" value because address offset can begin or end at arbitrary bits within a byte.
+        ///     For example, a single byte can occupy range %I0.4 to %I1.3, in which case ByteSize would be 2 even though the
+        ///     simulation address object only occupies 8 bits or 1 byte of simulation memory.
         public uint ByteSize => ((StartBit + BitSize - 1) / 8) + 1;
 
-        /// Human friendly name to reference to IO address
-        public string Name { get; }
-
-        // If bit size is unspecified, use default bit size associated with dataType. eg UInt32 will have BitSize = 32
-        public SimulationAddress(string name, uint byteOffset, byte bitOffset, EPrimitiveDataType dataType, IInstance instance) 
+        internal SimulationAddress(string name, uint byteOffset, byte bitOffset, EPrimitiveDataType dataType, IInstance instance) 
             : this(name, byteOffset, bitOffset, dataType.ToBitSize(), dataType, instance) { }
 
-        public SimulationAddress(string name, uint byteOffset, byte bitOffset, byte bitSize, EPrimitiveDataType dataType, IInstance instance)
+        internal SimulationAddress(string name, uint byteOffset, byte bitOffset, byte bitSize, EPrimitiveDataType dataType, IInstance instance)
         {
             Instance = instance;
             Name = name;
@@ -47,19 +62,16 @@ namespace S7PLCSIM_Library
             BitSize = bitSize;
             
             if (bitOffset > 7)
-                throw new ArgumentException($"Invalid Bit Offset specified - Bit offset must be between 0-7. Given Bit Offset = {bitOffset}");
+                throw new S7PlcSimLibraryException($"Invalid Bit Offset specified - Bit offset must be between 0-7. Given Bit Offset = {bitOffset}");
             
             if (bitSize > 64)
-                throw new ArgumentException($"Invalid Bit Size specified - Bit size must not exceed 64 bits. Given Bit Size = {bitSize}");
+                throw new S7PlcSimLibraryException($"Invalid Bit Size specified - Bit size must not exceed 64 bits. Given Bit Size = {bitSize}");
 
             if (dataType == EPrimitiveDataType.Unspecific || dataType == EPrimitiveDataType.Struct)
-                throw new ArgumentException($"Invalid Data Type - The following data types are unsupported: {EPrimitiveDataType.Unspecific.ToHumanString()}, {EPrimitiveDataType.Struct.ToHumanString()}");
+                throw new S7PlcSimLibraryException($"Invalid Data Type - The following data types are unsupported: {EPrimitiveDataType.Unspecific.ToHumanString()}, {EPrimitiveDataType.Struct.ToHumanString()}");
         }
         
-        
-        /// <summary>
-        /// Write the bits of `value` overtop bits of `input` starting at `bitOffset` until `bitSize`
-        /// </summary>
+        // Write the bits of `value` overtop bits of `input` starting at `bitOffset` until `bitSize`
         protected static byte[] ShiftWrite(byte[] inputBytes, ulong value, byte bitOffset, byte bitSize)
         {
             var inputBitArray = new BitArray(inputBytes);
@@ -72,9 +84,7 @@ namespace S7PLCSIM_Library
             return outputBytes;
         }
 
-        /// <summary>
-        /// Extract a ulong value from input array, interpreting the value from binary as starting at `bitCount` and ranging until `bitOffset`
-        /// </summary>
+        // Extract a ulong value from input array, interpreting the value from binary as starting at `bitCount` and ranging until `bitOffset`
         protected static ulong ShiftRead(byte[] inputBytes, byte bitOffset, byte bitSize)
         {
             var inputBitArray = new BitArray(inputBytes);
@@ -84,29 +94,6 @@ namespace S7PLCSIM_Library
             byte[] outputBytes = new byte[8];
             outputBitArray.CopyTo(outputBytes, 0);
             return BitConverter.ToUInt64(outputBytes);
-        }
-
-        protected byte[] ValueToBytes(SDataValue value)
-        {
-            switch (DataType)
-            {
-                case EPrimitiveDataType.Bool: return BitConverter.GetBytes(value.Bool);
-                case EPrimitiveDataType.Char: return BitConverter.GetBytes(value.Char);
-                case EPrimitiveDataType.Double: return BitConverter.GetBytes(value.Double);
-                case EPrimitiveDataType.Float: return BitConverter.GetBytes(value.Float);
-                case EPrimitiveDataType.Int8: return BitConverter.GetBytes(value.Int8);
-                case EPrimitiveDataType.Int16: return BitConverter.GetBytes(value.Int16);
-                case EPrimitiveDataType.Int32: return BitConverter.GetBytes(value.Int32);
-                case EPrimitiveDataType.Int64: return BitConverter.GetBytes(value.Int64);
-                case EPrimitiveDataType.UInt8: return BitConverter.GetBytes(value.UInt8);
-                case EPrimitiveDataType.UInt16: return BitConverter.GetBytes(value.UInt16);
-                case EPrimitiveDataType.UInt32: return BitConverter.GetBytes(value.UInt32);
-                case EPrimitiveDataType.UInt64: return BitConverter.GetBytes(value.UInt64);
-                case EPrimitiveDataType.WChar: return BitConverter.GetBytes(value.WChar);
-                default:
-                    throw new ArgumentException(
-                        $"Cannot convert data type to byte array: {DataType.ToHumanString()} = {DataType}");
-            }
         }
         
         public override string ToString() => $"{ByteOffset}.{BitOffset}, Bits={BitSize}, Type={DataType.ToHumanString()} ({DataType})";
