@@ -1,29 +1,37 @@
 using System;
-using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.Collections.ObjectModel;
 using System.Linq;
 using Siemens.Simatic.Simulation.Runtime;
 
-/* Problem: I want to expose a key-value interface for IAddress/QAddress, but I dont want (1) library users to mutate them and (2) it to be awkward/difficult to update for us internally.
- * - also it would be nice if we weren't stuck with a single type, ReadOnlyDictionary is very specific, it would be best if we had our own interface here in case we want to change the underlying types/implementation
- */
-
 namespace S7PLCSIM_Library
 {
+    /// Main interface to the Simulation API provided by the Mohawk S7PLCSIM Client Library. Manages simulation state and
+    /// collections of input/output addresses for reading/writing C# primitive types to memory locations.
     public class SimulationClient
     {
+        /// Simulation instance object provided by Siemens C# simulation client library.
+        ///
+        /// Remarks:
+        ///     IInstance is provided by the official Siemens C# simulation library.
+        ///     It is exposed here as an "escape hatch" to lower level simulation functionality if required.
+        ///
+        /// See Also:
+        ///     PLCSIM Advanced V3.0 C# Client Library Documentation
         public IInstance Instance { get; }
 
+        /// IReadOnlyDictionary compatible collection of input (%I) addresses registered with Mohawk simulation client library.
         public SimulationAddressContainer<SimulationInput> IAddress { get; }
+        
+        /// IReadOnlyDictionary compatible collection of output (%Q) addresses registered with Mohawk simulation client library.
         public SimulationAddressContainer<SimulationOutput> QAddress { get; }
 
-        // Only expose read-only dictionaries publically. Add and remove operations must go through the class
-        public SimulationClient(string simulationName)
+        /// Construct a new SimulationClient instance. Creates a new simulation instance if 'simulationName'
+        /// does not exist, otherwise connect to the existing instance.
+        /// 
+        /// Parameters:
+        ///     simulationName - Simulation instance name as it appears in the "S7-PLCSIM Advanced V3.0" tool
+        ///     cpuType - CPU type of the simulation instance. Defaults to "Unspecified CPU 1500"
+        public SimulationClient(string simulationName, ECPUType cpuType = ECPUType.CPU1500_Unspecified)
         {
-            // TODO: Avoid hard-coding CPU Type to 1500_Unspecified
-            // TODO: Avoid logging directly to Console, consider using ILogger and/or log to file
-            
             if (!SimulationRuntimeManager.IsInitialized)
             {
                 throw new S7PlcSimLibraryException("Simulation Runtime Manager is uninitialized. Make sure you have S7-PLCSIM Advanced V3 (Update 2) installed and running");
@@ -41,7 +49,7 @@ namespace S7PLCSIM_Library
             else
             {
                 Console.WriteLine($"Registering new simulation instance: {simulationName}");
-                Instance = SimulationRuntimeManager.RegisterInstance(ECPUType.CPU1500_Unspecified, simulationName);
+                Instance = SimulationRuntimeManager.RegisterInstance(cpuType, simulationName);
 
                 if (Instance == null)
                 {
@@ -52,46 +60,48 @@ namespace S7PLCSIM_Library
             IAddress = new SimulationAddressContainer<SimulationInput>(Instance);
             QAddress = new SimulationAddressContainer<SimulationOutput>(Instance);
         }
-        
-        
-        private static void RemoveAddress<T>(Dictionary<string, T> dict, string name)
-        {
-            if (!dict.ContainsKey(name))
-                throw new S7PlcSimLibraryException($"Cannot remove address \"{name}\": Address does not exist.");
-            dict.Remove(name);
-        }
 
-        private static void AddAddress<T>(Dictionary<string, T> dict, string name, T address)
-        {
-            if (dict.ContainsKey(name))
-                throw new S7PlcSimLibraryException($"Cannot add address \"{name}\": Address was previously added.");
-            dict.Add(name, address);
-        }
+        /// Operating state of the simulation, eg "Boot", "Off", "Stop", "Run" etc.
+        /// 
+        /// See Also:
+        ///     - PLCSIM Advanced V3.0 C# Client Library Documentation
+        public EOperatingState OperatingState => Instance.OperatingState;
         
+        /// Power-on the simulation if currently powered off.
         public void PowerOn()
         {
-            ERuntimeErrorCode error = Instance.PowerOn();
-            if (error != ERuntimeErrorCode.OK)
+            if (OperatingState == EOperatingState.Off)
             {
-                throw new S7PlcSimLibraryException($"Error powering on the simulation, error code: {Enum.GetName(typeof(ERuntimeErrorCode), error)}");
+                ERuntimeErrorCode error = Instance.PowerOn();
+                if (error != ERuntimeErrorCode.OK)
+                {
+                    throw new S7PlcSimLibraryException($"Error powering on the simulation, error code: {Enum.GetName(typeof(ERuntimeErrorCode), error)}");
+                }
             }
         }
         
+        /// Power-off the simulation if currently powered on.
         public void PowerOff()
         {
-            Instance.PowerOff();
-        }
-
-        public void Run()
-        {
-            Instance.Run();
-        }
-
-        public void Stop()
-        {
-            Instance.Stop();
+            if (OperatingState != EOperatingState.Off)
+                Instance.PowerOff();
         }
         
+        /// Run the simulation if currently stopped.
+        public void Run()
+        {
+            if (OperatingState == EOperatingState.Stop)
+                Instance.Run();
+        }
+
+        /// Stop the simulation if currently running.
+        public void Stop()
+        {
+            if (OperatingState == EOperatingState.Run)
+                Instance.Stop();
+        }
+        
+        /// Perform a memory-reset of the simulation.
         public void MemoryReset()
         {
             Instance.MemoryReset();
