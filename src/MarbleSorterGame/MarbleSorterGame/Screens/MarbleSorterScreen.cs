@@ -158,9 +158,9 @@ namespace MarbleSorterGame.Screens
                 //.ShiftX(-_infoBoxBackgroundSize.X - _legendPadding * 2)
                 .ShiftY(-_legendSpacing);
 
-            _legendHovered = new Legend(string.Empty, 18, _legendPadding, chromeColor, Color.Black, 2, Bundle.Font, legendHoveredEntityPosition);
+            _legendHovered = new Legend(string.Empty, 14, _legendPadding, chromeColor, Color.Black, 2, Bundle.Font, legendHoveredEntityPosition);
             
-            _legendGameState = new Legend(_gameState.ToHumanString(), 18, 24, Color.Green, Color.Black, 2, Bundle.Font, default);
+            _legendGameState = new Legend(_gameState.ToHumanString(), 14, 24, Color.Green, Color.Black, 2, Bundle.Font, default);
             _legendGameState.Position = _menuBarBackground.PositionRelative(Joint.End, Joint.End)
                 .ShiftX(-_legendGameState.Box.GetGlobalBounds().Width - _legendSpacing)
                 .ShiftY(_legendSpacing);
