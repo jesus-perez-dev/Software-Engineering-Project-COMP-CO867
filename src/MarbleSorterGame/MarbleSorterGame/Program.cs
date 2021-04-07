@@ -30,6 +30,9 @@ namespace MarbleSorterGame
             
             MarbleSorterGame msg = new MarbleSorterGame(bundle, driver, exception);
             msg.Run();
+            
+            // Stop and power-off the simulation if it is running
+            driver?.SetActive(false);
         }
     }
 }
