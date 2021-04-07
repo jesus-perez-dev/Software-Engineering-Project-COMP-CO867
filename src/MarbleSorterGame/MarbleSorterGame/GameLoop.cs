@@ -1,19 +1,16 @@
 #nullable enable
 using System;
 using System.Threading;
-using System.Threading.Tasks;
 using SFML.Graphics;
 using SFML.Window;
-using SFML.Audio;
 using SFML.System;
-using SFML.Window;
 
 namespace MarbleSorterGame
 {
     // The general structure of how the game is implemented
     public abstract class GameLoop
     {
-        public static int FPS = 60;
+        public static uint FPS = 60;
         
         // Update resolution from config file
         public static uint WINDOW_WIDTH;
@@ -40,6 +37,7 @@ namespace MarbleSorterGame
         // Game structure that determines how entities are updated and timed
         protected GameLoop(IAssetBundle? bundle, string windowTitle, Color windowClearColor)
         {
+            FPS = bundle?.GameConfiguration.FramesPerSecond ?? 60;
             WINDOW_WIDTH = bundle?.GameConfiguration?.ScreenWidth ?? 800;
             WINDOW_HEIGHT = bundle?.GameConfiguration?.ScreenHeight ?? 600;
             WINDOW_RECT = new RectangleShape {Size = new Vector2f(WINDOW_WIDTH, WINDOW_HEIGHT)};
@@ -64,7 +62,7 @@ namespace MarbleSorterGame
             while (WINDOW.IsOpen)
             {
                 WINDOW.DispatchEvents();
-                Thread.Sleep(1000 / FPS);
+                Thread.Sleep(1000 / (int)FPS);
                 Update();
                 WINDOW.Clear(WindowClearColor);
                 Draw();

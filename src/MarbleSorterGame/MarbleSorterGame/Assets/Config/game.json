@@ -1,4 +1,5 @@
 {
+  "FramesPerSecond": 60,
   "ScreenWidth": 1280,
   "ScreenHeight": 720,
   "MarblePeriod": 9.0,
