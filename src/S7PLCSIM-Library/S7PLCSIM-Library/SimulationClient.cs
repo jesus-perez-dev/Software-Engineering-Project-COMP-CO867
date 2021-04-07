@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Threading;
 using Siemens.Simatic.Simulation.Runtime;
 
 namespace S7PLCSIM_Library
@@ -76,6 +77,13 @@ namespace S7PLCSIM_Library
                 if (error != ERuntimeErrorCode.OK)
                 {
                     throw new S7PlcSimLibraryException($"Error powering on the simulation, error code: {Enum.GetName(typeof(ERuntimeErrorCode), error)}");
+                }
+                
+                // Do not return until we are through the "booting" phase
+                // This prevents Run() from not working when we call PowerOn() followed by Run()
+                while (OperatingState == EOperatingState.Booting)
+                {
+                    Thread.Sleep(100);
                 }
             }
         }
