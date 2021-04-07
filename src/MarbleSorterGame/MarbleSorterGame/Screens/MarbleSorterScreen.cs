@@ -69,6 +69,7 @@ namespace MarbleSorterGame.Screens
 
         // Game state
         private GameState _gameState;
+        private GameState _unpauseGameState; // Used to unpause to previous state
         private List<Marble> _marblesRemaining;
         
         public MarbleSorterGameScreen(RenderWindow window, IAssetBundle bundle, IIODriver driver) : base(window, bundle)
@@ -90,6 +91,7 @@ namespace MarbleSorterGame.Screens
             _hoveredEntityData = new Dictionary<string, string>();
             
             _gameState = GameState.Progress;
+            _unpauseGameState = GameState.Progress;
 
             //================= Event Handlers ====================//
             Window.MouseButtonPressed += GameMouseClickEventHandler;
@@ -737,9 +739,12 @@ namespace MarbleSorterGame.Screens
         private void PauseButtonClickHandler(object? sender, MouseButtonEventArgs args)
         {
             if (_gameState == GameState.Pause)
-                _gameState = GameState.Progress;
-            else if (_gameState == GameState.Progress)
+                _gameState = _unpauseGameState;
+            else
+            {
+                _unpauseGameState = _gameState;
                 _gameState = GameState.Pause;
+            }
         }
 
         // Event handler for reset button click
