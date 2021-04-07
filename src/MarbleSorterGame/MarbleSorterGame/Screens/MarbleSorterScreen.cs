@@ -90,6 +90,9 @@ namespace MarbleSorterGame.Screens
             _hoveredEntityData = new Dictionary<string, string>();
             
             _gameState = GameState.Progress;
+            
+            // Enable IO for the driver
+            _driver.SetActive(true);
 
             //================= Event Handlers ====================//
             Window.MouseButtonPressed += GameMouseClickEventHandler;
