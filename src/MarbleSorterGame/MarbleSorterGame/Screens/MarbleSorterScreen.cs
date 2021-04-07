@@ -581,7 +581,7 @@ namespace MarbleSorterGame.Screens
             {
                 foreach (var bucket in _buckets)
                 {
-                    if (bucket.Inside(marble))
+                    if (bucket.GlobalBounds.Contains(marble.Position.X + marble.Size.X/2, marble.Position.Y))
                     {
                         // Set marble position offscreen and update bucket counters
                         marble.Position = new Vector2f(50, 50000);
