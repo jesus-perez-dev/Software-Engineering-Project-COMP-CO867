@@ -566,8 +566,9 @@ namespace MarbleSorterGame.Screens
                 foreach (var trapdoor in _trapDoors)
                 {
                     float trapDoorRightEdge = trapdoor.Position.X + trapdoor.Size.X;
-                    float marbleLeftEdge = marble.Position.X;
-                    if (trapdoor.IsOpen && marbleLeftEdge >= trapdoor.Position.X && marbleLeftEdge <= trapDoorRightEdge)
+                    float marbleCenterX = marble.Position.X + marble.Size.X/2;
+                    float marbleRightEdge = marble.Position.X + marble.Size.X;
+                    if (trapdoor.IsOpen && marbleCenterX >= trapdoor.Position.X && marbleCenterX <= trapDoorRightEdge && marble.Position.X > trapdoor.Position.X && marbleRightEdge < trapDoorRightEdge)
                         marble.SetState(MarbleState.Falling);
                 }
 
