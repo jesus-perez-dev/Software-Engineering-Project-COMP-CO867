@@ -24,10 +24,9 @@ namespace MarbleSorterGame.GameEntities
         public int TotalMarbles => TotalCorrect + TotalIncorrect;
         public int TotalCorrect;
         public int TotalIncorrect;
-        public int Capacity;
+        public uint? Capacity;
 
-
-        public Bucket(Vector2f position, Vector2f size, Color? requiredColor, Weight? requiredWeight, int capacity) :  base (position, size)
+        public Bucket(Vector2f position, Vector2f size, Color? requiredColor, Weight? requiredWeight, uint? capacity) :  base (position, size)
         {
             _requiredColor = requiredColor;
             _requiredWeight = requiredWeight;
@@ -54,6 +53,8 @@ namespace MarbleSorterGame.GameEntities
             string plural = capacity > 1 ? "s" : "";
             Name = $"Requires {capacity} {requiredWeight} {requiredColor} Marble{plural}".Replace("  ", " ");
         }
+
+        private string CapacityLabel => Capacity == null ? String.Empty : $"0/{Capacity}";
 
         public override Vector2f Position
         {
@@ -87,16 +88,16 @@ namespace MarbleSorterGame.GameEntities
                 _failSound.Play();
             }
 
-            _capacityLabel.DisplayedString = $"{TotalMarbles}/{Capacity}";
+            _capacityLabel.DisplayedString = CapacityLabel;
             return marbleOk;
         }
 
         // Checks if marble that was dropped met the requirements
         public bool ValidateMarble(Marble m)
         {
-            return (_requiredColor == null || m.Color == _requiredColor)  &&
+            return (_requiredColor == null || m.Color == _requiredColor) &&
                     (_requiredWeight == null || m.Weight == _requiredWeight) &&
-                    TotalMarbles < Capacity;
+                    (Capacity == null || TotalMarbles < Capacity);
         }
 
         // Draws the bucket onto render target RenderWindow
@@ -115,7 +116,8 @@ namespace MarbleSorterGame.GameEntities
         // Extracts bucket assets, such as texture and sound, from bundle
         public override void Load(IAssetBundle bundle)
         {
-            _capacityLabel = new Text($"0/{Capacity}", bundle.Font);
+
+            _capacityLabel = new Text(CapacityLabel, bundle.Font);
             _capacityLabel.Scale -= new Vector2f(0.1f, 0.1f);
             _capacityLabel.FillColor = SFML.Graphics.Color.Black;
             _capacityLabel.Position = Box.PositionRelative(Joint.Start, Joint.Start)

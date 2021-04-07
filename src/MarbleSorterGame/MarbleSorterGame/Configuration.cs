@@ -101,7 +101,7 @@ namespace MarbleSorterGame
     // Stores bucket requirements from config file
     public class BucketConfig
     {
-        public int Capacity { get; set; }
+        public uint? Capacity { get; set; }
         public ConfigColor? Color { get; set; }
         public ConfigWeight? Weight { get; set; }
         
