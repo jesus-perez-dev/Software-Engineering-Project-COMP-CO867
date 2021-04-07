@@ -14,7 +14,7 @@ namespace MarbleSorterGame
             Exception? exception = null;
             try
             {
-                bundle = new AssetBundleLoader("Assets/");
+                bundle = new AssetBundleLoader("Assets");
                 driver = bundle.GameConfiguration.Driver switch
                 {
                     DriverType.Keyboard => new KeyboardIODriver(),
