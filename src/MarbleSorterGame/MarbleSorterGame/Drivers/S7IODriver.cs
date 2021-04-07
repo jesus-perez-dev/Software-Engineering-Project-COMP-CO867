@@ -148,6 +148,7 @@ namespace MarbleSorterGame
 
         private ulong _updateCount;
         private readonly uint _updateInterval;
+        private bool _active = false;
 
         // Defines the addresses for the S7IO PLC Driver
         public S7IODriver(SimulationDriverOptions options, IList<IoMapConfiguration> iomaps)
@@ -168,17 +169,27 @@ namespace MarbleSorterGame
         }
         
         // Sets run state of the client
-        public void SetRunState(bool run)
+        public void SetActive(bool active)
         {
-            if (run)
+            _active = active;
+            if (active)
+            {
+                _client.PowerOn();
                 _client.Run();
+            }
             else
+            {
                 _client.Stop();
+                _client.PowerOff();
+            }
         }
         
         // Updates driver values by writing/reading from the game state
         public void Update()
         {
+            if (!_active)
+                return;
+
             if (_updateCount % _updateInterval == 0)
             {
                 // Write simulation outputs
