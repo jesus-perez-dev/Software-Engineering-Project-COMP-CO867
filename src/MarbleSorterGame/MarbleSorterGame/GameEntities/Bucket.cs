@@ -34,7 +34,7 @@ namespace MarbleSorterGame.GameEntities
             Capacity = capacity;
             
             _bucket = new Sprite();
-            base.Size =  new Vector2f(MarbleSorterGame.WINDOW_WIDTH/19, MarbleSorterGame.WINDOW_HEIGHT/10); // Note: Largest marble cannot be larger than this
+            base.Size = size; // Note: Largest marble cannot be larger than this
             _bucket.Position = Position - new Vector2f(0, Size.Y);
 
             _requiredColorLabel = new CircleShape()
@@ -119,7 +119,7 @@ namespace MarbleSorterGame.GameEntities
             _capacityLabel.Scale -= new Vector2f(0.1f, 0.1f);
             _capacityLabel.FillColor = SFML.Graphics.Color.Black;
             _capacityLabel.Position = Box.PositionRelative(Joint.Start, Joint.Start)
-                .ShiftX(-_capacityLabel.GetGlobalBounds().Width - 10);
+                .ShiftX(-_capacityLabel.GetGlobalBounds().Width * 1.5f);
             
             _requiredSizeLabel = new Text(_requiredWeight?.ToGameLabel() ?? "", bundle.Font);
             _requiredSizeLabel.Scale -= new Vector2f(0.4f, 0.4f);
