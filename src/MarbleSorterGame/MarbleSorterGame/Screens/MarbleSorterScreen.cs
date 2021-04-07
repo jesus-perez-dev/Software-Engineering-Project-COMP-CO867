@@ -192,7 +192,7 @@ namespace MarbleSorterGame.Screens
             _buckets = preset.Buckets
                 .Select((bc, i) => new Bucket(
                     Screen.Percent(bucketHorizontalSpaceIncrement * (i + 1), 100),
-                    Screen.Percent(10, 20),
+                     new Vector2f(Marble.MarbleSizeLarge * 1.5f, Marble.MarbleSizeLarge * 1.5f),
                     bc.Color?.ToGameColor(),
                     bc.Weight?.ToGameWeight(),
                     bc.Capacity
@@ -214,8 +214,9 @@ namespace MarbleSorterGame.Screens
             foreach (var bucket in _buckets)
                 bucket.Position -= new Vector2f(0, bucket.Size.Y);
             
-            Vector2f gateEntranceSize = Screen.Percent(0.75f, 0);
-            gateEntranceSize.Y = Marble.MarbleSizeLarge * 1.25f;
+            //Vector2f gateEntranceSize = Screen.Percent(0.75f, 0);
+            Vector2f gateEntranceSize = new Vector2f(Marble.MarbleSizeLarge * 0.15f, Marble.MarbleSizeLarge * 1.25f);
+            //gateEntranceSize.Y = Marble.MarbleSizeLarge * 1.25f;
             // screen.Percent(13, 52)
             _gateEntrance = new Gate(
                 _conveyor.Box
@@ -526,14 +527,15 @@ namespace MarbleSorterGame.Screens
 
                 // If marble is touching gate and gate is closed, do not move
                 // Marble can clip through if more than half of marble is past gate
-                if (!_gateEntrance.IsFullyOpen && _gateEntrance.Overlaps(marble) 
-                                               && marble.Position.X < _gateEntrance.Position.X)
+                float marbleRightEdge = marble.Position.X + marble.Size.X;
+                if (!_gateEntrance.IsFullyOpen && marbleRightEdge > _gateEntrance.Position.X - _gateEntrance.Size.X*2 //_gateEntrance.Overlaps(marble) 
+                                               && marbleRightEdge < _gateEntrance.Position.X + _gateEntrance.Size.X)
                 {
                     marble.SetState(MarbleState.Still);
                 }
                 
                 // If the right edge of the marble is passed the left edge of the gate, keep it going
-                if (marble.Position.X + (marble.Size.X) > _gateEntrance.Position.X + _gateEntrance.Size.X)
+                if (marbleRightEdge > _gateEntrance.Position.X + _gateEntrance.Size.X && !_gateEntrance.IsFullyClosed)
                     marble.SetState(MarbleState.Rolling);
                 
                 // If conveyor is off, marbles stay still
@@ -559,8 +561,12 @@ namespace MarbleSorterGame.Screens
             // If marble is overtop a trap-door, and the trap door is open, switch velocity to falling
             foreach (var marble in _marbles)
                 foreach (var trapdoor in _trapDoors)
-                    if (marble.InsideHorizontal(trapdoor) && trapdoor.IsOpen)
+                {
+                    float trapDoorRightEdge = trapdoor.Position.X + trapdoor.Size.X;
+                    float marbleLeftEdge = marble.Position.X;
+                    if (trapdoor.IsOpen && marbleLeftEdge >= trapdoor.Position.X && marbleLeftEdge <= trapDoorRightEdge)
                         marble.SetState(MarbleState.Falling);
+                }
 
             // Now actually update marble coordinates
             foreach (var m in _marbles)
