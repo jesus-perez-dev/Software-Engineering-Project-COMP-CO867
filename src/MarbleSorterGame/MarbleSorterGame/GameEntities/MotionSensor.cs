@@ -81,8 +81,9 @@ namespace MarbleSorterGame.GameEntities
                 Detected = true;
                 _laser.FillColor = Color.Green;
                 // Change laser size and position to rightmost intersecting marble
-                _laser.Size = new Vector2f(_laserRange - intersectingMarble.Position.X + gate.Position.X, _laser.Size.Y);
-                _laser.Position = new Vector2f(_defaultPosition.X + intersectingMarble.Position.X - gate.Position.X, _laser.Position.Y);
+                float centerOfMarble = intersectingMarble.Position.X + intersectingMarble.Size.X / 2;
+                _laser.Size = new Vector2f(_laserRange - centerOfMarble + gate.Position.X, _laser.Size.Y);
+                _laser.Position = new Vector2f(_defaultPosition.X + centerOfMarble - gate.Position.X, _laser.Position.Y);
             }
         }
     }

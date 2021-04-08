@@ -1,4 +1,3 @@
-using System;
 using SFML.Window;
 
 namespace MarbleSorterGame
@@ -25,14 +24,26 @@ namespace MarbleSorterGame
         public byte PressureSensor { get; set; }
         public byte ColorSensor { get; set; }
 
+        // Whether or not to enable inputs from the driver
+        private bool _active = false;
+
         // This implementation does not update programatically, it uses keyboard input. See: UpdateByKey()
         public void Update()
         {
         }
 
+        public void SetActive(bool active)
+        {
+            _active = active;
+        }
+
         // Associates and Updates keyboard inputs to game inputs
         public void UpdateByKey(KeyEventArgs key)
         {
+            // Do not update state if driver state is inactive
+            if (!_active)
+                return;
+
             // Outputs: TrapDoor1, TrapDoor2, TrapDoor3, Gate, Conveyer
             if (key.Code == Keyboard.Key.Num1)
                 Gate = !Gate;
