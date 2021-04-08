@@ -101,7 +101,7 @@ namespace MarbleSorterGame
     // Stores bucket requirements from config file
     public class BucketConfig
     {
-        public int Capacity { get; set; }
+        public uint? Capacity { get; set; }
         public ConfigColor? Color { get; set; }
         public ConfigWeight? Weight { get; set; }
         
@@ -111,8 +111,10 @@ namespace MarbleSorterGame
     // Stores values from config file
     public class MarbleGameConfiguration
     {
+        // Container for description marbles, marble attributes, and bucket requirements
         public MarbleGamePreset Preset { get; set; }
         
+        public uint FramesPerSecond { get; set; }
         public uint ScreenWidth { get; set; }
         public uint ScreenHeight { get; set; }
         

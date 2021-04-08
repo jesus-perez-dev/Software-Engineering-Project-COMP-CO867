@@ -57,5 +57,8 @@ namespace MarbleSorterGame
 
         // Updates driver to communicate to/from the game
         public void Update();
+
+        // Enable or disable the driver (if supported)
+        public void SetActive(bool active);
     }
 }

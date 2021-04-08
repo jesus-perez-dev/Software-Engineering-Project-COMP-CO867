@@ -90,6 +90,9 @@ namespace MarbleSorterGame.Screens
             _hoveredEntityData = new Dictionary<string, string>();
             
             _gameState = GameState.Progress;
+            
+            // Enable IO for the driver
+            _driver.SetActive(true);
 
             //================= Event Handlers ====================//
             Window.MouseButtonPressed += GameMouseClickEventHandler;
@@ -563,8 +566,9 @@ namespace MarbleSorterGame.Screens
                 foreach (var trapdoor in _trapDoors)
                 {
                     float trapDoorRightEdge = trapdoor.Position.X + trapdoor.Size.X;
-                    float marbleLeftEdge = marble.Position.X;
-                    if (trapdoor.IsOpen && marbleLeftEdge >= trapdoor.Position.X && marbleLeftEdge <= trapDoorRightEdge)
+                    float marbleCenterX = marble.Position.X + marble.Size.X/2;
+                    float marbleRightEdge = marble.Position.X + marble.Size.X;
+                    if (trapdoor.IsOpen && marbleCenterX >= trapdoor.Position.X && marbleCenterX <= trapDoorRightEdge && marble.Position.X > trapdoor.Position.X && marbleRightEdge < trapDoorRightEdge)
                         marble.SetState(MarbleState.Falling);
                 }
 
@@ -577,7 +581,7 @@ namespace MarbleSorterGame.Screens
             {
                 foreach (var bucket in _buckets)
                 {
-                    if (bucket.Inside(marble))
+                    if (bucket.GlobalBounds.Contains(marble.Position.X + marble.Size.X/2, marble.Position.Y))
                     {
                         // Set marble position offscreen and update bucket counters
                         marble.Position = new Vector2f(50, 50000);
