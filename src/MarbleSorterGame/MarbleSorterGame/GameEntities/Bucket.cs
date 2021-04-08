@@ -54,7 +54,7 @@ namespace MarbleSorterGame.GameEntities
             Name = $"Requires {capacity} {requiredWeight} {requiredColor} Marble{plural}".Replace("  ", " ");
         }
 
-        private string CapacityLabel => Capacity == null ? String.Empty : $"0/{Capacity}";
+        private string CapacityLabel => Capacity == null ? String.Empty : $"{TotalMarbles}/{Capacity}";
 
         public override Vector2f Position
         {
