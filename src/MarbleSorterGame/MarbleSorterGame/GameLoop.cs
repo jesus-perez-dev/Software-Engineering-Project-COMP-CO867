@@ -44,7 +44,7 @@ namespace MarbleSorterGame
             
             Styles styles = Styles.Close;
             ContextSettings settings = default;
-            settings.AntialiasingLevel = 8;
+            settings.AntialiasingLevel = 0;
             
             WINDOW = new RenderWindow(new VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), windowTitle, styles, settings);
 
