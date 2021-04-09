@@ -2,16 +2,19 @@
   "FramesPerSecond": 60,
   "ScreenWidth": 1280,
   "ScreenHeight": 720,
-  "MarblePeriod": 9.0,
+  "MarblePeriod": 5.0,
   "GatePeriod": 0.5,
   "TrapDoorPeriod": 0.5,
-  "Driver": "Keyboard",
+  "Driver": "Simulation",
   "DriverOptions": { 
-    "SimulationName":  "test",
+    "SimulationName":  "marble-sorter",
     "UpdateInterval": 5
   },
   "Preset": {
     "Marbles": [
+      { "Color": "Red",    "Weight": "Small" },
+      { "Color": "Green",  "Weight": "Medium" },
+      { "Color": "Blue",   "Weight": "Large" },
       { "Color": "Random", "Weight": "Random" },
       { "Color": "Random", "Weight": "Random" },
       { "Color": "Random", "Weight": "Random" },
@@ -24,9 +27,9 @@
       { "Color": "Random", "Weight": "Random" }
     ],
     "Buckets": [
-      { "Capacity": 1, "Weight": "Random", "Color": "Random" },
-      { "Capacity": 1, "Weight": "Random", "Color": "Random" },
-      { "Capacity": 1, "Weight": "Random", "Color": "Random" }
+      { "Capacity": 20, "Weight": "Small", "Color": "Red" },
+      { "Capacity": 20, "Weight": "Medium", "Color": "Green" },
+      { "Capacity": 20, "Weight": "Large", "Color": null }
     ]
   }
 }
