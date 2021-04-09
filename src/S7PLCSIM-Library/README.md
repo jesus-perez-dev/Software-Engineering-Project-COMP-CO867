@@ -10,7 +10,7 @@ registering "regions" of simulation memory where IO operations can be executed.
 and a *bit offset*, and span according to a *bit size* value.
 
 Memory regions in `%I` memory are represented by `SimulationInput` address
-objects, and `SimulationOutput` objects represent %Q memory regions.
+objects, and `SimulationOutput` objects represent `%Q` memory regions.
 Both object types inherit from a common abstract class called `SimulationAddress`.
 
 The main library class `SimulationClient` contains 2 key-value (C# Dictionary
@@ -22,15 +22,15 @@ functionality of the address.
 
 ## Class Descriptions
 
-The library is comprised of 4 classes:
+The library is comprised of the following classes:
 
 **SimulationClient**: Main class of the library. Provides management facilities to the PLC simulation instance (create, register, poweron, poweroff, etc) and maintains collections of `SimulationAddress` objects for simulation memory I/O.
 
 **SimulationAddress**: Abstract class that represents a region of memory. Cannot be used directly, use one of the subclasses described below:
 
-  - **SimulationInput**: Represents a region of memory in "%I" address space. Contains a `Write()` method for setting values in simulation memory.
+  - **SimulationInput**: Represents a region of memory in `%I` address space. Contains a `Write()` method for setting values in simulation memory.
 
-  - **SimulationOutput**: Represents a region of memory in "%Q" address space. Contains a `Read()` method for retrieving values from simulation memory.
+  - **SimulationOutput**: Represents a region of memory in `%Q` address space. Contains a `Read()` method for retrieving values from simulation memory.
 
 **SimulationAddressContainer**: Represents a collection of `SimulationInput` or `SimulationOutput` objects. `Add()` and `Remove()` methods instantiate `SimulationAddress` objects which can be accessed using C# dictionary lookup `[]` operator syntax.
 
@@ -46,7 +46,7 @@ memory. Region geometries are defined by `ByteOffet`, `BitOffset`, and `BitSize`
 
 ### Example Scenario
 
-Suppose we want to reserve a region of simulation memory starting from "%Q2.3" that
+Suppose we want to reserve a region of simulation memory starting from `%Q2.3` that
 occupies 4 bits. Assume this 4-bit integer value controls the speed of a motor.
 
 Our offset and size values would look like this:
@@ -86,7 +86,7 @@ Console.WriteLine(motorSpeedData.Bool);
 </pre>
 
 This code creates a `SimulationOutput` object occupying 4 bits of memory
-starting from "%I2.3" spanning to "%I2.6", inclusive. If a PLC program block
+starting from `%I2.3` spanning to `%I2.6`, inclusive. If a PLC program block
 were to write values to this address, it would be reflected by the result of
 `outputAddress.Read()` at the time it is called.
 
@@ -98,6 +98,6 @@ occupies portions of memory that "overlap" the memory range from the previous
 example. This applies to partial overlaps as well.
 
 *Note*: Memory regions can also span byte boundaries. For example, it is perfectly
-valid for a region to span 5 bits from "%I2.6" to "%I3.2". The library handles
+valid for a region to span 5 bits from `%I2.6` to `%I3.2`. The library handles
 appropriately reading/writing only bits that fit within the specified memory
 address region.
