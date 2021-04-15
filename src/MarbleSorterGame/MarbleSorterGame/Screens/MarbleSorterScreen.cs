@@ -443,23 +443,22 @@ namespace MarbleSorterGame.Screens
         public void UpdateSignals()
         {
             _gateEntrance.SetState(_driver.Gate);
-            
-            _gateOpen.SetState(_gateEntrance.IsFullyOpen);
-            _gateClosed.SetState(_gateEntrance.IsFullyClosed);
-            
+
+            _gateOpen.SetState(_driver.GateOpen);
+            _gateClosed.SetState(_driver.GateClosed);
             _conveyor.SetState(_driver.Conveyor);
 
             _trapDoors[0].SetState(_driver.TrapDoor1);
             _trapDoors[1].SetState(_driver.TrapDoor2);
             _trapDoors[2].SetState(_driver.TrapDoor3);
 
-            _trapDoorsOpen[0].SetState(_trapDoors[0].IsFullyOpen);
-            _trapDoorsOpen[1].SetState(_trapDoors[1].IsFullyOpen);
-            _trapDoorsOpen[2].SetState(_trapDoors[2].IsFullyOpen);
+            _trapDoorsOpen[0].SetState(_driver.TrapDoor1Open);
+            _trapDoorsOpen[1].SetState(_driver.TrapDoor2Open);
+            _trapDoorsOpen[2].SetState(_driver.TrapDoor3Open);
 
-            _trapDoorsClosed[0].SetState(_trapDoors[0].IsFullyClosed);
-            _trapDoorsClosed[1].SetState(_trapDoors[1].IsFullyClosed);
-            _trapDoorsClosed[2].SetState(_trapDoors[2].IsFullyClosed);
+            _trapDoorsClosed[0].SetState(_driver.TrapDoor1Closed);
+            _trapDoorsClosed[1].SetState(_driver.TrapDoor2Closed);
+            _trapDoorsClosed[2].SetState(_driver.TrapDoor3Closed);
 
             //set weight/color sensor lights
             var c = _driver.ColorSensor;
@@ -482,6 +481,9 @@ namespace MarbleSorterGame.Screens
             _driver.TrapDoor2Closed = _trapDoors[1].IsFullyClosed;
             _driver.TrapDoor3Closed = _trapDoors[2].IsFullyClosed;
 
+            _driver.GateClosed = _gateEntrance.IsFullyClosed;
+            _driver.GateOpen = _gateEntrance.IsFullyOpen;
+            
             //////////////////////////////////////// 
             ///// BEGIN: TODO FIXME HACK
 
